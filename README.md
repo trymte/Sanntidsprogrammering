@@ -1,2 +1,0 @@
-# heisprosjekt
-Sanntidsprogrammering
