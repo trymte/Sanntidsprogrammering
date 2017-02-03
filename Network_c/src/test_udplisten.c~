@@ -13,7 +13,7 @@ udpmessageReceived(const char * ip, char * data, int datalength){
 
 int main(){
 
-  udp_startReceiving(20011,udpmessageReceived);
+  udp_startReceiving(30000,udpmessageReceived);
 
   sleep(100);
   return 0;
