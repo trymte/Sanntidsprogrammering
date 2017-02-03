@@ -1,2 +1,0 @@
-all:
-	g++ test_udpsend.c sverresnetwork.c -o test
