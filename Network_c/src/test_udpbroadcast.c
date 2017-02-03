@@ -12,7 +12,7 @@ udpmessageReceived(const char * ip, int port, char * data, int datalength){
 int 
 main(){
 
-  udp_broadcast(4321,"Hello all",10);
+  udp_broadcast(20011,"Hello all",10);
 
   return 0;
 }

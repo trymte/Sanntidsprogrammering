@@ -13,7 +13,7 @@ int main(){
 //  char * ip = "129.241.10.74";
   char * ip = "192.168.10.99";
 
-  udp_send(ip,4321,"Hello World",12);
+  udp_send(ip,20011,"Hello World",12);
 
   return 0;
 }

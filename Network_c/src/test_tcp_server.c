@@ -19,7 +19,7 @@ connectionStatus(const char * ip, int status){
 int main(){
 
   tcp_init(messageReceived,connectionStatus);
-  tcp_startConnectionListening(5555);
+  tcp_startConnectionListening(20011);
 
   sleep(100);
   return 0;
