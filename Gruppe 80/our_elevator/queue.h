@@ -1,9 +1,10 @@
+#include "network.h"
 
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! 
 typedef enum { 
-    B_HallUp,
-    B_HallDown,
-    B_Cab
+    B_HallUp = 0,
+    B_HallDown = 1,
+    B_Cab = 2
 } Button;
 
 typedef enum { 
@@ -13,12 +14,11 @@ typedef enum {
 } Dirn;
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! 
 
-//Move to elevator.h
-class Elevator{};
+
 
 struct Queue_element{
 	bool active_button;
-	unsigned int elevator_ID;
+	int elevator_ID;
 };
 
 struct Order{
@@ -29,7 +29,7 @@ struct Order{
 struct Status{
 	Dirn dir;
 	unsigned int floor;
-	unsigned int elevator_ID;
+	int elevator_ID;
 	bool out_of_order;
 };
 
@@ -39,18 +39,21 @@ class Queue{
 private:
 	unsigned int n_buttons;
 	unsigned int n_floors;
-
 	Queue_element **order_matrix;
+
+	
 	unsigned int queue_calculate_cost(Order order, Status &status_array);
 	void queue_write_order_matrix();
 	void queue_read_order_matrix();
 
 public:
+	
 	Queue(unsigned int n_buttons, unsigned int n_floors);
-	void queue_add_order(Order new_order,unsigned int elevator_ID);
+	void queue_add_order(Order new_order,int elevator_ID);
 	void queue_remove_order(Elevator &elevator);
 	Queue_element queue_get_order_matrix();
 	void queue_assign_elevators_to_orders(Elevator &elevators);
 	void queue_merge_order_matrices(Queue_element* new_order_matrix);
 	void queue_reset_orders(Elevator &elevator);
+	void queue_print_order_matrix();
 };
