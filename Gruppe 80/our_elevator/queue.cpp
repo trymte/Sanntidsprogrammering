@@ -7,7 +7,10 @@ using namespace std;
 int main(){
 	cout << "Halla" << endl;
 
-	Queue test(2,2);
+	//Queue test(2,2);
+
+	Queue_element test;
+	test.active_button = 0;
 }
 
 
@@ -21,14 +24,15 @@ Queue::Queue(unsigned int n_buttons, unsigned int n_floors){
 
 	for(int i=0;i<n_floors;i++){
 		this->order_matrix[i] = new Queue_element [n_buttons]{};
-		for(int j=0;j<n_buttons;j++){
-			Queue_element[j].active_button = 0;
-			Queue_element[j].elevator_ID = 0;
-		}
 	}
 
+	for(int i=0;i<n_floors;i++){
+		for(int j=0;j<n_buttons;j++){
+			order_matrix[i][j].active_button = 0;
+			order_matrix[i][j].elevator_ID = 0;
+		}
+	}
 }
-
 
 
 
