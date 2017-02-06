@@ -1,22 +1,30 @@
 #include <iostream>
 #include "queue.h"
-#include "network.h"
+//#include "network.h"
 
 
 using namespace std;
 
 int main(){
+	cout << "Halla" << endl;
+
 
 	Queue A(3,3);
-	cout << A.test_get_queue_element(2,0).active_button << endl;
-
+	cout << "A-matrix" << endl;
 	A.queue_print_order_matrix();
 
 	Order new_order;
-
 	new_order.floor = 2;
 	new_order.btn = B_HallUp;
-	A.queue_add_order(new_order,2);
+
+	Queue B(3,3);
+
+	B.queue_add_order(new_order,2);
+	cout << "B-matrix:" << endl;
+	B.queue_print_order_matrix();
+
+	A.queue_merge_order_matrices(B);
+	cout << "A-matrix updated" << endl;
 	A.queue_print_order_matrix();
 
 	
@@ -60,23 +68,34 @@ void Queue::queue_add_order(Order new_order, int elevator_ID){
 }
 
 
-/*
-
-void Queue::queue_remove_order(Elevator &elevator);
 
 
-Queue_element Queue::queue_get_order_matrix(){} //Foreslår å bruke friend på de klassene som trenger order_matrix
+//void Queue::queue_remove_order(Elevator &elevator);
+
+
+//Queue_element Queue::queue_get_order_matrix(){} //Foreslår å bruke friend på de klassene som trenger order_matrix
 
 
 
-void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
+//void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
 
 
-void Queue::queue_merge_order_matrices(Queue_element* new_order_matrix);
+void Queue::queue_merge_order_matrices(Queue_element new_order_matrix){ //Ta inn hele kø-objektet?
+	//Check the dimentions!
 
 
-void Queue::queue_reset_orders(Elevator &elevator);
-*/
+	for (int i=0;i<this->n_floors;i++){
+		for (int j=0;j<this->n_buttons;j++){
+
+			if ((new_order_matrix[i][j].elevator_ID != -1) && (this->order_matrix[i][j].elevator_ID == -1))
+				this->order_matrix[i][j] = new_order_matrix[i][j];
+		}
+	}
+}
+
+
+//void Queue::queue_reset_orders(Elevator &elevator);
+
 
 void Queue::queue_print_order_matrix(){
 	for (int i=0;i<this->n_floors;i++){

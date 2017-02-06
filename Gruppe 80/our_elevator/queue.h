@@ -1,4 +1,3 @@
-#include "network.h"
 
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! 
 typedef enum { 
@@ -14,7 +13,9 @@ typedef enum {
 } Dirn;
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! 
 
+class Elevator{
 
+};
 
 struct Queue_element{
 	bool active_button;
@@ -53,7 +54,7 @@ public:
 	void queue_remove_order(Elevator &elevator);
 	Queue_element queue_get_order_matrix();
 	void queue_assign_elevators_to_orders(Elevator &elevators);
-	void queue_merge_order_matrices(Queue_element* new_order_matrix);
+	void queue_merge_order_matrices(Queue_element new_order_matrix); //Ta inn kø-objekt?
 	void queue_reset_orders(Elevator &elevator);
 	void queue_print_order_matrix();
 };

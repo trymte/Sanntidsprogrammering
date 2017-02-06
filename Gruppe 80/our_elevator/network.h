@@ -2,5 +2,5 @@
 struct Elevator{ //Var det sånn vi tenkte? Inneholde noe mer?
 	Queue elevator_queue;
 	Status elevator_status;	
-}
+};
 
