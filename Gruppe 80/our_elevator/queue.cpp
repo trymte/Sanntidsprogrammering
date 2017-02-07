@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #include "queue.h"
 #include "network.h"
@@ -54,8 +55,11 @@ int main(){
 	status_vector.push_back(test_status_1);
 	status_vector.push_back(test_status_2);
 
-	cout << "Cost: " << A.queue_calculate_cost(new_order, status_vector) << endl;
+	cout << "Best elevator_ID: " << A.queue_calculate_cost(new_order, status_vector) << endl;
 }
+
+
+
 
 
 
@@ -83,19 +87,22 @@ Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 
 unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& status_vector){
 	unsigned int temp_cost = 0;
-	unsigned int cost = 10000;
+	unsigned int lowest_cost = 10000;
 	int elevator_ID = -1;
 
 	for(std::vector<Status>::iterator it = status_vector.begin(); it != status_vector.end();++it){
+		Status status_it = *it;
 		//Check status on the elevators that are not out of order.
-		if (it.out_of_order != 1){ 
-			temp_cost = 
+		if (status_it.out_of_order != 1){ 
+			temp_cost = abs(order.floor - status_it.floor)*10; //Rewrite cost calculation!!!!
+			if (temp_cost < lowest_cost){
+				lowest_cost = temp_cost;
+				elevator_ID = status_it.elevator_ID;
+			}
+
 		}
 	}
-
-
-	cout << status_vector[1].floor << endl;
-	return 0;
+	return elevator_ID;
 }
 
 void Queue::queue_write_order_matrix(){}
