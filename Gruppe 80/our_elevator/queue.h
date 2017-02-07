@@ -45,25 +45,26 @@ private:
 	unsigned int n_buttons;
 	unsigned int n_floors;
 	Queue_element **order_matrix;
-
 	
-	unsigned int queue_calculate_cost(Order order, Status &status_array);
+
 	void queue_write_order_matrix();
 	void queue_read_order_matrix();
 
 public:
+	unsigned int queue_calculate_cost(Order order, std::vector<Status>& status_vector);
 
-	//Get order matrix pointer
-
-	Queue(unsigned int n_buttons, unsigned int n_floors);
+	Queue(unsigned int n_floors,unsigned int n_buttons);
 	void queue_add_order(Order new_order,int elevator_ID);
-	void queue_remove_order(Status status);
-
-	Queue_element** queue_get_order_matrix();
-//	void queue_assign_elevators_to_orders(Elevator &elevators);//Bør kanskje kke være en medlemsfunksjon?
+	Queue_element** queue_get_order_matrix();	
 	void queue_merge_order_matrices(Queue queue_with_new_order_matrix);
-//	void queue_reset_orders(Elevator &elevator);
 	void queue_print_order_matrix();
+
+
+	//Disse funksjonene bør ligge under Elevator klassen:
+	void queue_remove_order(Status status);
+	//void queue_assign_elevators_to_orders(Elevator &elevators);//Bør kanskje kke være en medlemsfunksjon?
+	//void queue_reset_orders(Elevator &elevator);
+
 };
 
 #endif

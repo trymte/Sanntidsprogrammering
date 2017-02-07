@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+
 #include "queue.h"
 #include "network.h"
 
@@ -6,10 +8,12 @@
 using namespace std;
 
 int main(){
-	cout << "Halla" << endl;
+	const int N_FLOORS = 4;
+	const int N_BUTTONS = 3;
+	const int N_ELEVATORS = 2;
 
 
-	Queue A(4,4);
+	Queue A(N_FLOORS,N_BUTTONS );
 	cout << "A-matrix" << endl;
 	A.queue_print_order_matrix();
 
@@ -17,7 +21,7 @@ int main(){
 	new_order.floor = 2;
 	new_order.btn = B_HallUp;
 
-	Queue B(4,4);
+	Queue B(N_FLOORS,N_BUTTONS);
 
 	B.queue_add_order(new_order,2);
 	cout << "B-matrix:" << endl;
@@ -27,21 +31,37 @@ int main(){
 	cout << "A-matrix after merge with B:" << endl;
 	A.queue_print_order_matrix();
 
-	Status test_status;
-	test_status.dir = D_Up;
-	test_status.floor = 2;
-	test_status.elevator_ID = 2;
-	test_status.out_of_order = 0;
+	Status test_status_1;
+	test_status_1.dir = D_Up;
+	test_status_1.floor = 2;
+	test_status_1.elevator_ID = 2;
+	test_status_1.out_of_order = 0;
 
-	A.queue_remove_order(test_status);
+	Status test_status_2;
+	test_status_2.dir = D_Down;
+	test_status_2.floor = 1;
+	test_status_2.elevator_ID = 3;
+	test_status_2.out_of_order = 0;
+
+	A.queue_remove_order(test_status_1);
 	cout << "A-matrix after removed order" << endl;
 	A.queue_print_order_matrix();
+
+
+
+	//Status_vector
+	vector<Status> status_vector;
+	status_vector.push_back(test_status_1);
+	status_vector.push_back(test_status_2);
+
+	cout << "Cost: " << A.queue_calculate_cost(new_order, status_vector) << endl;
 }
 
 
 
 
-Queue::Queue(unsigned int n_buttons, unsigned int n_floors){
+
+Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 	this->n_buttons = n_buttons;
 	this->n_floors = n_floors;
 
@@ -61,6 +81,29 @@ Queue::Queue(unsigned int n_buttons, unsigned int n_floors){
 
 
 
+unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& status_vector){
+	unsigned int temp_cost = 0;
+	unsigned int cost = 10000;
+	int elevator_ID = -1;
+
+	for(std::vector<Status>::iterator it = status_vector.begin(); it != status_vector.end();++it){
+		//Check status on the elevators that are not out of order.
+		if (it.out_of_order != 1){ 
+			temp_cost = 
+		}
+	}
+
+
+	cout << status_vector[1].floor << endl;
+	return 0;
+}
+
+void Queue::queue_write_order_matrix(){}
+
+void Queue::queue_read_order_matrix(){}
+
+
+
 void Queue::queue_add_order(Order new_order, int elevator_ID){
 	if (new_order.floor > this->n_floors){
 		cout << "Floor in new_order doesn't match number of floors in system" << endl;
@@ -75,21 +118,9 @@ void Queue::queue_add_order(Order new_order, int elevator_ID){
 }
 
 
-
-
-void Queue::queue_remove_order(Status status){
-	this->order_matrix[status.floor][status.dir].active_button = 0;
-	this->order_matrix[status.floor][status.dir].elevator_ID = -1;
-}
-
-
 Queue_element** Queue::queue_get_order_matrix(){
 	return this->order_matrix;
 } 
-
-
-
-//void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
 
 
 void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){//,Queue_element **new_order_matrix){ //Ta inn hele kø-objektet?
@@ -109,9 +140,6 @@ void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){//,Que
 }
 
 
-//void Queue::queue_reset_orders(Elevator &elevator);
-
-
 void Queue::queue_print_order_matrix(){
 	for (int i=0;i<this->n_floors;i++){
 		for (int j=0;j<this->n_buttons;j++){
@@ -122,3 +150,15 @@ void Queue::queue_print_order_matrix(){
 	cout << endl;
 
 }
+
+
+// Flyttes?
+void Queue::queue_remove_order(Status status){
+	this->order_matrix[status.floor][status.dir].active_button = 0;
+	this->order_matrix[status.floor][status.dir].elevator_ID = -1;
+}
+/*
+void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
+
+void Queue::queue_reset_orders(Elevator &elevator);
+*/
