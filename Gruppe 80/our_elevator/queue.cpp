@@ -1,6 +1,6 @@
 #include <iostream>
 #include "queue.h"
-//#include "network.h"
+#include "network.h"
 
 
 using namespace std;
@@ -9,7 +9,7 @@ int main(){
 	cout << "Halla" << endl;
 
 
-	Queue A(3,3);
+	Queue A(4,4);
 	cout << "A-matrix" << endl;
 	A.queue_print_order_matrix();
 
@@ -17,18 +17,25 @@ int main(){
 	new_order.floor = 2;
 	new_order.btn = B_HallUp;
 
-	Queue B(3,3);
+	Queue B(4,4);
 
 	B.queue_add_order(new_order,2);
 	cout << "B-matrix:" << endl;
 	B.queue_print_order_matrix();
 
 	A.queue_merge_order_matrices(B);
-	cout << "A-matrix updated" << endl;
+	cout << "A-matrix after merge with B:" << endl;
 	A.queue_print_order_matrix();
 
-	
+	Status test_status;
+	test_status.dir = D_Up;
+	test_status.floor = 2;
+	test_status.elevator_ID = 2;
+	test_status.out_of_order = 0;
 
+	A.queue_remove_order(test_status);
+	cout << "A-matrix after removed order" << endl;
+	A.queue_print_order_matrix();
 }
 
 
@@ -70,25 +77,33 @@ void Queue::queue_add_order(Order new_order, int elevator_ID){
 
 
 
-//void Queue::queue_remove_order(Elevator &elevator);
+void Queue::queue_remove_order(Status status){
+	this->order_matrix[status.floor][status.dir].active_button = 0;
+	this->order_matrix[status.floor][status.dir].elevator_ID = -1;
+}
 
 
-//Queue_element Queue::queue_get_order_matrix(){} //Foreslår å bruke friend på de klassene som trenger order_matrix
+Queue_element** Queue::queue_get_order_matrix(){
+	return this->order_matrix;
+} 
 
 
 
 //void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
 
 
-void Queue::queue_merge_order_matrices(Queue_element new_order_matrix){ //Ta inn hele kø-objektet?
-	//Check the dimentions!
-
+void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){//,Queue_element **new_order_matrix){ //Ta inn hele kø-objektet?
+	//Assume equal dimensions.
+	if ((queue_with_new_order_matrix.n_buttons != this->n_buttons) || (queue_with_new_order_matrix.n_floors != this->n_floors)){
+		cout << "Matrix dimensions disagree in queue_merge_order_matrices" << endl;
+		return;
+	}
 
 	for (int i=0;i<this->n_floors;i++){
 		for (int j=0;j<this->n_buttons;j++){
 
-			if ((new_order_matrix[i][j].elevator_ID != -1) && (this->order_matrix[i][j].elevator_ID == -1))
-				this->order_matrix[i][j] = new_order_matrix[i][j];
+			if ((queue_with_new_order_matrix.order_matrix[i][j].elevator_ID != -1) && (this->order_matrix[i][j].elevator_ID == -1))
+				this->order_matrix[i][j] = queue_with_new_order_matrix.order_matrix[i][j];
 		}
 	}
 }

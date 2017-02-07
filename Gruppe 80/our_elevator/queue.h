@@ -1,3 +1,5 @@
+#ifndef QUEUE_H
+#define QUEUE_H
 
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! 
 typedef enum { 
@@ -7,15 +9,17 @@ typedef enum {
 } Button;
 
 typedef enum { 
-    D_Down  = -1,
-    D_Stop  = 0,
-    D_Up    = 1
+    D_Down  = 1, //1,
+    D_Stop  = 2, //0,
+    D_Up    = 0 //1
 } Dirn;
-//NB!!! Exists in elevator_io_types.h, may therefore be deleted! 
+//NB!!! Exists in elevator_io_types.h, may therefore be deleted! Nye verdier gjør det kompatibelt med queue_matrix
 
-class Elevator{
 
-};
+
+
+
+
 
 struct Queue_element{
 	bool active_button;
@@ -48,13 +52,18 @@ private:
 	void queue_read_order_matrix();
 
 public:
-	
+
+	//Get order matrix pointer
+
 	Queue(unsigned int n_buttons, unsigned int n_floors);
 	void queue_add_order(Order new_order,int elevator_ID);
-	void queue_remove_order(Elevator &elevator);
-	Queue_element queue_get_order_matrix();
-	void queue_assign_elevators_to_orders(Elevator &elevators);
-	void queue_merge_order_matrices(Queue_element new_order_matrix); //Ta inn kø-objekt?
-	void queue_reset_orders(Elevator &elevator);
+	void queue_remove_order(Status status);
+
+	Queue_element** queue_get_order_matrix();
+//	void queue_assign_elevators_to_orders(Elevator &elevators);//Bør kanskje kke være en medlemsfunksjon?
+	void queue_merge_order_matrices(Queue queue_with_new_order_matrix);
+//	void queue_reset_orders(Elevator &elevator);
 	void queue_print_order_matrix();
 };
+
+#endif
