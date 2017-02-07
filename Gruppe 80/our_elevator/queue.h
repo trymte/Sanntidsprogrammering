@@ -47,14 +47,17 @@ private:
 	Queue_element **order_matrix;
 	
 
-	void queue_write_order_matrix();
-	void queue_read_order_matrix();
+	
 
 public:
 	//Supposed to be private:
 	unsigned int queue_calculate_cost(Order order, std::vector<Status>& status_vector);
+	void queue_write_order_matrix();
+	void queue_read_order_matrix();
+	//
 
 
+	
 
 	Queue(unsigned int n_floors,unsigned int n_buttons);
 	void queue_add_order(Order new_order,int elevator_ID);

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <fstream>
+#include <string>
 
 #include "queue.h"
 #include "network.h"
@@ -56,6 +58,12 @@ int main(){
 	status_vector.push_back(test_status_2);
 
 	cout << "Best elevator_ID: " << A.queue_calculate_cost(new_order, status_vector) << endl;
+
+
+
+	//Backup of order_matrix
+	A.queue_write_order_matrix();
+	A.queue_read_order_matrix();
 }
 
 
@@ -105,9 +113,42 @@ unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& statu
 	return elevator_ID;
 }
 
-void Queue::queue_write_order_matrix(){}
+void Queue::queue_write_order_matrix(){
+	ofstream file;
+	file.open("backup_file.txt");
+	if (file.is_open()){
 
-void Queue::queue_read_order_matrix(){}
+		for (int i=0;i<this->n_floors;i++){
+			for (int j=0;j<this->n_buttons;j++){
+				file << this->order_matrix[i][j].active_button << ":" << this->order_matrix[i][j].elevator_ID << ";";
+			}
+			file << "\n";
+		}
+		file.close();
+	}
+	else
+		cout << "Unable to open file at queue_write_order_matrix" << endl;
+}
+
+void Queue::queue_read_order_matrix(){
+	int row = 0;
+	int col = 0;
+	string line;
+	string act_but;
+	string elev_ID;
+
+	ifstream file;
+	file.open("backup_file.txt");
+	if (file.is_open()){
+		while(getline(file,line,';')){
+			//Work in progress
+		}
+	}
+	else
+		cout << "Unable to open file at queue_read_order_matrix" << endl;
+
+
+}
 
 
 
@@ -131,7 +172,7 @@ Queue_element** Queue::queue_get_order_matrix(){
 
 
 void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){//,Queue_element **new_order_matrix){ //Ta inn hele kø-objektet?
-	//Assume equal dimensions.
+	//Check dimensions
 	if ((queue_with_new_order_matrix.n_buttons != this->n_buttons) || (queue_with_new_order_matrix.n_floors != this->n_floors)){
 		cout << "Matrix dimensions disagree in queue_merge_order_matrices" << endl;
 		return;
@@ -157,6 +198,8 @@ void Queue::queue_print_order_matrix(){
 	cout << endl;
 
 }
+
+
 
 
 // Flyttes?
