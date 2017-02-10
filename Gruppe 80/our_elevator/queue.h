@@ -1,6 +1,9 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
+
+#include "network.h"
+
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! 
 typedef enum { 
     B_HallUp = 0,
@@ -9,9 +12,9 @@ typedef enum {
 } Button;
 
 typedef enum { 
-    D_Down  = 1, //1,
-    D_Stop  = 2, //0,
-    D_Up    = 0 //1
+    D_Down  = -1,
+    D_Stop  = 0, 
+    D_Up    = 1 
 } Dirn;
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! Nye verdier gjør det kompatibelt med queue_matrix
 
@@ -31,6 +34,7 @@ struct Order{
 	Button btn;
 };
 
+//Kan flyttes til elevator.h
 struct Status{
 	Dirn dir;
 	unsigned int floor;
@@ -42,12 +46,12 @@ struct Status{
 
 class Queue{
 private:
-	unsigned int n_buttons;
+	unsigned int n_buttons; //Bytte ut til N_FLOORS fra elev.h
 	unsigned int n_floors;
-	Queue_element order_matrix[n_floors][n_buttons];
-	
+	Queue_element** order_matrix;
 
-	
+
+
 
 public:
 	//Supposed to be private:
@@ -60,15 +64,16 @@ public:
 	
 
 	Queue(unsigned int n_floors,unsigned int n_buttons);
+	//Create a distructor
+
 	void queue_add_order(Order new_order,int elevator_ID);
 	Queue_element** queue_get_order_matrix();	
-	void queue_merge_order_matrices(Queue queue_with_new_order_matrix);
+	void queue_merge_order_matrices(Queue queue_with_new_order_matrix); //Endre til UML std
 	void queue_print_order_matrix();
 
 
-	//Disse funksjonene bør ligge under Elevator klassen:
-	void queue_remove_order(Status status);
-	//void queue_assign_elevators_to_orders(Elevator &elevators);//Bør kanskje kke være en medlemsfunksjon?
+	void queue_remove_order(Order order);
+//	static void queue_assign_elevators_to_orders(Elevator &elevators);
 	void queue_reset_orders(Status status);
 
 };
