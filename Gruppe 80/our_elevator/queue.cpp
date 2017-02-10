@@ -212,4 +212,17 @@ void Queue::queue_remove_order(Order order){
 
 //void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
 
+
 void Queue::queue_reset_orders(Status status){};
+
+
+Queue::~Queue(){
+	if(order_matrix != NULL){
+		for(int i = 0; i < n_floors; i++){
+			delete [] order_matrix[i];
+		delete [] order_matrix;
+		}
+	}
+
+
+}

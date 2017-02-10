@@ -70,10 +70,13 @@ public:
 	Queue_element** queue_get_order_matrix();	
 	void queue_merge_order_matrices(Queue queue_with_new_order_matrix); //Endre til UML std
 	void queue_print_order_matrix();
+	void assign_elevators_to_orders(Elevator &elevators);
+
 
 
 	void queue_remove_order(Order order);
 //	static void queue_assign_elevators_to_orders(Elevator &elevators);
+
 	void queue_reset_orders(Status status);
 
 };
