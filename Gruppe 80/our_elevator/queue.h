@@ -44,7 +44,7 @@ class Queue{
 private:
 	unsigned int n_buttons;
 	unsigned int n_floors;
-	Queue_element **order_matrix;
+	Queue_element order_matrix[n_floors][n_buttons];
 	
 
 	
@@ -69,7 +69,7 @@ public:
 	//Disse funksjonene bør ligge under Elevator klassen:
 	void queue_remove_order(Status status);
 	//void queue_assign_elevators_to_orders(Elevator &elevators);//Bør kanskje kke være en medlemsfunksjon?
-	//void queue_reset_orders(Elevator &elevator);
+	void queue_reset_orders(Status status);
 
 };
 

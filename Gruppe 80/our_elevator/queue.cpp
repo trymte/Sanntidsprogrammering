@@ -77,11 +77,11 @@ Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 	this->n_buttons = n_buttons;
 	this->n_floors = n_floors;
 
-	this->order_matrix = new Queue_element *[n_floors];//{};
+	//this->order_matrix = new Queue_element *[n_floors];//{};
 
-	for(int i=0;i<n_floors;i++){
-		this->order_matrix[i] = new Queue_element [n_buttons];//{};
-	}
+	//for(int i=0;i<n_floors;i++){
+		//this->order_matrix[i] = new Queue_element [n_buttons];//{};
+	//}
 
 	for(int i=0;i<n_floors;i++){
 		for(int j=0;j<n_buttons;j++){
@@ -207,8 +207,7 @@ void Queue::queue_remove_order(Status status){
 	this->order_matrix[status.floor][status.dir].active_button = 0;
 	this->order_matrix[status.floor][status.dir].elevator_ID = -1;
 }
-/*
-void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
 
-void Queue::queue_reset_orders(Elevator &elevator);
-*/
+
+
+void Queue::queue_reset_orders(Status status);
