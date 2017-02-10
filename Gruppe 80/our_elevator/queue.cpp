@@ -5,7 +5,9 @@
 #include <string>
 
 #include "queue.h"
+#include "elevator.h"
 #include "network.h"
+
 
 
 using namespace std;
@@ -46,7 +48,7 @@ int main(){
 	test_status_2.elevator_ID = 3;
 	test_status_2.out_of_order = 0;
 
-	A.queue_remove_order(test_status_1);
+	A.queue_remove_order(new_order);
 	cout << "A-matrix after removed order" << endl;
 	A.queue_print_order_matrix();
 
@@ -77,11 +79,11 @@ Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 	this->n_buttons = n_buttons;
 	this->n_floors = n_floors;
 
-	//this->order_matrix = new Queue_element *[n_floors];//{};
+	this->order_matrix = new Queue_element *[n_floors];//{};
 
-	//for(int i=0;i<n_floors;i++){
-		//this->order_matrix[i] = new Queue_element [n_buttons];//{};
-	//}
+	for(int i=0;i<n_floors;i++){
+		this->order_matrix[i] = new Queue_element [n_buttons];//{};
+	}
 
 	for(int i=0;i<n_floors;i++){
 		for(int j=0;j<n_buttons;j++){
@@ -202,12 +204,12 @@ void Queue::queue_print_order_matrix(){
 
 
 
-// Flyttes?
-void Queue::queue_remove_order(Status status){
-	this->order_matrix[status.floor][status.dir].active_button = 0;
-	this->order_matrix[status.floor][status.dir].elevator_ID = -1;
+
+void Queue::queue_remove_order(Order order){
+	this->order_matrix[order.floor][order.btn].active_button = 0;
+	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
 }
 
+//void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
 
-
-void Queue::queue_reset_orders(Status status);
+void Queue::queue_reset_orders(Status status){};

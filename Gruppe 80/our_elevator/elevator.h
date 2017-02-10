@@ -1,20 +1,27 @@
-#include <queue.h>
+#ifndef ELEVATOR_H
+#define ELEVATOR_H
 
-class Elevator friend Queue{
+
+#include "queue.h"
+
+class Elevator{
 private:
-	int dir;
+	//Dirn dir;
 	int floor;
 	int elevatorID;
 	bool out_of_order;
-	queue_element* order_matrix_ptr;
+	Queue_element** order_matrix_ptr;
 public:
-	Elevator(int dir, int floor, int elevatorID, bool out_of_order)
+	Elevator(int dir, int floor, int elevatorID, bool out_of_order);
 	int get_floor();
 	int get_dir();
 	int get_elev_id();
-	bool get_elev_status();
 
 
+	//void set_elev_dir(Dirn dir);
+	void set_elev_floor(unsigned int floor);
+	void set_elev_ID(int elevator_ID);
+	void set_elev_out_of_order(bool out_of_order);
 };
 
-void assign_elevators_to_orders(Elevator &elevators);
+#endif
