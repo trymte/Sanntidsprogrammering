@@ -211,3 +211,15 @@ void Queue::queue_remove_order(Status status){
 
 
 void Queue::queue_reset_orders(Status status);
+
+
+Queue::~Queue(){
+	if(order_matrix != NULL){
+		for(int i = 0; i < n_floors; i++){
+			delete [] order_matrix[i];
+		delete [] order_matrix;
+		}
+	}
+
+
+}

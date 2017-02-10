@@ -1,15 +1,28 @@
-#include "queue.h"
+#include <string>
+#include <iostream>
+#include <supervisor.h>
+#include <elevator.h>
 
-//Bør ligge i en annen fil! Sammen med funksjonen "update_elevator() som må lages"
-class Elevator{
+typedef struct{
+	int elevator_ID;
+	bool online;
+} Elevator_online;
+
+class Network{
 private:
-	Queue elevator_queue;
-	Status elevator_status;	
+	int n_elevators;
+	Elevator elevators[n_elevators];
+	Elevator_online elevators_online[n_elevators];
 public:
-	Status get_elevator_status;
+	Network(int n_elevators);
+	void nw_message_recieve();
+	void nw_inform_supervisor(Elevator *elevator);
+	void nw_slave_request_order_matrix();
+	void nw_distribute_order_matrix(Queue_element &order_matrix_ptr);
+	Elevator* nw_get_elevators();
+	void nw_slave_order_complete(Elevator elevator);
+	void nw_slave_order_incomplete(Elevator elevator);
+	bool nw_ping_elevator(Elevator elevator);
 
-	void set_elevator_dir(Dirn dir);
-	void set_elevator_floor(unsigned int floor);
-	void set_elevator_ID(int elevator_ID);
-	void set_elevator_out_of_order(bool out_of_order);
+
 };
