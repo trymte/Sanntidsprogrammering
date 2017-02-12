@@ -1,9 +1,10 @@
 
 #include "queue.h"
+#include "supervisor.h"
+#include "elevator.h"
 #include <string>
 #include <iostream>
-#include <supervisor.h>
-#include <elevator.h>
+
 
 typedef struct{
 	int elevator_ID;
