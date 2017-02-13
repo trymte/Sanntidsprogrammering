@@ -2,7 +2,13 @@
 #define QUEUE_H
 
 
-#include "network.h"
+//#include "network.h"
+
+//Constants to be moved
+const int N_FLOORS = 4;
+const int N_BUTTONS = 3;
+const int N_ELEVATORS = 2;
+
 
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! 
 typedef enum { 
@@ -19,8 +25,10 @@ typedef enum {
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! Nye verdier gjør det kompatibelt med queue_matrix
 
 
-
-
+//slettes
+struct Elevator{
+	int something;
+};
 
 
 
@@ -50,9 +58,6 @@ private:
 	unsigned int n_floors;
 	Queue_element** order_matrix;
 
-
-
-
 public:
 	//Supposed to be private:
 	unsigned int queue_calculate_cost(Order order, std::vector<Status>& status_vector);
@@ -64,7 +69,7 @@ public:
 	
 
 	Queue(unsigned int n_floors,unsigned int n_buttons);
-	//Create a distructor
+	~Queue();
 
 	void queue_add_order(Order new_order,int elevator_ID);
 	Queue_element** queue_get_order_matrix();	

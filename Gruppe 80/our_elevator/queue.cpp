@@ -5,20 +5,19 @@
 #include <string>
 
 #include "queue.h"
-#include "elevator.h"
-#include "network.h"
+//#include "elevator.h"
+//#include "network.h"
 
 
 
 using namespace std;
 
 int main(){
-	const int N_FLOORS = 4;
-	const int N_BUTTONS = 3;
-	const int N_ELEVATORS = 2;
+	
+	cout << "jeg lever" << endl;
 
+	Queue A(N_FLOORS,N_BUTTONS);
 
-	Queue A(N_FLOORS,N_BUTTONS );
 	cout << "A-matrix" << endl;
 	A.queue_print_order_matrix();
 
@@ -26,9 +25,14 @@ int main(){
 	new_order.floor = 2;
 	new_order.btn = B_HallUp;
 
+	Order new_order2;
+	new_order2.floor = 3;
+	new_order.btn = B_HallDown;
+
 	Queue B(N_FLOORS,N_BUTTONS);
 
 	B.queue_add_order(new_order,2);
+	//B.queue_add_order(new_order2,2);
 	cout << "B-matrix:" << endl;
 	B.queue_print_order_matrix();
 
@@ -66,14 +70,14 @@ int main(){
 	//Backup of order_matrix
 	A.queue_write_order_matrix();
 	A.queue_read_order_matrix();
+
 }
 
 
 
 
 
-
-
+//Constructor and destructor
 
 Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 	this->n_buttons = n_buttons;
@@ -93,7 +97,17 @@ Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 	}
 }
 
+Queue::~Queue(){
+	if(order_matrix != NULL){
+		for(int i = 0; i < n_floors; i++){
+			delete [] order_matrix[i];
+		delete [] order_matrix;
+		}
+	}
+}
 
+
+//Member function definitions
 
 unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& status_vector){
 	unsigned int temp_cost = 0;
@@ -213,16 +227,15 @@ void Queue::queue_remove_order(Order order){
 //void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
 
 
-void Queue::queue_reset_orders(Status status){};
-
-
-Queue::~Queue(){
-	if(order_matrix != NULL){
-		for(int i = 0; i < n_floors; i++){
-			delete [] order_matrix[i];
-		delete [] order_matrix;
+void Queue::queue_reset_orders(Status status){
+	for (int i=0;i<N_FLOORS;i++){
+		for(int j=0;j<N_BUTTONS;j++){
+			if ((this->order_matrix[i][j].active_button == 1)&&(this->order_matrix[i][j].elevator_ID == status.elevator_ID))
+				this->order_matrix[i][j].elevator_ID = -1;
 		}
-	}
-
+	}	
 
 }
+
+
+
