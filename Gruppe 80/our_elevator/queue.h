@@ -5,9 +5,9 @@
 //#include "network.h"
 
 //Constants to be moved
-const int N_FLOORS = 4;
-const int N_BUTTONS = 3;
-const int N_ELEVATORS = 2;
+const unsigned int N_FLOORS = 4;
+const unsigned int N_BUTTONS = 3;
+const unsigned int N_ELEVATORS = 2;
 
 
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! 

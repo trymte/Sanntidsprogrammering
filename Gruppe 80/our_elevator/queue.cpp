@@ -14,8 +14,6 @@ using namespace std;
 
 int main(){
 	
-	cout << "jeg lever" << endl;
-
 	Queue A(N_FLOORS,N_BUTTONS);
 
 	cout << "A-matrix" << endl;
@@ -32,13 +30,16 @@ int main(){
 	Queue B(N_FLOORS,N_BUTTONS);
 
 	B.queue_add_order(new_order,2);
-	//B.queue_add_order(new_order2,2);
+	B.queue_add_order(new_order2,2);
 	cout << "B-matrix:" << endl;
 	B.queue_print_order_matrix();
+
+
 
 	A.queue_merge_order_matrices(B);
 	cout << "A-matrix after merge with B:" << endl;
 	A.queue_print_order_matrix();
+
 
 	Status test_status_1;
 	test_status_1.dir = D_Up;
@@ -98,11 +99,13 @@ Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 }
 
 Queue::~Queue(){
-	if(order_matrix != NULL){
-		for(int i = 0; i < n_floors; i++){
-			delete [] order_matrix[i];
-		delete [] order_matrix;
+	if(this->order_matrix != NULL){
+		for(int i = 0; i < N_FLOORS; i++){
+			if (this->order_matrix[i] != NULL)
+				delete this->order_matrix[i];
 		}
+		this->order_matrix = NULL;
+		
 	}
 }
 
@@ -205,6 +208,10 @@ void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){//,Que
 
 
 void Queue::queue_print_order_matrix(){
+	if (this->order_matrix == NULL){
+		cout << "Can't print empty order matrix" << endl;
+		return;
+	}
 	for (int i=0;i<this->n_floors;i++){
 		for (int j=0;j<this->n_buttons;j++){
 			cout << this->order_matrix[i][j].active_button << ":" << this->order_matrix[i][j].elevator_ID << "\t";
@@ -226,7 +233,7 @@ void Queue::queue_remove_order(Order order){
 
 //void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
 
-
+/*
 void Queue::queue_reset_orders(Status status){
 	for (int i=0;i<N_FLOORS;i++){
 		for(int j=0;j<N_BUTTONS;j++){
@@ -237,5 +244,5 @@ void Queue::queue_reset_orders(Status status){
 
 }
 
-
+*/
 
