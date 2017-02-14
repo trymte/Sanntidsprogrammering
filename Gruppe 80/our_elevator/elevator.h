@@ -17,11 +17,13 @@ private:
 	
 public:
 	Elevator(Status elevator_status)
+	//For queue_assign_elevators_to_orders er det gunstig om vi har en funksjon her som er status get_elevator_status();
+
 	int get_floor(){return floor;}
 
 	Dirn get_direction(){return dir;}
 
-	int get_elevator_id(){return elevator_ID;}
+	int get_elevator_ID(){return elevator_ID;}
 
 	bool get_out_of_order_status(){return out_of_order;}
 

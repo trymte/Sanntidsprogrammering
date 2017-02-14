@@ -232,34 +232,31 @@ void Queue::queue_assign_elevators_to_orders(Elevator &elevators){
 		return;
 	}
 
+	//Create a status_vector based on the input.
 	vector<Status> status_vector;
-	status_vector.push_back(  );
+	for (int e=0;e<N_ELEVATORS;e++){
+		status iteration_status;
+		iteration_status.dir = elvators[e].get_direction();
+		iteration_status.floor = elevators[e].get_floor();
+		iteration_status.elevator_ID = elevators[e].get_elevator_ID;
+		iteration_status.out_of_order = elevators[e].get_out_of_order_status();
+		status_vector.push_back(iteration_status);	
+	}
+
 
 	for (int e=0;e<N_ELEVATORS;e++){
 		for (int i=0;i<N_FLOORS;i++){
 			for(int j=0;j<N_BUTTONS;j++){
-				
 				if ((elevators[e].elevator_get_order_matrix_ptr()[i][j].active_button == 1) && (elevators[e].elevator_get_order_matrix_ptr()[i][j].elevator_ID != 1)){
-					Order 
+					Order order_to_be_assigned;
+					order_to_be_assigned.floor = i;
+					order_to_be_assigned.btn = j;
 
-
-					elevators[e].elevator_get_order_matrix_ptr()[i][j].elevator_ID == queue_calculate_cost(INPUTS!!);
+					elevators[e].elevator_get_order_matrix_ptr()[i][j].elevator_ID == queue_calculate_cost(order_to_be_assigned,status_vector);
 				}
-
-
 			}
 		}
 	}
-
-	/*
-	if (this->order_matrix == NULL){
-		cout << "Can't assign elevators to an empty order matrix" << endl;
-		return;
-	}
-*/
-
-
-	
 }
 
 
