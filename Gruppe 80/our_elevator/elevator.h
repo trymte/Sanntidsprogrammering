@@ -1,6 +1,6 @@
-
 #include "queue.h"
-#include "elev.h"
+#include "../driver/elev.h"
+
 
 
 struct Status{
@@ -24,6 +24,9 @@ public:
 	int get_elevator_id(){return elevator_ID;}
 
 	bool get_out_of_order_status(){return out_of_order;}
+
+	//Bli enige om vi skal ha elevator_get... eller get_... :) 
+	Queue_element** elevator_get_order_matrix_ptr(){return this->order_matrix_ptr;}
 
 
 

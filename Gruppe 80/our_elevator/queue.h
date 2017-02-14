@@ -2,7 +2,7 @@
 #define QUEUE_H
 
 
-//#include "network.h"
+//#include "elevator.h"
 
 //Constants to be moved
 const unsigned int N_FLOORS = 4;
@@ -24,10 +24,9 @@ typedef enum {
 } Dirn;
 //NB!!! Exists in elevator_io_types.h, may therefore be deleted! Nye verdier gjør det kompatibelt med queue_matrix
 
-
-//slettes
+//Slettes, ligger i elevator.h
 struct Elevator{
-	int something;
+	int slettes;
 };
 
 
@@ -41,6 +40,7 @@ struct Order{
 	unsigned int floor;
 	Button btn;
 };
+
 
 //Kan flyttes til elevator.h
 struct Status{
@@ -66,8 +66,6 @@ public:
 	//
 
 
-	
-
 	Queue(unsigned int n_floors,unsigned int n_buttons);
 	~Queue();
 
@@ -80,7 +78,7 @@ public:
 
 
 	void queue_remove_order(Order order);
-//	static void queue_assign_elevators_to_orders(Elevator &elevators);
+	static void queue_assign_elevators_to_orders(Elevator &elevators);
 
 	void queue_reset_orders(Status status);
 

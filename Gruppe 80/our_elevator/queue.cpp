@@ -13,7 +13,7 @@
 using namespace std;
 
 int main(){
-	
+
 	Queue A(N_FLOORS,N_BUTTONS);
 
 	cout << "A-matrix" << endl;
@@ -57,6 +57,10 @@ int main(){
 	cout << "A-matrix after removed order" << endl;
 	A.queue_print_order_matrix();
 
+	A.queue_reset_orders(test_status_1);
+	cout << "A-matrix after reset_orders" << endl;
+	A.queue_print_order_matrix();
+
 
 
 	//Status_vector
@@ -73,8 +77,6 @@ int main(){
 	A.queue_read_order_matrix();
 
 }
-
-
 
 
 
@@ -165,10 +167,7 @@ void Queue::queue_read_order_matrix(){
 	}
 	else
 		cout << "Unable to open file at queue_read_order_matrix" << endl;
-
-
 }
-
 
 
 void Queue::queue_add_order(Order new_order, int elevator_ID){
@@ -219,11 +218,7 @@ void Queue::queue_print_order_matrix(){
 		cout << endl;
 	}
 	cout << endl;
-
 }
-
-
-
 
 
 void Queue::queue_remove_order(Order order){
@@ -231,18 +226,59 @@ void Queue::queue_remove_order(Order order){
 	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
 }
 
-//void Queue::queue_assign_elevators_to_orders(Elevator &elevators);
+void Queue::queue_assign_elevators_to_orders(Elevator &elevators){
+	if (elevators == NULL){
+		cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << endl;
+		return;
+	}
 
-/*
+	vector<Status> status_vector;
+	status_vector.push_back(  );
+
+	for (int e=0;e<N_ELEVATORS;e++){
+		for (int i=0;i<N_FLOORS;i++){
+			for(int j=0;j<N_BUTTONS;j++){
+				
+				if ((elevators[e].elevator_get_order_matrix_ptr()[i][j].active_button == 1) && (elevators[e].elevator_get_order_matrix_ptr()[i][j].elevator_ID != 1)){
+					Order 
+
+
+					elevators[e].elevator_get_order_matrix_ptr()[i][j].elevator_ID == queue_calculate_cost(INPUTS!!);
+				}
+
+
+			}
+		}
+	}
+
+	/*
+	if (this->order_matrix == NULL){
+		cout << "Can't assign elevators to an empty order matrix" << endl;
+		return;
+	}
+*/
+
+
+	
+}
+
+
+
+
+
 void Queue::queue_reset_orders(Status status){
+	if (this->order_matrix == NULL){
+		cout << "Can't reset an empty order matrix" << endl;
+		return;
+	}
+
 	for (int i=0;i<N_FLOORS;i++){
 		for(int j=0;j<N_BUTTONS;j++){
 			if ((this->order_matrix[i][j].active_button == 1)&&(this->order_matrix[i][j].elevator_ID == status.elevator_ID))
 				this->order_matrix[i][j].elevator_ID = -1;
 		}
 	}	
-
 }
 
-*/
+
 
