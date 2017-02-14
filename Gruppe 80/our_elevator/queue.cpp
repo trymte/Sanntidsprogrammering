@@ -225,7 +225,8 @@ void Queue::queue_remove_order(Order order){
 	this->order_matrix[order.floor][order.btn].active_button = 0;
 	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
 }
-
+/*
+//IKKE TESTET ENDA, FÅR LITT FOR MANGE ERROR I elevator.h, tester senere!
 void Queue::queue_assign_elevators_to_orders(Elevator &elevators){
 	if (elevators == NULL){
 		cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << endl;
@@ -258,7 +259,7 @@ void Queue::queue_assign_elevators_to_orders(Elevator &elevators){
 		}
 	}
 }
-
+*/
 
 
 

@@ -78,7 +78,7 @@ public:
 
 
 	void queue_remove_order(Order order);
-	static void queue_assign_elevators_to_orders(Elevator &elevators);
+//	static void queue_assign_elevators_to_orders(Elevator &elevators);
 
 	void queue_reset_orders(Status status);
 
