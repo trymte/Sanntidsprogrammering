@@ -1,6 +1,20 @@
-#include "queue.h"
-#include "../driver/elev.h"
+//#include "queue.h"
+//#include "../driver/elev.h"
 
+
+
+
+typedef enum { 
+    D_Down  = -1,
+    D_Stop  = 0, 
+    D_Up    = 1 
+} Dirn;
+
+typedef enum { 
+    B_HallUp = 0,
+    B_HallDown = 1,
+    B_Cab = 2
+} Button;
 
 
 struct Status{
@@ -10,35 +24,34 @@ struct Status{
 	bool out_of_order;
 };
 
+struct Queue_element{
+	bool active_button;
+	int elevator_ID;
+};
+
 class Elevator{
 private:
 	Status elevator_status;
 	Queue_element** order_matrix_ptr;
 	
 public:
-	Elevator(Status elevator_status)
-	//For queue_assign_elevators_to_orders er det gunstig om vi har en funksjon her som er status get_elevator_status();
+	Elevator();
 
-	int get_floor(){return floor;}
+	Elevator(Status elevator_status);
 
-	Dirn get_direction(){return dir;}
+	Elevator(const Elevator &elevator);
 
-	int get_elevator_ID(){return elevator_ID;}
+	Status get_elevator_status(){return elevator_status;}
 
-	bool get_out_of_order_status(){return out_of_order;}
+	Queue_element** get_order_matrix_ptr(){return this->order_matrix_ptr;}
 
-	//Bli enige om vi skal ha elevator_get... eller get_... :) 
-	Queue_element** elevator_get_order_matrix_ptr(){return this->order_matrix_ptr;}
+	void set_elevator_dir(Dirn dir){this->elevator_status.dir = dir;}
 
+	void set_elevator_floor(unsigned int floor){this->elevator_status.floor = floor;}
 
+	void set_elevator_ID(int elevator_ID){this->elevator_status.elevator_ID = elevator_ID;}
 
-	void set_elevator_dir(Dirn dir){this->status.dir = dir;}
-
-	void set_elevator_floor(unsigned int floor){this->floor = floor;}
-
-	void set_elevator_ID(int elevator_ID){this->elevator_ID = elevator_ID;}
-
-	void set_elevator_out_of_order(bool out_of_order){this->out_of_order = out_of_order;}
+	void set_elevator_out_of_order(bool out_of_order){this->elevator_status.out_of_order = out_of_order;}
 
 	~Elevator();
 };

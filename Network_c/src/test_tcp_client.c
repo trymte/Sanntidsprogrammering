@@ -20,15 +20,10 @@ int main(){
 
   tcp_init(messageReceived,connectionStatus);
 
-<<<<<<< HEAD
+
   tcp_openConnection("129.241.187.161",20011);
 
   tcp_send("129.241.187.161","aaaaaaaaaa",10);
-=======
-  tcp_openConnection("129.241.187.159",20011);
-
-  tcp_send("129.241.187.159","Hello!",7);
->>>>>>> 22356072765439ac24c9684854102485991bf8ee
 
   return 0;
 }
