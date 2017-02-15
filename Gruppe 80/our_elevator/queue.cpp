@@ -1,8 +1,10 @@
+
 #include <iostream>
 #include <vector>
 #include <cmath>
 #include <fstream>
 #include <string>
+#include <stdlib.h>
 
 #include "queue.h"
 //#include "elevator.h"
@@ -28,6 +30,7 @@ int main(){
 	new_order.btn = B_HallDown;
 
 	Queue B(N_FLOORS,N_BUTTONS);
+
 
 	B.queue_add_order(new_order,2);
 	B.queue_add_order(new_order2,2);
@@ -71,10 +74,9 @@ int main(){
 	cout << "Best elevator_ID: " << A.queue_calculate_cost(new_order, status_vector) << endl;
 
 
-
 	//Backup of order_matrix
 	A.queue_write_order_matrix();
-	A.queue_read_order_matrix();
+//	A.queue_read_order_matrix();
 
 }
 
@@ -151,24 +153,44 @@ void Queue::queue_write_order_matrix(){
 		cout << "Unable to open file at queue_write_order_matrix" << endl;
 }
 
+/* 
+//Not tested!
 void Queue::queue_read_order_matrix(){
 	int row = 0;
 	int col = 0;
 	string line;
 	string act_but;
 	string elev_ID;
+	int elementshift = 0;
 
 	ifstream file;
 	file.open("backup_file.txt");
 	if (file.is_open()){
 		while(getline(file,line,';')){
-			//Work in progress
+			string::iterator it;
+			for(it=line.begin();it<line.end();it++){
+				if ((elementshift == 0)&&(*it != ':'))
+					act_but += *it;
+				else if ((elementshift == 1)&&(*it != ';'))
+					elev_ID += *it;
+				else if (*it == ';')
+					col += 1;
+				else
+					elementshift = 1;
+			}
+			cout << "Act_but: " << act_but << "\n" << "elev_ID: " << elev_ID << endl;
+			//this->order_matrix[row][col].active_button = atoi(act_but.c_str());
+			//this->order_matrix[row][col].elevator_ID = atoi(elev_ID.c_str());
+			act_but = "";
+			elev_ID = "";
+			col = 0;
+			row += 1;
 		}
 	}
 	else
 		cout << "Unable to open file at queue_read_order_matrix" << endl;
 }
-
+*/
 
 void Queue::queue_add_order(Order new_order, int elevator_ID){
 	if (new_order.floor > this->n_floors){
