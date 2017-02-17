@@ -1,6 +1,5 @@
-#ifndef QUEUE_H
-#define QUEUE_H
 
+#pragma once
 
 //#include "elevator.h"
 

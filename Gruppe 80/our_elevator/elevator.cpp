@@ -3,7 +3,7 @@
 
 
 
-Elevator::Elevator(): order_matrix_ptr(0)
+Elevator::Elevator(): order_matrix_ptr(NULL)
 {
 	elevator_status.dir = D_Stop;
 	elevator_status.floor = -1;
@@ -32,7 +32,7 @@ Elevator::Elevator(const Elevator &elevator): elevator_status(elevator.elevator_
 
 
 Elevator::~Elevator(){
-	if(order_matrix_ptr != 0){
+	if(order_matrix_ptr != NULL){
 		for(int i = 0; i < N_FLOORS; i++){
 			delete order_matrix_ptr[i];
 		}

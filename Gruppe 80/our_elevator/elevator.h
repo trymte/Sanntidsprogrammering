@@ -1,3 +1,5 @@
+
+#pragma once
 //#include "queue.h"
 //#include "../driver/elev.h"
 
@@ -41,7 +43,11 @@ public:
 
 	Elevator(const Elevator &elevator);
 
+	Elevator& operator=(const Elevator &elevator);
+
 	Status get_elevator_status(){return elevator_status;}
+
+	void set_elevator_order_matrix_ptr()
 
 	Queue_element** get_order_matrix_ptr(){return this->order_matrix_ptr;}
 
