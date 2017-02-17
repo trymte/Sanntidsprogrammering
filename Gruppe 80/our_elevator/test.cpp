@@ -6,17 +6,7 @@
 #include <istream>
 #include <stdlib.h>
 #include "elevator.h"
-
-struct Queue_element{
-	bool active_button;
-	int elevator_ID;
-};
-
-typedef enum { 
-    D_Down  = -1,
-    D_Stop  = 0, 
-    D_Up    = 1 
-} Dirn;
+#include "const_struct_def.h"
 
 Elevator messagestring_to_elevator_object(std::string messagestring){
 	int elevator_ID;
