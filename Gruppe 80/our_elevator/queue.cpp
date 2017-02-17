@@ -7,87 +7,14 @@
 #include <stdlib.h>
 
 #include "queue.h"
-//#include "elevator.h"
+#include "elevator.h"
 //#include "network.h"
 
-
-
 using namespace std;
-
-int main(){
-
-	Queue A(N_FLOORS,N_BUTTONS);
-
-	cout << "A-matrix" << endl;
-	A.queue_print_order_matrix();
-
-	Order new_order;
-	new_order.floor = 2;
-	new_order.btn = B_HallUp;
-
-	Order new_order2;
-	new_order2.floor = 3;
-	new_order.btn = B_HallDown;
-
-	Queue B(N_FLOORS,N_BUTTONS);
-
-
-	B.queue_add_order(new_order,2);
-	B.queue_add_order(new_order2,2);
-	cout << "B-matrix:" << endl;
-	B.queue_print_order_matrix();
-
-
-
-	A.queue_merge_order_matrices(B);
-	cout << "A-matrix after merge with B:" << endl;
-	A.queue_print_order_matrix();
-
-
-	Status test_status_1;
-	test_status_1.dir = D_Up;
-	test_status_1.floor = 2;
-	test_status_1.elevator_ID = 2;
-	test_status_1.out_of_order = 0;
-
-	Status test_status_2;
-	test_status_2.dir = D_Down;
-	test_status_2.floor = 1;
-	test_status_2.elevator_ID = 3;
-	test_status_2.out_of_order = 0;
-
-	A.queue_remove_order(new_order);
-	cout << "A-matrix after removed order" << endl;
-	A.queue_print_order_matrix();
-
-	A.queue_reset_orders(test_status_1);
-	cout << "A-matrix after reset_orders" << endl;
-	A.queue_print_order_matrix();
-
-
-
-	//Status_vector
-	vector<Status> status_vector;
-	status_vector.push_back(test_status_1);
-	status_vector.push_back(test_status_2);
-
-	cout << "Best elevator_ID: " << A.queue_calculate_cost(new_order, status_vector) << endl;
-
-
-	//Backup of order_matrix
-	A.queue_write_order_matrix();
-//	A.queue_read_order_matrix();
-
-}
-
-
 
 //Constructor and destructor
 
 Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
-	this->n_buttons = n_buttons;
-	this->n_floors = n_floors;
-
 	this->order_matrix = new Queue_element *[n_floors];//{};
 
 	for(int i=0;i<n_floors;i++){
@@ -153,20 +80,23 @@ void Queue::queue_write_order_matrix(){
 		cout << "Unable to open file at queue_write_order_matrix" << endl;
 }
 
-/* 
-//Not tested!
+
+//Not finished!
 void Queue::queue_read_order_matrix(){
-	int row = 0;
-	int col = 0;
+	int row,col;
 	string line;
 	string act_but;
 	string elev_ID;
-	int elementshift = 0;
 
 	ifstream file;
 	file.open("backup_file.txt");
 	if (file.is_open()){
-		while(getline(file,line,';')){
+		//work in progess...
+			
+
+
+			/*
+			while(getline(file,line)){
 			string::iterator it;
 			for(it=line.begin();it<line.end();it++){
 				if ((elementshift == 0)&&(*it != ':'))
@@ -178,19 +108,24 @@ void Queue::queue_read_order_matrix(){
 				else
 					elementshift = 1;
 			}
-			cout << "Act_but: " << act_but << "\n" << "elev_ID: " << elev_ID << endl;
-			//this->order_matrix[row][col].active_button = atoi(act_but.c_str());
-			//this->order_matrix[row][col].elevator_ID = atoi(elev_ID.c_str());
+			cout << "Act_but: " << act_but << "  elev_ID: " << elev_ID << endl;
+			
+			this->order_matrix[row][col].active_button = atoi(act_but.c_str());
+			this->order_matrix[row][col].elevator_ID = atoi(elev_ID.c_str());
 			act_but = "";
 			elev_ID = "";
 			col = 0;
 			row += 1;
-		}
+			elementshift = 0;
+			while_iterator += 1;
+		*/
+		
+		
 	}
 	else
 		cout << "Unable to open file at queue_read_order_matrix" << endl;
 }
-*/
+
 
 void Queue::queue_add_order(Order new_order, int elevator_ID){
 	if (new_order.floor > this->n_floors){
@@ -247,8 +182,10 @@ void Queue::queue_remove_order(Order order){
 	this->order_matrix[order.floor][order.btn].active_button = 0;
 	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
 }
+
 /*
-//IKKE TESTET ENDA, FÅR LITT FOR MANGE ERROR I elevator.h, tester senere!
+
+
 void Queue::queue_assign_elevators_to_orders(Elevator &elevators){
 	if (elevators == NULL){
 		cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << endl;
@@ -270,7 +207,7 @@ void Queue::queue_assign_elevators_to_orders(Elevator &elevators){
 	for (int e=0;e<N_ELEVATORS;e++){
 		for (int i=0;i<N_FLOORS;i++){
 			for(int j=0;j<N_BUTTONS;j++){
-				if ((elevators[e].elevator_get_order_matrix_ptr()[i][j].active_button == 1) && (elevators[e].elevator_get_order_matrix_ptr()[i][j].elevator_ID != 1)){
+				if ((elevators[e].elevator_get_order_matrix_ptr()[i][j].active_button == 1) && (elevators[e].elevator_get_order_matrix_ptr()[i][j].elevator_ID == -1)){
 					Order order_to_be_assigned;
 					order_to_be_assigned.floor = i;
 					order_to_be_assigned.btn = j;
@@ -281,8 +218,8 @@ void Queue::queue_assign_elevators_to_orders(Elevator &elevators){
 		}
 	}
 }
-*/
 
+*/
 
 
 

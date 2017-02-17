@@ -23,11 +23,12 @@ struct Status{
 	int elevator_ID;
 	bool out_of_order;
 };
-
+/*
 struct Queue_element{
 	bool active_button;
 	int elevator_ID;
 };
+*/
 
 class Elevator{
 private:
