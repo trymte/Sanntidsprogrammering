@@ -113,9 +113,6 @@ int main(){
 	Elevator temp;
 	temp = messagestring_to_elevator_object(text);
 
-
-	
-
 	return 0;
 }
 

@@ -1,5 +1,3 @@
-#ifndef SUPERVISOR_H
-#define SUPERVISOR_H
 #pragma once
 
 #include "elevator.h"

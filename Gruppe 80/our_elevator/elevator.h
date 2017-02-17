@@ -1,35 +1,14 @@
 
+
 #pragma once
 //#include "queue.h"
 //#include "../driver/elev.h"
 
 
+#include "const_struct_def.h"
+//#include "../driver/elev.h"
 
 
-typedef enum { 
-    D_Down  = -1,
-    D_Stop  = 0, 
-    D_Up    = 1 
-} Dirn;
-
-typedef enum { 
-    B_HallUp = 0,
-    B_HallDown = 1,
-    B_Cab = 2
-} Button;
-
-
-struct Status{
-	Dirn dir;
-	unsigned int floor;
-	int elevator_ID;
-	bool out_of_order;
-};
-
-struct Queue_element{
-	bool active_button;
-	int elevator_ID;
-};
 
 class Elevator{
 private:
@@ -61,7 +40,6 @@ public:
 
 	~Elevator();
 };
-
 
 
 
