@@ -19,9 +19,9 @@ class Network{
 private:
 	int n_elevators;
 
-	Elevator elevators[n_elevators];
+	Elevator elevators[N_ELEVATORS]; //Tror elevators må være vector. N_ELEVATORS from const_struct_def.h
 
-	Elevator_online elevators_online[n_elevators];
+	Elevator_online elevators_online[N_ELEVATORS];
 
 	void nw_messagestring_to_elevator_object(string &message);
 public:

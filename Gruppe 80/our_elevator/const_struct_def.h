@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 const unsigned int N_FLOORS = 4;
 const unsigned int N_BUTTONS = 3;
 const unsigned int N_ELEVATORS = 2;
@@ -34,3 +36,7 @@ struct Status{
 	int elevator_ID;
 	bool out_of_order;
 };
+
+void print_status(Status status){
+    std::cout <<"Dir: " << status.dir << "\nFloor: " << status.floor << "\nID: " << status.elevator_ID << "\nOut of order: " << status.out_of_order << std::endl;
+}

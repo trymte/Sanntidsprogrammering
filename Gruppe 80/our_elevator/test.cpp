@@ -21,6 +21,7 @@ Elevator messagestring_to_elevator_object(std::string messagestring){
 	while(std::getline(ss1,line, ':')){
 		result.push_back(line);
 	}
+	//Lage funksjon herfra som returnerer peker til ny ordre matrise? -morten
 	elevator_ID = atoi(result[0].c_str());
 	switch(atoi(result[1].c_str())){
 		case 0:

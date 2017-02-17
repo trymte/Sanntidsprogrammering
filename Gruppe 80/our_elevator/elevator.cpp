@@ -11,8 +11,10 @@ Elevator::Elevator(): order_matrix_ptr(NULL)
 	elevator_status.out_of_order = 1;
 }
 
-Elevator::Elevator(Status elevator_status): elevator_status(elevator_status)
+Elevator::Elevator(Status elevator_status)//: elevator_status(elevator_status)
 {
+	this->elevator_status = elevator_status;
+	this->order_matrix_ptr = NULL;
 	//order_matrix_ptr = Queu::queue_get_order_matrix();
 	//order_matrix_ptr = queue1.queue_get_order_matrix();
 }

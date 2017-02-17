@@ -12,7 +12,10 @@
 
 using namespace std;
 
+
+//--------------------------------------------------------------------------------------------------
 //Constructor and destructor
+//----------------------------------------------------------------------------------------------------
 
 Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 	this->order_matrix = new Queue_element *[n_floors];//{};
@@ -41,7 +44,9 @@ Queue::~Queue(){
 }
 
 
-//Member function definitions
+//--------------------------------------------------------------------------------------------------
+//Private member functions
+//----------------------------------------------------------------------------------------------------
 
 unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& status_vector){
 	unsigned int temp_cost = 0;
@@ -70,9 +75,8 @@ void Queue::queue_write_order_matrix(){
 
 		for (int i=0;i<N_FLOORS;i++){
 			for (int j=0;j<N_BUTTONS;j++){
-				file << this->order_matrix[i][j].active_button << ":" << this->order_matrix[i][j].elevator_ID << ";";
+				file << this->order_matrix[i][j].active_button << this->order_matrix[i][j].elevator_ID << "&";
 			}
-			file << "\n";
 		}
 		file.close();
 	}
@@ -80,47 +84,23 @@ void Queue::queue_write_order_matrix(){
 		cout << "Unable to open file at queue_write_order_matrix" << endl;
 }
 
+//--------------------------------------------------------------------------------------------------
+//Public member functions
+//----------------------------------------------------------------------------------------------------
+
+
 
 //Not finished!
 void Queue::queue_read_order_matrix(){
-	int row,col;
-	string line;
-	string act_but;
-	string elev_ID;
-
+	std::string line;
+	std::vector<std::string> result;
 	ifstream file;
 	file.open("backup_file.txt");
 	if (file.is_open()){
-		//work in progess...
-			
-
-
-			/*
-			while(getline(file,line)){
-			string::iterator it;
-			for(it=line.begin();it<line.end();it++){
-				if ((elementshift == 0)&&(*it != ':'))
-					act_but += *it;
-				else if ((elementshift == 1)&&(*it != ';'))
-					elev_ID += *it;
-				else if (*it == ';')
-					col += 1;
-				else
-					elementshift = 1;
+			while(getline(file,line,':')){
+				result.push_back(line);
 			}
-			cout << "Act_but: " << act_but << "  elev_ID: " << elev_ID << endl;
-			
-			this->order_matrix[row][col].active_button = atoi(act_but.c_str());
-			this->order_matrix[row][col].elevator_ID = atoi(elev_ID.c_str());
-			act_but = "";
-			elev_ID = "";
-			col = 0;
-			row += 1;
-			elementshift = 0;
-			while_iterator += 1;
-		*/
-		
-		
+			//this->order_matrix = string_to_order_matrix(result); //Funksjon fra network.h
 	}
 	else
 		cout << "Unable to open file at queue_read_order_matrix" << endl;
@@ -157,14 +137,14 @@ void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){
 }
 
 
-void Queue::queue_print_order_matrix(){
-	if (this->order_matrix == NULL){
+void Queue::queue_print_order_matrix(Queue_element **order_matrix){
+	if (order_matrix == NULL){
 		cout << "Can't print empty order matrix" << endl;
 		return;
 	}
 	for (int i=0;i<N_FLOORS;i++){
 		for (int j=0;j<N_BUTTONS;j++){
-			cout << this->order_matrix[i][j].active_button << ":" << this->order_matrix[i][j].elevator_ID << "\t";
+			cout << order_matrix[i][j].active_button << ":" << order_matrix[i][j].elevator_ID << "\t";
 		}
 		cout << endl;
 	}
@@ -175,12 +155,14 @@ void Queue::queue_print_order_matrix(){
 void Queue::queue_remove_order(Order order){
 	this->order_matrix[order.floor][order.btn].active_button = 0;
 	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
+
 }
 
+
+
+
+void Queue::queue_assign_elevators_to_orders(std::vector<Elevator>& elevators){
 /*
-
-
-void Queue::queue_assign_elevators_to_orders(Elevator &elevators){
 	if (elevators == NULL){
 		cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << endl;
 		return;
@@ -211,9 +193,10 @@ void Queue::queue_assign_elevators_to_orders(Elevator &elevators){
 			}
 		}
 	}
+*/
 }
 
-*/
+
 
 
 
