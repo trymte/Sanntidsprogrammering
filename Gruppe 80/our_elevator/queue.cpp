@@ -68,8 +68,8 @@ void Queue::queue_write_order_matrix(){
 	file.open("backup_file.txt");
 	if (file.is_open()){
 
-		for (int i=0;i<this->n_floors;i++){
-			for (int j=0;j<this->n_buttons;j++){
+		for (int i=0;i<N_FLOORS;i++){
+			for (int j=0;j<N_BUTTONS;j++){
 				file << this->order_matrix[i][j].active_button << ":" << this->order_matrix[i][j].elevator_ID << ";";
 			}
 			file << "\n";
@@ -128,11 +128,11 @@ void Queue::queue_read_order_matrix(){
 
 
 void Queue::queue_add_order(Order new_order, int elevator_ID){
-	if (new_order.floor > this->n_floors){
+	if (new_order.floor > N_FLOORS){
 		cout << "Floor in new_order doesn't match number of floors in system" << endl;
 		return;
 	}
-	if (new_order.btn > this->n_buttons){
+	if (new_order.btn > N_BUTTONS){
 		cout << "Button in new_order doesn't match number of buttons in system" << endl;
 		return;
 	}
@@ -146,15 +146,9 @@ Queue_element** Queue::queue_get_order_matrix(){
 } 
 
 
-void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){//,Queue_element **new_order_matrix){ //Ta inn hele kø-objektet?
-	//Check dimensions
-	if ((queue_with_new_order_matrix.n_buttons != this->n_buttons) || (queue_with_new_order_matrix.n_floors != this->n_floors)){
-		cout << "Matrix dimensions disagree in queue_merge_order_matrices" << endl;
-		return;
-	}
-
-	for (int i=0;i<this->n_floors;i++){
-		for (int j=0;j<this->n_buttons;j++){
+void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){
+	for (int i=0;i<N_FLOORS;i++){
+		for (int j=0;j<N_BUTTONS;j++){
 
 			if ((queue_with_new_order_matrix.order_matrix[i][j].elevator_ID != -1) && (this->order_matrix[i][j].elevator_ID == -1))
 				this->order_matrix[i][j] = queue_with_new_order_matrix.order_matrix[i][j];
@@ -168,8 +162,8 @@ void Queue::queue_print_order_matrix(){
 		cout << "Can't print empty order matrix" << endl;
 		return;
 	}
-	for (int i=0;i<this->n_floors;i++){
-		for (int j=0;j<this->n_buttons;j++){
+	for (int i=0;i<N_FLOORS;i++){
+		for (int j=0;j<N_BUTTONS;j++){
 			cout << this->order_matrix[i][j].active_button << ":" << this->order_matrix[i][j].elevator_ID << "\t";
 		}
 		cout << endl;

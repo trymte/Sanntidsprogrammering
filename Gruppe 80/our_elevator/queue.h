@@ -1,26 +1,8 @@
-#ifndef QUEUE_H
-#define QUEUE_H
+#pragma once
 
 #include <vector>
 #include "elevator.h"
-
-
-//Constants to be moved
-const unsigned int N_FLOORS = 4;
-const unsigned int N_BUTTONS = 3;
-const unsigned int N_ELEVATORS = 2;
-
-
-
-struct Queue_element{
-	bool active_button;
-	int elevator_ID;
-};
-
-struct Order{
-	unsigned int floor;
-	Button btn;
-};
+#include "const_struct_def.h"
 
 
 
@@ -52,4 +34,3 @@ public:
 
 };
 
-#endif
