@@ -26,7 +26,7 @@ public:
 
 	Status get_elevator_status(){return elevator_status;}
 
-	void set_elevator_order_matrix_ptr()
+	void set_elevator_order_matrix_ptr();
 
 	Queue_element** get_order_matrix_ptr(){return this->order_matrix_ptr;}
 

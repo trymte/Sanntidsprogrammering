@@ -1,7 +1,6 @@
 #pragma once
 
-#include "elevator.h"
-#include "network.h"
+
 #include <string>
 #include <iostream>
 
@@ -11,5 +10,3 @@ class Supervisor{
 
 
 };
-
-#endif
