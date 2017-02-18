@@ -3,7 +3,7 @@
 
 
 
-Elevator::Elevator(): order_matrix_ptr(NULL)
+Elevator::Elevator(): order_matrix_ptr(0)
 {
 	elevator_status.dir = D_Stop;
 	elevator_status.floor = -1;
@@ -14,7 +14,7 @@ Elevator::Elevator(): order_matrix_ptr(NULL)
 Elevator::Elevator(Status elevator_status)//: elevator_status(elevator_status)
 {
 	this->elevator_status = elevator_status;
-	this->order_matrix_ptr = NULL;
+	this->order_matrix_ptr = 0;
 	//order_matrix_ptr = Queu::queue_get_order_matrix();
 	//order_matrix_ptr = queue1.queue_get_order_matrix();
 }
@@ -34,7 +34,7 @@ Elevator::Elevator(const Elevator &elevator): elevator_status(elevator.elevator_
 
 
 Elevator::~Elevator(){
-	if(order_matrix_ptr != NULL){
+	if(order_matrix_ptr != 0){
 		for(int i = 0; i < N_FLOORS; i++){
 			delete order_matrix_ptr[i];
 		}
