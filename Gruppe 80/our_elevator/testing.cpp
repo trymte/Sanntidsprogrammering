@@ -1,25 +1,44 @@
+#include <iostream>
+#include <vector>
 #include "queue.h"
 #include "queue.cpp"
-#include "elevator.cpp"
+#include "const_struct_def.h"
 
-using namespace std;
+
+
 
 int main(){
-	Status status;
-	status.dir = D_Down;
-	status.floor = 2;
-	status.elevator_ID = 1;
-	status.out_of_order = 0;
+	Queue que;
+	std::vector <std::vector <Queue_element> > order_matrix;
 
 
-	Elevator a(status);
-	print_status(a.get_elevator_status());
-	Queue::queue_print_order_matrix(a.get_order_matrix_ptr());
+	Queue::queue_print_order_matrix(que.queue_get_order_matrix());
+	/*
 
-	std::vector<Elevator> elevators;
-	elevators.push_back (a);
-	
-/*
-	Queue::queue_assign_elevators_to_orders(elevators);
-*/
+	std::vector <std::vector <Queue_element> > order_matrix;
+
+	//Constructor
+	for (int i=0;i<N_FLOORS;i++){
+		std::vector<Queue_element> rowvector;
+		for(int j=0;j<N_BUTTONS;j++){
+			Queue_element init_element;
+			init_element.active_button = 0;
+			init_element.elevator_ID = -1;
+			rowvector.push_back(init_element);
+		}
+		order_matrix.push_back(rowvector);
+	}
+
+
+	//Print
+	std::vector<std::vector<Queue_element> >::iterator row;
+	std::vector<Queue_element>::iterator col;
+
+	for (row = order_matrix.begin(); row!=order_matrix.end();++row){
+		for (col = row->begin(); col != row->end(); ++col){
+			std::cout << col->active_button<< ":" << col->elevator_ID << "\t";
+		}
+		std::cout << std::endl;
+	}
+	*/
 }

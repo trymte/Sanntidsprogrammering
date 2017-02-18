@@ -10,44 +10,59 @@
 #include "elevator.h"
 //#include "network.h"
 
-using namespace std;
+
 
 
 //--------------------------------------------------------------------------------------------------
 //Constructor and destructor
 //----------------------------------------------------------------------------------------------------
+Queue::Queue(){
+	std::vector<std::vector<Queue_element> > temp;
+	this->order_matrix = temp;
+
+	for (int i=0;i<N_FLOORS;i++){
+		std::vector<Queue_element> rowvector;
+		for(int j=0;j<N_BUTTONS;j++){
+			Queue_element init_element;
+			init_element.active_button = 0;
+			init_element.elevator_ID = -1;
+			rowvector.push_back(init_element);
+		}
+		order_matrix.push_back(rowvector);
+	}	
+}
+
 
 Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
-	this->order_matrix = new Queue_element *[n_floors];//{};
+	std::vector<std::vector<Queue_element> > temp;
+	this->order_matrix = temp;
 
-	for(int i=0;i<n_floors;i++){
-		this->order_matrix[i] = new Queue_element [n_buttons];//{};
-	}
-
-	for(int i=0;i<n_floors;i++){
+	for (int i=0;i<n_floors;i++){
+		std::vector<Queue_element> rowvector;
 		for(int j=0;j<n_buttons;j++){
-			order_matrix[i][j].active_button = 0;
-			order_matrix[i][j].elevator_ID = -1;
+			Queue_element init_element;
+			init_element.active_button = 0;
+			init_element.elevator_ID = -1;
+			rowvector.push_back(init_element);
 		}
+		order_matrix.push_back(rowvector);
 	}
 }
 
 Queue::~Queue(){
-	if(this->order_matrix != NULL){
-		for(int i = 0; i < N_FLOORS; i++){
-			if (this->order_matrix[i] != NULL)
-				delete this->order_matrix[i];
-		}
-		this->order_matrix = NULL;
-		
+	std::vector<std::vector<Queue_element> >::iterator row;
+
+	for (row = this->order_matrix.begin(); row!=this->order_matrix.end();++row){
+		row->erase(row->begin(),row->end());
 	}
+	this->order_matrix.erase(this->order_matrix.begin(),this->order_matrix.end());
 }
 
 
 //--------------------------------------------------------------------------------------------------
 //Private member functions
 //----------------------------------------------------------------------------------------------------
-
+/*
 unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& status_vector){
 	unsigned int temp_cost = 0;
 	unsigned int lowest_cost = 10000;
@@ -67,7 +82,9 @@ unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& statu
 	}
 	return elevator_ID;
 }
+*/
 
+/*
 void Queue::queue_write_order_matrix(){
 	ofstream file;
 	file.open("backup_file.txt");
@@ -83,13 +100,13 @@ void Queue::queue_write_order_matrix(){
 	else
 		cout << "Unable to open file at queue_write_order_matrix" << endl;
 }
+*/
 
 //--------------------------------------------------------------------------------------------------
 //Public member functions
 //----------------------------------------------------------------------------------------------------
 
-
-
+/*
 //Not finished!
 void Queue::queue_read_order_matrix(){
 	std::string line;
@@ -105,8 +122,9 @@ void Queue::queue_read_order_matrix(){
 	else
 		cout << "Unable to open file at queue_read_order_matrix" << endl;
 }
+*/
 
-
+/*
 void Queue::queue_add_order(Order new_order, int elevator_ID){
 	if (new_order.floor > N_FLOORS){
 		cout << "Floor in new_order doesn't match number of floors in system" << endl;
@@ -119,13 +137,15 @@ void Queue::queue_add_order(Order new_order, int elevator_ID){
 	this->order_matrix[new_order.floor][new_order.btn].active_button = 1;
 	this->order_matrix[new_order.floor][new_order.btn].elevator_ID = elevator_ID;
 }
+*/
 
 
-Queue_element** Queue::queue_get_order_matrix(){
+std::vector<std::vector<Queue_element> > Queue::queue_get_order_matrix(){
 	return this->order_matrix;
 } 
 
 
+/*
 void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){
 	for (int i=0;i<N_FLOORS;i++){
 		for (int j=0;j<N_BUTTONS;j++){
@@ -135,34 +155,33 @@ void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){
 		}
 	}
 }
+*/
 
 
-void Queue::queue_print_order_matrix(Queue_element **order_matrix){
-	if (order_matrix == NULL){
-		cout << "Can't print empty order matrix" << endl;
-		return;
-	}
-	for (int i=0;i<N_FLOORS;i++){
-		for (int j=0;j<N_BUTTONS;j++){
-			cout << order_matrix[i][j].active_button << ":" << order_matrix[i][j].elevator_ID << "\t";
+void Queue::queue_print_order_matrix(std::vector<std::vector<Queue_element> > order_matrix){
+	std::vector<std::vector<Queue_element> >::iterator row;
+	std::vector<Queue_element>::iterator col;
+
+	for (row = order_matrix.begin(); row!=order_matrix.end();++row){
+		for (col = row->begin(); col != row->end(); ++col){
+			std::cout << col->active_button<< ":" << col->elevator_ID << "\t";
 		}
-		cout << endl;
+		std::cout << std::endl;
 	}
-	cout << endl;
 }
 
 
+/*
 void Queue::queue_remove_order(Order order){
 	this->order_matrix[order.floor][order.btn].active_button = 0;
 	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
-
 }
+*/
 
 
-
-
-void Queue::queue_assign_elevators_to_orders(std::vector<Elevator>& elevators){
 /*
+void Queue::queue_assign_elevators_to_orders(std::vector<Elevator>& elevators){
+
 	if (elevators == NULL){
 		cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << endl;
 		return;
@@ -193,13 +212,12 @@ void Queue::queue_assign_elevators_to_orders(std::vector<Elevator>& elevators){
 			}
 		}
 	}
-*/
 }
+*/
 
 
 
-
-
+/*
 void Queue::queue_reset_orders(Status status){
 	if (this->order_matrix == NULL){
 		cout << "Can't reset an empty order matrix" << endl;
@@ -213,6 +231,6 @@ void Queue::queue_reset_orders(Status status){
 		}
 	}	
 }
-
+*/
 
 
