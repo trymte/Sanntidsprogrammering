@@ -11,7 +11,7 @@ private:
 	//Queue_element** order_matrix;
 	std::vector<std::vector<Queue_element> > order_matrix;
 
-	unsigned int queue_calculate_cost(Order order, std::vector<Status>& status_vector);
+	//unsigned int queue_calculate_cost(Order order, std::vector<Status>& status_vector);
 	
 
 public:
@@ -21,7 +21,7 @@ public:
 
 	~Queue();
 
-	//void queue_add_order(Order new_order,int elevator_ID);
+	static void queue_add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order new_order, int elevator_ID);
 
 	std::vector<std::vector<Queue_element> > queue_get_order_matrix();	
 

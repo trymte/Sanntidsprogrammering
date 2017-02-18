@@ -124,20 +124,9 @@ void Queue::queue_read_order_matrix(){
 }
 */
 
-/*
-void Queue::queue_add_order(Order new_order, int elevator_ID){
-	if (new_order.floor > N_FLOORS){
-		cout << "Floor in new_order doesn't match number of floors in system" << endl;
-		return;
-	}
-	if (new_order.btn > N_BUTTONS){
-		cout << "Button in new_order doesn't match number of buttons in system" << endl;
-		return;
-	}
-	this->order_matrix[new_order.floor][new_order.btn].active_button = 1;
-	this->order_matrix[new_order.floor][new_order.btn].elevator_ID = elevator_ID;
-}
-*/
+
+
+
 
 
 std::vector<std::vector<Queue_element> > Queue::queue_get_order_matrix(){
@@ -168,8 +157,22 @@ void Queue::queue_print_order_matrix(std::vector<std::vector<Queue_element> > or
 		}
 		std::cout << std::endl;
 	}
+	std::cout << std::endl;
 }
 
+void Queue::queue_add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order new_order, int elevator_ID){
+	if (new_order.floor > N_FLOORS){
+		std::cout << "Floor in new_order doesn't match number of floors in system" << std::endl;
+		return;
+	}
+	if (new_order.btn > N_BUTTONS){
+		std::cout << "Button in new_order doesn't match number of buttons in system" << std::endl;
+		return;
+	}
+
+	order_matrix[new_order.floor][new_order.btn].active_button = 1;
+	order_matrix[new_order.floor][new_order.btn].elevator_ID = elevator_ID;
+}
 
 /*
 void Queue::queue_remove_order(Order order){

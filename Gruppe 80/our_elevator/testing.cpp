@@ -8,37 +8,33 @@
 
 
 int main(){
+/////////////////////////////////////////////////////////////
+//Prinsipp testing
+/////////////////////////////////////////////////////////////
+/*
+	Queue queue;
+	std::vector<std::vector<Queue_element> > order_matrix;
+	order_matrix = queue.queue_get_order_matrix();
+	std::cout << order_matrix[2][2].elevator_ID << std::endl;
+	order_matrix[2][2].elevator_ID = 2;
+	std::cout << order_matrix[2][2].elevator_ID << std::endl;
+*/
+
+
+/////////////////////////////////////////////////////////////
+//Funksjonstesing
+/////////////////////////////////////////////////////////////
 	Queue que;
-	std::vector <std::vector <Queue_element> > order_matrix;
+	
+	Queue::queue_print_order_matrix(que.queue_get_order_matrix()); //Dette fungerer ikke med call by reference..
 
+	Order test_order;
+	test_order.floor = 2;
+	test_order.btn = B_HallUp;
 
+	std::vector<std::vector<Queue_element> > order_matrix;
+	order_matrix = que.queue_get_order_matrix();
+
+	Queue::queue_add_order(/*The order matrix to be added to*/,test_order,3);
 	Queue::queue_print_order_matrix(que.queue_get_order_matrix());
-	/*
-
-	std::vector <std::vector <Queue_element> > order_matrix;
-
-	//Constructor
-	for (int i=0;i<N_FLOORS;i++){
-		std::vector<Queue_element> rowvector;
-		for(int j=0;j<N_BUTTONS;j++){
-			Queue_element init_element;
-			init_element.active_button = 0;
-			init_element.elevator_ID = -1;
-			rowvector.push_back(init_element);
-		}
-		order_matrix.push_back(rowvector);
-	}
-
-
-	//Print
-	std::vector<std::vector<Queue_element> >::iterator row;
-	std::vector<Queue_element>::iterator col;
-
-	for (row = order_matrix.begin(); row!=order_matrix.end();++row){
-		for (col = row->begin(); col != row->end(); ++col){
-			std::cout << col->active_button<< ":" << col->elevator_ID << "\t";
-		}
-		std::cout << std::endl;
-	}
-	*/
 }
