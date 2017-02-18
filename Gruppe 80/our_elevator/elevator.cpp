@@ -2,7 +2,6 @@
 
 
 
-
 Elevator::Elevator(): order_matrix_ptr(0)
 {
 	elevator_status.dir = D_Stop;
@@ -39,7 +38,41 @@ Elevator::~Elevator(){
 			delete order_matrix_ptr[i];
 		}
 		delete [] order_matrix_ptr;
+		order_matrix_ptr = 0;
 	}
-	
 }
 
+
+//--------------------------------------------------------------------------------------------------
+//Public functions
+//--------------------------------------------------------------------------------------------------
+
+void Elevator::set_elevator_order_matrix_ptr(Queue_element*** order_matrix_ptr){
+	if(this->order_matrix_ptr == 0){
+		this->order_matrix_ptr = new Queue_element*[N_FLOORS];
+		for(int i = 0; i < N_BUTTONS; i++){
+			this->order_matrix_ptr[i] = new Queue_element[N_BUTTONS];
+		}
+	}
+	for(int j = 0; j < N_FLOORS; j++){
+		for(int k = 0; k < N_BUTTONS; k++){
+			this->order_matrix_ptr[j][k] = (*order_matrix_ptr)[j][k];
+		}
+	}
+}
+
+Elevator& Elevator::operator=(const Elevator &rhs){
+	this->elevator_status = rhs.elevator_status;
+	if(this->order_matrix_ptr == 0){
+		this->order_matrix_ptr = new Queue_element*[N_FLOORS];
+		for(int i = 0; i < N_BUTTONS; i++){
+			this->order_matrix_ptr[i] = new Queue_element[N_BUTTONS];
+		}
+	}
+	for(int j = 0; j < N_FLOORS; j++){
+		for(int k = 0; k < N_BUTTONS; k++){
+			this->order_matrix_ptr[j][k] = rhs.order_matrix_ptr[j][k];
+		}
+	}
+	return *this;
+}
