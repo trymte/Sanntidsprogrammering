@@ -10,6 +10,7 @@ class Queue{
 private:
 	//Queue_element** order_matrix;
 	std::vector<std::vector<Queue_element> > order_matrix;
+	std::vector<std::vector<Queue_element> > *order_matrix_ptr;
 
 	//unsigned int queue_calculate_cost(Order order, std::vector<Status>& status_vector);
 	
@@ -21,21 +22,27 @@ public:
 
 	~Queue();
 
-	static void queue_add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order new_order, int elevator_ID);
+	static std::vector<std::vector<Queue_element> > queue_add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order new_order, int elevator_ID);
 
-	std::vector<std::vector<Queue_element> > queue_get_order_matrix();	
+	void queue_add_order(Order new_order, int elevator_ID);
+
+	std::vector<std::vector<Queue_element> > queue_get_order_matrix();
+
+	std::vector<std::vector<Queue_element> >* queue_get_order_matrix_ptr();
 
 	//void queue_merge_order_matrices(Queue queue_with_new_order_matrix); //Endre til UML std
 	
 	//void assign_elevators_to_orders(Elevator &elevators);
 
-	//void queue_write_order_matrix();
+	void queue_write_order_matrix();
 	
 	//void queue_read_order_matrix();
 
 	//void queue_remove_order(Order order);
 
 	static void queue_print_order_matrix(std::vector<std::vector<Queue_element> > order_matrix);
+
+	void queue_print_order_matrix();
 	
 	//static void queue_assign_elevators_to_orders(std::vector<Elevator>& elevators);
 

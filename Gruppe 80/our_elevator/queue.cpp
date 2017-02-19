@@ -30,6 +30,7 @@ Queue::Queue(){
 		}
 		order_matrix.push_back(rowvector);
 	}	
+	this->order_matrix_ptr = &order_matrix;
 }
 
 
@@ -47,6 +48,7 @@ Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 		}
 		order_matrix.push_back(rowvector);
 	}
+	this->order_matrix_ptr = &order_matrix;
 }
 
 Queue::~Queue(){
@@ -84,10 +86,11 @@ unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& statu
 }
 */
 
-/*
+
 void Queue::queue_write_order_matrix(){
-	ofstream file;
+	std::ofstream file;
 	file.open("backup_file.txt");
+	
 	if (file.is_open()){
 
 		for (int i=0;i<N_FLOORS;i++){
@@ -98,9 +101,9 @@ void Queue::queue_write_order_matrix(){
 		file.close();
 	}
 	else
-		cout << "Unable to open file at queue_write_order_matrix" << endl;
+		std::cout << "Unable to open file at queue_write_order_matrix" << std::endl;
 }
-*/
+
 
 //--------------------------------------------------------------------------------------------------
 //Public member functions
@@ -133,6 +136,9 @@ std::vector<std::vector<Queue_element> > Queue::queue_get_order_matrix(){
 	return this->order_matrix;
 } 
 
+std::vector<std::vector<Queue_element> >* Queue::queue_get_order_matrix_ptr(){
+	return this->order_matrix_ptr;
+}
 
 /*
 void Queue::queue_merge_order_matrices(Queue queue_with_new_order_matrix){
@@ -160,18 +166,51 @@ void Queue::queue_print_order_matrix(std::vector<std::vector<Queue_element> > or
 	std::cout << std::endl;
 }
 
-void Queue::queue_add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order new_order, int elevator_ID){
+void Queue::queue_print_order_matrix(){
+	std::vector<std::vector<Queue_element> >::iterator row;
+	std::vector<Queue_element>::iterator col;
+
+	for (row = this->order_matrix.begin(); row!=this->order_matrix.end();++row){
+		for (col = row->begin(); col != row->end(); ++col){
+			std::cout << col->active_button<< ":" << col->elevator_ID << "\t";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+}
+
+
+std::vector<std::vector<Queue_element> > Queue::queue_add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order new_order, int elevator_ID){
 	if (new_order.floor > N_FLOORS){
 		std::cout << "Floor in new_order doesn't match number of floors in system" << std::endl;
-		return;
+		return order_matrix;
 	}
 	if (new_order.btn > N_BUTTONS){
 		std::cout << "Button in new_order doesn't match number of buttons in system" << std::endl;
-		return;
+		return order_matrix;
+	}
+
+	if ((order_matrix.size() < new_order.floor)||(order_matrix[0].size() < new_order.btn)){
+		std::cout << "Dimensions disagree in queue_add_order" << std::endl;
+		return order_matrix;
 	}
 
 	order_matrix[new_order.floor][new_order.btn].active_button = 1;
 	order_matrix[new_order.floor][new_order.btn].elevator_ID = elevator_ID;
+	return order_matrix;
+}
+
+void Queue::queue_add_order(Order new_order, int elevator_ID){
+	if (new_order.floor > N_FLOORS){
+		std::cout << "Floor in new_order doesn't match number of floors in system" << std::endl;
+		return ;
+	}
+	if (new_order.btn > N_BUTTONS){
+		std::cout << "Button in new_order doesn't match number of buttons in system" << std::endl;
+		return ;
+	}
+	this->order_matrix[new_order.floor][new_order.btn].active_button = 1;
+	this->order_matrix[new_order.floor][new_order.btn].elevator_ID = elevator_ID;
 }
 
 /*
