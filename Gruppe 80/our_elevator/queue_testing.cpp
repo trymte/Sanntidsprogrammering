@@ -46,6 +46,15 @@ int main(){
 	test_status.floor = 2;
 	test_status.elevator_ID = 3;
 	test_status.out_of_order = 0;
+
+	Status test_status2;
+	test_status.dir = D_Down;
+	test_status.floor = 3;
+	test_status.elevator_ID = 1;
+	test_status.out_of_order = 0;
+
+	std::vector< std::vector <Queue_element> > order_matrix_merged[N_FLOORS][N_BUTTONS];
+	
 /*
 	std::cout << "Order_matrix after added order:" << std::endl;
 	que.queue_add_order(test_order,3);
@@ -69,7 +78,7 @@ int main(){
 */
 
 
-
+/*
 //Static functions:
 	std::cout << "Static functions testing" << std::endl;
 
@@ -96,6 +105,5 @@ int main(){
 	Queue::queue_print_order_matrix(test_order_matrix);
 
 	test_order_matrix_3 = Queue::queue_merge_order_matrices(test_order_matrix_3, test_order_matrix);
-
-
+*/
 }

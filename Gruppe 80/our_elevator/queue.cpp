@@ -64,14 +64,15 @@ Queue::~Queue(){
 //--------------------------------------------------------------------------------------------------
 //Private member functions
 //----------------------------------------------------------------------------------------------------
-/*
+
 unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& status_vector){
 	unsigned int temp_cost = 0;
 	unsigned int lowest_cost = 10000;
 	int elevator_ID = -1;
+	Status status_it;
 
 	for(std::vector<Status>::iterator it = status_vector.begin(); it != status_vector.end();++it){
-		Status status_it = *it;
+		status_it = *it;
 		//Check status on the elevators that are not out of order.
 		if (status_it.out_of_order != 1){ 
 			temp_cost = abs(order.floor - status_it.floor)*10; //Rewrite cost calculation!!!!
@@ -84,7 +85,7 @@ unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& statu
 	}
 	return elevator_ID;
 }
-*/
+
 
 
 void Queue::queue_write_order_matrix(){
@@ -267,7 +268,7 @@ std::vector<std::vector<Queue_element> > Queue::queue_remove_order(std::vector <
 }
 
 /*
-void Queue::queue_assign_elevators_to_orders(std::vector<Elevator>& elevators){
+std::vector<std::vector<Queue_element> > queue_assign_elevators_to_orders(std::vector<Elevator>& elevators){
 
 	if (elevators == NULL){
 		cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << endl;
@@ -299,6 +300,7 @@ void Queue::queue_assign_elevators_to_orders(std::vector<Elevator>& elevators){
 			}
 		}
 	}
+	//Return order_matrix with assigned elevators to orders
 }
 */
 

@@ -12,7 +12,6 @@ private:
 	std::vector<std::vector<Queue_element> > *order_matrix_ptr;
 
 	static unsigned int queue_calculate_cost(Order order, std::vector<Status>& status_vector);
-	
 
 public:
 	Queue();
@@ -20,6 +19,10 @@ public:
 	Queue(unsigned int n_floors,unsigned int n_buttons);
 
 	~Queue();
+
+
+
+	
 
 	static std::vector<std::vector<Queue_element> > queue_add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID);
 
@@ -47,7 +50,7 @@ public:
 	
 	//void assign_elevators_to_orders(Elevator &elevators);
 
-	//static void queue_assign_elevators_to_orders(std::vector<Elevator>& elevators);
+	//static std::vector<std::vector<Queue_element> > queue_assign_elevators_to_orders(std::vector<Elevator>& elevators);
 
 	void queue_reset_orders(Status status);
 
