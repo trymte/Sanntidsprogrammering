@@ -19,13 +19,12 @@
 Queue::Queue(){
 	std::vector<std::vector<Queue_element> > temp;
 	this->order_matrix = temp;
-
+	Queue_element init_element;
+	init_element.active_button = 0;
+	init_element.elevator_ID = -1;
 	for (int i=0;i<N_FLOORS;i++){
 		std::vector<Queue_element> rowvector;
 		for(int j=0;j<N_BUTTONS;j++){
-			Queue_element init_element;
-			init_element.active_button = 0;
-			init_element.elevator_ID = -1;
 			rowvector.push_back(init_element);
 		}
 		order_matrix.push_back(rowvector);
@@ -37,19 +36,20 @@ Queue::Queue(){
 Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 	std::vector<std::vector<Queue_element> > temp;
 	this->order_matrix = temp;
-
+	Queue_element init_element;
+	init_element.active_button = 0;
+	init_element.elevator_ID = -1;
 	for (int i=0;i<n_floors;i++){
 		std::vector<Queue_element> rowvector;
 		for(int j=0;j<n_buttons;j++){
-			Queue_element init_element;
-			init_element.active_button = 0;
-			init_element.elevator_ID = -1;
+			
 			rowvector.push_back(init_element);
 		}
 		order_matrix.push_back(rowvector);
 	}
 	this->order_matrix_ptr = &order_matrix;
 }
+//Forslag: Trur det går bra med bare ein konstruktør for queue, sidan N_FLOORS og N_BUTTONS er globale, og dei to konstruktørane er ganske like :) - Trym
 
 Queue::~Queue(){
 	std::vector<std::vector<Queue_element> >::iterator row;
