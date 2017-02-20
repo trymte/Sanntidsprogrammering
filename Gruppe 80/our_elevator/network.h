@@ -7,6 +7,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 
 typedef struct{
@@ -18,7 +19,7 @@ class Network{
 private:
 	int n_elevators;
 
-	Elevator elevators[N_ELEVATORS]; //Tror elevators må være vector. N_ELEVATORS from const_struct_def.h
+	std::vector<Elevator> elevators[N_ELEVATORS]; //Tror elevators må være vector. N_ELEVATORS from const_struct_def.h
 
 	Elevator_online elevators_online[N_ELEVATORS];
 

@@ -7,7 +7,7 @@
 class Elevator{
 private:
 	Status elevator_status;
-	Queue_element** order_matrix_ptr;
+	std::vector<std::vector<Queue_element>> *order_matrix_ptr;
 	
 public:
 	Elevator();
@@ -18,9 +18,9 @@ public:
 
 	Status get_elevator_status(){return elevator_status;}
 
-	Queue_element** get_order_matrix_ptr(){return this->order_matrix_ptr;}
+	std::vector<std::vector <Queue_element> > get_order_matrix_ptr(){return this->order_matrix_ptr;}
 
-	void set_elevator_order_matrix_ptr(Queue_element*** order_matrix_ptr);
+	void set_elevator_order_matrix_ptr(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
 
 	void set_elevator_dir(Dirn dir){this->elevator_status.dir = dir;}
 

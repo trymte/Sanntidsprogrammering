@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "elevator.h"
 
-void print_order_matrix(Queue_element** order_matrix){
+void print_order_matrix(std::vector<std::vector <Queue_element> > order_matrix){
 	std::cout << "Order matrix: " << std::endl;
 	for(int i = 0; i < N_FLOORS;i++){
 		for(int j = 0; j < N_BUTTONS; j++){
@@ -16,7 +16,7 @@ void print_order_matrix(Queue_element** order_matrix){
 	std::cout << std::endl;
 }
 
-Queue_element** string_to_order_matrix(std::string order_matrix_string){
+std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string order_matrix_string){
 
 	Queue_element** order_matrix = 0;
 	order_matrix = new Queue_element*[N_FLOORS];
