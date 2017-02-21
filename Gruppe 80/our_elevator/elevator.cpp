@@ -13,7 +13,7 @@ Elevator::Elevator(): order_matrix_ptr(0)
 Elevator::Elevator(Status elevator_status, std::vector<std::vector <Queue_element> > *order_matrix_ptr): elevator_status(elevator_status)
 {
 	this->order_matrix_ptr = new std::vector<std::vector <Queue_element> >;
-	this->*order_matrix_ptr = *order_matrix_ptr;
+	this->order_matrix_ptr = &order_matrix_ptr;
 }
 
 Elevator::Elevator(const Elevator &elevator): elevator_status(elevator.elevator_status)

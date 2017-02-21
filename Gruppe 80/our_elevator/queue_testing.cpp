@@ -53,7 +53,6 @@ int main(){
 	test_status.elevator_ID = 1;
 	test_status.out_of_order = 0;
 
-	std::vector< std::vector <Queue_element> > order_matrix_merged[N_FLOORS][N_BUTTONS];
 	
 /*
 	std::cout << "Order_matrix after added order:" << std::endl;
