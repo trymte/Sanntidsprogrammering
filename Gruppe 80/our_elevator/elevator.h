@@ -12,7 +12,7 @@ private:
 public:
 	Elevator();
 
-	Elevator(Status elevator_status);
+	Elevator(Status elevator_status, std::vector<std::vector <Queue_element> > order_matrix);
 
 	Elevator(const Elevator &elevator);
 

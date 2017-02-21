@@ -10,17 +10,15 @@ Elevator::Elevator(): order_matrix_ptr(0)
 	elevator_status.out_of_order = 1;
 }
 
-Elevator::Elevator(Status elevator_status)//: elevator_status(elevator_status)
+Elevator::Elevator(Status elevator_status, std::vector<std::vector <Queue_element> > *order_matrix_ptr): elevator_status(elevator_status)
 {
-	this->elevator_status = elevator_status;
-	this->order_matrix_ptr = 0;
-	//order_matrix_ptr = Queu::queue_get_order_matrix();
-	//order_matrix_ptr = queue1.queue_get_order_matrix();
+	this->order_matrix_ptr = new std::vector<std::vector <Queue_element> >;
+	this->*order_matrix_ptr = *order_matrix_ptr;
 }
 
 Elevator::Elevator(const Elevator &elevator): elevator_status(elevator.elevator_status)
 {
-	std::vector<std::vector <Queue_element> > temp;
+	std::vector<std::vector <Queue_element> > temp[N_FLOORS][N_BUTTONS];
 }
 
 
