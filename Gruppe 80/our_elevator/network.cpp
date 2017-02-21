@@ -26,7 +26,7 @@ Network::Network(int n_elevators){
 //Private functions
 //----------------------------------------------------------------------------------------------------
 
-
+//Kan vi definere denne funksjonen i const_struct_def som en generell funksjon slik at jeg kan bruke den i Queue.cpp? :) 
 void Network::nw_messagestring_to_elevator_object(string &message){
 	if(message.empty()){
 		std::cout << "Error empty message" << std::endl;

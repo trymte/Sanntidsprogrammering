@@ -50,6 +50,7 @@ Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
 	this->order_matrix_ptr = &order_matrix;
 }
 //Forslag: Trur det går bra med bare ein konstruktør for queue, sidan N_FLOORS og N_BUTTONS er globale, og dei to konstruktørane er ganske like :) - Trym
+//Det kan vi gjøre. Beholde den øverste da? :) 
 
 Queue::~Queue(){
 	std::vector<std::vector<Queue_element> >::iterator row;
@@ -268,39 +269,55 @@ std::vector<std::vector<Queue_element> > Queue::queue_remove_order(std::vector <
 }
 
 /*
-std::vector<std::vector<Queue_element> > queue_assign_elevators_to_orders(std::vector<Elevator>& elevators){
+std::vector<std::vector<Queue_element> > queue_assign_elevators_to_orders(std::vector<Elevator> &elevators){
 
-	if (elevators == NULL){
+	if (elevators.size() == 0){
 		cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << endl;
 		return;
 	}
 
 	//Create a status_vector based on the input.
-	vector<Status> status_vector;
-	for (int e=0;e<N_ELEVATORS;e++){
-		status iteration_status;
-		iteration_status.dir = elvators[e].get_direction();
-		iteration_status.floor = elevators[e].get_floor();
-		iteration_status.elevator_ID = elevators[e].get_elevator_ID;
-		iteration_status.out_of_order = elevators[e].get_out_of_order_status();
+	std::vector<Status> status_vector;
+	std::vector<Elevator>::iterator elevator_it;
+	status iteration_status;
+	for (elevator_it = elevators.begin();elevator_it != elevators.end();++elevator_it){
+		iteration_status.dir = *elevator_it.get_direction();
+		iteration_status.floor = *elevator_it.get_floor();
+		iteration_status.elevator_ID = *elevator_it.get_elevator_ID;
+		iteration_status.out_of_order = *elevator_it.get_out_of_order_status();
 		status_vector.push_back(iteration_status);	
 	}
 
+	//Create a order_matrix that contains all the orders assigned to an elevator
+	std::vector<std::vector<Queue_element> > assigned_order_matrix;
+	assigned_order_matrix = vector_init();
+	Order order_to_be_assigned;
+	int assigned_elevator = -1;
 
-	for (int e=0;e<N_ELEVATORS;e++){
+	for(elevator_it = elevators.begin();elevator_it != elevators.end();++elevator_it){
 		for (int i=0;i<N_FLOORS;i++){
 			for(int j=0;j<N_BUTTONS;j++){
-				if ((elevators[e].elevator_get_order_matrix_ptr()[i][j].active_button == 1) && (elevators[e].elevator_get_order_matrix_ptr()[i][j].elevator_ID == -1)){
-					Order order_to_be_assigned;
+				//If an order in an order_matrix in elevators is not found in assigned_order_matrix, add it.
+				if ((assigned_order_matrix[i][i].active_button == 0)&&(*it->get_order_matrix_prt()[i][j].active_button == 1)){
 					order_to_be_assigned.floor = i;
 					order_to_be_assigned.btn = j;
+					assigned_order_matrix = Queue::queue_add_order(assigned_order_matrix,order_to_be_assigned,*it->get_order_matrix_ptr()[i][j].elevator_ID);
+				}
 
-					elevators[e].elevator_get_order_matrix_ptr()[i][j].elevator_ID == queue_calculate_cost(order_to_be_assigned,status_vector);
+
+				//Find elevator with lowest cost and add order to assigned_order_matrix
+				if ((elevator_it->get_order_matrix_ptr()[i][j].active_button == 1) && (elevator_it->get_order_matrix_ptr()[i][j].elevator_ID == -1)){
+					order_to_be_assigned.floor = i;
+					order_to_be_assigned.btn = j;
+					assigned_elevator = Queue::queue_calculate_cost(order_to_be_assigned,status_vector);
+					assigned_order_matrix = Queue::queue_add_order(assigned_order_matrix, order_to_be_assigned,assigned_elevator);
+
 				}
 			}
 		}
 	}
-	//Return order_matrix with assigned elevators to orders
+
+	return assigned_order_matrix;
 }
 */
 

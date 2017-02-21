@@ -20,10 +20,6 @@ public:
 
 	~Queue();
 
-
-
-	
-
 	static std::vector<std::vector<Queue_element> > queue_add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID);
 
 	void queue_add_order(Order new_order, int elevator_ID);
@@ -47,8 +43,6 @@ public:
 	static void queue_print_order_matrix(std::vector<std::vector<Queue_element> > order_matrix);
 
 	void queue_print_order_matrix();
-	
-	//void assign_elevators_to_orders(Elevator &elevators);
 
 	//static std::vector<std::vector<Queue_element> > queue_assign_elevators_to_orders(std::vector<Elevator>& elevators);
 
