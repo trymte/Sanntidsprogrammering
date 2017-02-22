@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include "elevator.h"
 
-void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix){
+void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr){
 	std::cout << "Order matrix: " << std::endl;
-	std::vector<std::vector <Queue_element> > ordr = *order_matrix;
+	std::vector<std::vector <Queue_element> > ordr = *order_matrix_ptr;
 	for(int i = 0; i < N_FLOORS;i++){
 		for(int j = 0; j < N_BUTTONS; j++){
 			Queue_element temp = ordr[i][j];
@@ -20,7 +20,7 @@ void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix)
 
 
 
-Elevator messagestring_to_elevator_object(std::string &messagestring){
+Elevator test_messagestring_to_elevator_object(std::string &messagestring){
 	Elevator temp_elevator;
 	std::vector<std::string> result;
 	std::string order_matrix_string;
@@ -43,7 +43,7 @@ Elevator messagestring_to_elevator_object(std::string &messagestring){
 			break;
 	}
 	temp_elevator.set_elevator_floor(atoi(result[2].c_str()));
-	if(result[3] == "false"){
+	if(result[3] == "0"){
 		temp_elevator.set_elevator_out_of_order(false);
 
 	} else{
@@ -59,16 +59,25 @@ Elevator messagestring_to_elevator_object(std::string &messagestring){
 }
 
 
+std::string elevator_object_to_messagestring(Elevator &elevator){
+	std::stringstream ss;
+	Status elev_status = elevator.get_elevator_status();
+	std::string order_matrix_string = order_matrix_to_string(elevator.get_order_matrix_ptr());
+	ss << elev_status.elevator_ID << ":" << elev_status.dir << ":" << elev_status.floor << ":" << elev_status.out_of_order << ":" << order_matrix_string;
+	return ss.str();
+}
+
 
 
 int main(){
 	
 	
 
-	std::string text = "1:1:3:false:01&13&01&0-1&11&1-1&0-1&14&01&1-1&13&00&";
-	Elevator temp = messagestring_to_elevator_object(text);
-	std::cout << "hello" << std::endl;
-	//print_order_matrix(temp.get_order_matrix_ptr());
+	std::string text = "1:1:3:0:01&13&01&0-1&11&1-1&0-1&14&01&1-1&13&00&";
+	Elevator temp = test_messagestring_to_elevator_object(text);
+
+	std::string messagestring = elevator_object_to_messagestring(temp);
+	std::cout << messagestring << std::endl;
 	return 0;
 }
 

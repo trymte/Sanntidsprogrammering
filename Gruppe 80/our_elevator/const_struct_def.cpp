@@ -1,6 +1,6 @@
 #include "const_struct_def.h"
 
-std::vector<std::vector<Queue_element> > vector_init(){
+std::vector<std::vector<Queue_element> > twoD_vector_init(){
     std::vector<std::vector<Queue_element> > temp;
     Queue_element init_element;
     init_element.active_button = 0;
@@ -17,7 +17,7 @@ std::vector<std::vector<Queue_element> > vector_init(){
 
 
 std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string &order_matrix_string){
-	std::vector<std::vector <Queue_element> > order_matrix = vector_init();
+	std::vector<std::vector <Queue_element> > order_matrix = twoD_vector_init();
 	std::stringstream ss2(order_matrix_string);
 	int count = 0;
 	int temp_floor = 0;
@@ -48,4 +48,15 @@ std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string &or
 		count += 1;
 	}
 	return order_matrix;
+}
+
+std::string order_matrix_to_string(std::vector<std::vector <Queue_element> > *order_matrix_ptr){
+	std::stringstream ss;
+	std::vector<std::vector <Queue_element> > order_matrix = *order_matrix_ptr;
+	for(int i = 0; i < N_FLOORS; i++){
+		for(int j = 0; j < N_BUTTONS; j++){
+			ss << order_matrix[i][j].active_button << order_matrix[i][j].elevator_ID << "&";
+		}
+	}
+	return ss.str();
 }

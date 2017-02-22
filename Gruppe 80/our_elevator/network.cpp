@@ -2,14 +2,13 @@
 
 
 Network::Network(){
-	elevators = NULL;
-	elevators_online = NULL;
-}
 
-Network::Network(int n_elevators){
 	Elevator elev_temp;
-	for(int i = 0; i < this->n_elevators ; i++){
+	for(int i = 0; i < N_ELEVATORS ; i++){
 		elevators[i] = elev_temp;
+		elevators[i].set_elevator_ID = i;
+		elevators_online[i].online = false;
+		elevators_online[i].elevator_ID = i;
 	}
 }
 
@@ -17,7 +16,7 @@ Network::Network(int n_elevators){
 //Private functions
 //----------------------------------------------------------------------------------------------------
 
-void Network::messagestring_to_elevator_object(std::string &message){
+Elevator Network::messagestring_to_elevator_object(std::string &message){
 	messagestring_to_elevator_object(std::string messagestring){
 	Elevator temp_elevator;
 	std::vector<std::string> result;
@@ -41,7 +40,7 @@ void Network::messagestring_to_elevator_object(std::string &message){
 			break;
 	}
 	temp_elevator.set_elevator_floor(atoi(result[2].c_str()));
-	if(result[3] == "false"){
+	if(result[3] == "0"){
 		temp_elevator.set_elevator_out_of_order(false);
 
 	} else{
@@ -54,9 +53,12 @@ void Network::messagestring_to_elevator_object(std::string &message){
 }
 
 std::string Network::elevator_object_to_messagestring(Elevator &elevator){
-
+	std::stringstream ss;
+	Status elev_status = elevator.get_elevator_status();
+	std::string order_matrix_string = order_matrix_to_string(elevator.get_order_matrix_ptr());
+	ss << elev_status.elevator_ID << ":" << elev_status.dir << ":" << elev_status.floor << ":" << elev_status.out_of_order << ":" << order_matrix_string;
+	return ss.str();
 }
-
 
 //----------------------------------------------------------------------------------------------------
 //Public functions
