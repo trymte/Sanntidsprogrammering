@@ -98,7 +98,7 @@ void Network::slave_request_order_matrix(){
 
 }
 
-void Network::distribute_order_matrix(Queue_element &order_matrix_ptr){
+void Network::distribute_order_matrix(Queue_element &order_matrix){
 
 
 }
