@@ -48,5 +48,7 @@ public:
 
 	void queue_reset_orders(Status status);
 
+	Order queue_get_next_order(int elevator_ID);
+
 };
 

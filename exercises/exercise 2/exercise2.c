@@ -46,7 +46,7 @@ void* thread_2_function(){
 
 
 int main(){
-	 if (pthread_mutex_init(&lock, NULL) != 0)
+	if (pthread_mutex_init(&lock, NULL) != 0)
     {
         printf("\n mutex init failed\n");
         return 1;

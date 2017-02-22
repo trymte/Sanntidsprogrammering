@@ -328,7 +328,7 @@ void Queue::queue_reset_orders(Status status){
 	std::vector<std::vector<Queue_element> >::iterator row;
 	std::vector<Queue_element>::iterator col;
 
-	for (row = order_matrix.begin(); row!=order_matrix.end();++row){
+	for (row = this->order_matrix.begin(); row!=this->order_matrix.end();++row){
 		for (col = row->begin(); col != row->end(); ++col){
 			if ((col->active_button == 1)&&(col->elevator_ID == status.elevator_ID))
 				col->elevator_ID = -1;
@@ -338,3 +338,28 @@ void Queue::queue_reset_orders(Status status){
 
 
 
+Order Queue::queue_get_next_order(int elevator_ID){
+	Order next_order;
+	next_order.floor = 0;
+	next_order.btn = B_HallDown;
+
+	for (int floor = 0; floor<N_FLOORS;floor++){
+		for (int btn = 0;btn<N_BUTTONS;btn++){
+			if ((this->order_matrix[floor][btn].active_button == 1)&&(this->order_matrix[floor][btn].elevator_ID == elevator_ID)){
+				next_order.floor = floor;
+				switch(btn){
+					case 0:
+						next_order.btn = B_HallUp;
+						break;
+					case 1:
+						next_order.btn = B_HallDown;
+						break;
+					case 2:
+						next_order.btn = B_Cab;
+						break;
+				}
+				return next_order;
+			}
+		}
+	}	
+}
