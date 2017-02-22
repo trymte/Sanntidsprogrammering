@@ -2,8 +2,7 @@
 #include <unistd.h>
 #include "sverresnetwork.h"
 
-void 
-udpmessageReceived(const char * ip, char * data, int datalength){
+void udpmessageReceived(const char * ip, char * data, int datalength){
 
   // Assuming an ascii string here - a binary blob (including '0's) will
   // be ugly/truncated.

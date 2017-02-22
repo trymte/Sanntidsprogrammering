@@ -50,3 +50,10 @@ Elevator& Elevator::operator=(const Elevator &rhs){
 	*this->order_matrix_ptr = *order_matrix_ptr;
 	return *this;
 }
+
+
+
+
+//------------------------------------------------------------------------------------------------------------
+//Others
+\\

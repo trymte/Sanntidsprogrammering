@@ -63,13 +63,13 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 //----------------------------------------------------------------------------------------------------
 //Public functions
 //----------------------------------------------------------------------------------------------------
-void Network::message_recieve(string message_id, int elevator_number){
+void Network::message_recieve(int message_id, int elevator_number){
 	switch(message_id){
-		case "supervisor_informed":
+		case 0:		//"supervisor_informed"
 
 
 			break;
-		case "new_order_matrix_for_all":
+		case 1:   //"new_order_matrix_for_all":
 
 			//kjør fsm_new_master_command(new_order_matrix) på ein eller anna måte, returnere verdi til eventmanager?;
 
@@ -98,7 +98,7 @@ void Network::slave_request_order_matrix(){
 
 }
 
-void Network::distribute_order_matrix(Queue_element &order_matrix_ptr){
+void Network::distribute_order_matrix(std::vector<std::vector<Queue_element> > *order_matrix_ptr){
 
 
 }
