@@ -232,14 +232,15 @@ void Queue::remove_order(Order order){
 	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
 }
 
-std::vector<std::vector<Queue_element> > Queue::remove_order(std::vector <std::vector <Queue_element> > &order_matrix,Order order){
+void Queue::remove_order(std::vector <std::vector <Queue_element> > &order_matrix,Order order){
 	if ((order_matrix.size() < order.floor)||(order_matrix[0].size() < order.btn)){
 		std::cout << "Dimensions disagree in queue_remove_order" << std::endl;
-		return order_matrix;
 	}
-	order_matrix[order.floor][order.btn].active_button = 0;
-	order_matrix[order.floor][order.btn].elevator_ID = -1;
-	return order_matrix;
+	else{
+		order_matrix[order.floor][order.btn].active_button = 0;
+		order_matrix[order.floor][order.btn].elevator_ID = -1;
+	}
+
 }
 
 
@@ -319,8 +320,6 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 
 
 
-
-
 void Queue::reset_orders(Status status){
 	std::vector<std::vector<Queue_element> >::iterator row;
 	std::vector<Queue_element>::iterator col;
@@ -332,6 +331,8 @@ void Queue::reset_orders(Status status){
 		}
 	}
 }
+
+
 
 
 

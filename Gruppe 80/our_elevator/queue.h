@@ -21,6 +21,7 @@ public:
 
 	static unsigned int calculate_cost(Order order, std::vector<Status>& status_vector);
 
+	//Trenger denne egentlig returverdi når det er callbyreference.. testes!
 	static std::vector<std::vector<Queue_element> > add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID);
 
 	void add_order(Order new_order, int elevator_ID);
@@ -37,7 +38,7 @@ public:
 	
 	void read_order_matrix();
 
-	static std::vector<std::vector<Queue_element> > remove_order(std::vector <std::vector <Queue_element> > &order_matrix,Order order);
+	static void remove_order(std::vector <std::vector <Queue_element> > &order_matrix,Order order);
 
 	void remove_order(Order order);
 
@@ -45,11 +46,13 @@ public:
 
 	void print_order_matrix();
 
-	static std::vector<std::vector<Queue_element> > assign_elevators_to_orders(std::vector<Elevator> &elevators);
-
 	void reset_orders(Status status);
 
+	static void reset_orders(std::vector <std::vector <Queue_element> > &order_matrix, Status status);
+
 	Order get_next_order(int elevator_ID);
+
+	std::vector<std::vector<Queue_element> > assign_elevators_to_orders(std::vector<Elevator> &elevators);
 
 };
 

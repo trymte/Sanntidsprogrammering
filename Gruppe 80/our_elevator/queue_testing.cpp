@@ -6,6 +6,7 @@
 
 
 int main(){
+
 	Queue que;
 	Queue que2;
 
@@ -33,9 +34,10 @@ int main(){
 	test_status2.out_of_order = 0;
 
 
+	std::vector<std::vector<Queue_element> > elevator_order_matrix;
+	elevator_order_matrix = *elev1.get_order_matrix_ptr();
+	elev1.set_elevator_order_matrix(&elevator_order_matrix);
 
-
-//	std::cout << elev1->get_order_matrix_ptr[1][1] << std::endl;
 
 /*
 ///////////////////////////////////////////////////////////
