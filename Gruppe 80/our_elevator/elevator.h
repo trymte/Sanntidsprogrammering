@@ -12,7 +12,7 @@ private:
 public:
 	Elevator();
 
-	Elevator(Status elevator_status, std::vector<std::vector <Queue_element> > *order_matrix);
+	Elevator(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix);
 
 	Elevator(const Elevator &elevator);
 
@@ -20,7 +20,7 @@ public:
 
 	std::vector<std::vector <Queue_element> >* get_order_matrix_ptr(){return this->order_matrix_ptr;}
 
-	void set_elevator_order_matrix_ptr(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
+	void set_elevator_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
 
 	void set_elevator_dir(Dirn dir){this->elevator_status.dir = dir;}
 

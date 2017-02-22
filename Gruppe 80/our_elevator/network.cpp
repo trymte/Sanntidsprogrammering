@@ -14,9 +14,7 @@ Network::Network(){
 }
 
 Network::Network(int n_elevators){
-	this->n_elevators = n_elevators;
-	Status temp = {0,0,"",false};
-	Elevator elev_temp(temp);
+	Elevator elev_temp;
 	for(int i = 0; i < this->n_elevators ; i++){
 		elevators[i] = elev_temp;
 	}
@@ -26,21 +24,44 @@ Network::Network(int n_elevators){
 //Private functions
 //----------------------------------------------------------------------------------------------------
 
-//Kan vi definere denne funksjonen i const_struct_def som en generell funksjon slik at jeg kan bruke den i Queue.cpp? :) 
-void Network::nw_messagestring_to_elevator_object(string &message){
-	if(message.empty()){
-		std::cout << "Error empty message" << std::endl;
-		return;
-	}
-	else{
-	std::stringstream ss(message);
-	Elevator elevator1;
+void Network::nw_messagestring_to_elevator_object(std::string &message){
+	messagestring_to_elevator_object(std::string messagestring){
+	Elevator temp_elevator;
+	std::vector<std::string> result;
 	std::string order_matrix_string;
-	ss >> elevator1.elevator_status.elevator_id >> elevator1.elevator_status.dir >> elevator1.elevator_status.floor >> elevator1.elevator_status.out_of_order >> order_matrix_string;
-	
+	std::stringstream ss1(messagestring);
+	std::string word;
+	while(std::getline(ss1,word, ':')){
+		result.push_back(word);
+	}
 
+	temp_elevator.set_elevator_ID(atoi(result[0].c_str()));
+	switch(atoi(result[1].c_str())){
+		case 0:
+			temp_elevator.set_elevator_dir(D_Stop);
+			break;
+		case 1:
+			temp_elevator.set_elevator_dir(D_Up);
+			break;
+		case -1:
+			temp_elevator.set_elevator_dir(D_Down);
+			break;
+	}
+	temp_elevator.set_elevator_floor(atoi(result[2].c_str()));
+	if(result[3] == "false"){
+		temp_elevator.set_elevator_out_of_order(false);
 
-	return elevator1;
+	} else{
+		temp_elevator.set_elevator_out_of_order(true);
+	}
+	order_matrix_string = result[4];
+	std::vector<std::vector <Queue_element> > order_matrix_temp = string_to_order_matrix(order_matrix_string);
+	temp_elevator.set_elevator_order_matrix(&order_matrix_temp);
+	return temp_elevator;
+}
+
+std::string Network::nw_elevator_object_to_messagestring(Elevator &elevator){
+
 }
 
 

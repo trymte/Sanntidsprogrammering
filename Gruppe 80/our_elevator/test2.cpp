@@ -4,10 +4,8 @@
 #include "const_struct_def.h"
 
 int main(){
-	std::vector<std::vector<Queue_element> > temp[N_FLOORS][N_BUTTONS];
-	for(std::vector<std::vector<Queue_element> >::iterator it = temp.begin(); it != temp.end(); it++){
-		
-	}
+	std::vector<std::vector<Queue_element> > temp = vector_init();
+	
 	Queue_element temp2;
 	temp2.active_button = 1;
 	temp2.elevator_ID = 3;

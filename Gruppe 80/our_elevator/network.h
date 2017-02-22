@@ -4,6 +4,7 @@
 #include "supervisor.h"
 #include "elevator.h"
 #include "Network_files/sverresnetwork.h"
+#include "const_struct_def.h"
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -17,19 +18,20 @@ typedef struct{
 
 class Network{
 private:
-	int n_elevators;
 
-	std::vector<Elevator> elevators[N_ELEVATORS]; //Tror elevators må være vector. N_ELEVATORS from const_struct_def.h
+	std::vector<Elevator> elevators; //Tror elevators må være vector. N_ELEVATORS from const_struct_def.h
 
-	Elevator_online elevators_online[N_ELEVATORS];
+	std::vector<Elevator_online> elevators_online;
 
-	void nw_messagestring_to_elevator_object(string &message);
+	void nw_messagestring_to_elevator_object(std::string &message);
+
+	void nw_elevator_object_to_messagestring(Elevator &elevator);
 public:
 	Network();
 	
 	Network(int n_elevators);
 
-	Elevator* nw_get_elevators(){return elevators;}
+	std::vector<Elevator> nw_get_elevators(){return elevators;}
 
 	void nw_message_recieve();
 
@@ -37,7 +39,7 @@ public:
 
 	void nw_slave_request_order_matrix();
 
-	void nw_distribute_order_matrix(Queue_element &order_matrix_ptr);
+	void nw_distribute_order_matrix(std::vector<std::vector<Queue_element> > *order_matrix_ptr);
 
 	void nw_slave_order_complete(Elevator &elevator);
 
