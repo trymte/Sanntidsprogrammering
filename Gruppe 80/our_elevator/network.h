@@ -12,11 +12,11 @@ typedef struct{
 
 class Network{
 private:
-	std::vector<Elevator> elevators(N_ELEVATORS);
+	std::vector<Elevator> elevators;
 
-	std::vector<Elevator_online> elevators_online(N_ELEVATORS);
+	std::vector<Elevator_online> elevators_online;
 
-	Elevator messagestring_to_elevator_object(std::string &message);
+	Elevator messagestring_to_elevator_object(std::string &messagestring);
 
 	std::string elevator_object_to_messagestring(Elevator &elevator);
 
@@ -25,7 +25,7 @@ public:
 
 	std::vector<Elevator> get_elevators(){return elevators;}
 
-	void message_recieve();
+	void message_recieve(std::string message_ID, int elevator_ID);
 
 	void inform_supervisor(Elevator &elevator);
 

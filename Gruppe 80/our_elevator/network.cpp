@@ -2,12 +2,13 @@
 
 
 Network::Network(){
-
+	Elevator_online temp_elev_online;
+	temp_elev_online.online = false;
 	Elevator elev_temp;
 	for(int i = 0; i < N_ELEVATORS ; i++){
-		elevators[i] = elev_temp;
-		elevators[i].set_elevator_ID = i;
-		elevators_online[i].online = false;
+		elevators.push_back(elev_temp);
+		elevators[i].set_elevator_ID(i);
+		elevators_online.push_back(temp_elev_online);
 		elevators_online[i].elevator_ID = i;
 	}
 }
@@ -16,8 +17,7 @@ Network::Network(){
 //Private functions
 //----------------------------------------------------------------------------------------------------
 
-Elevator Network::messagestring_to_elevator_object(std::string &message){
-	messagestring_to_elevator_object(std::string messagestring){
+Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 	Elevator temp_elevator;
 	std::vector<std::string> result;
 	std::string order_matrix_string;
@@ -63,7 +63,7 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 //----------------------------------------------------------------------------------------------------
 //Public functions
 //----------------------------------------------------------------------------------------------------
-void Network::message_recieve(int message_id, int elevator_number){
+void Network::message_recieve(std::string message_ID, int elevator_ID){
 	switch(message_id){
 		case 0:		//"supervisor_informed"
 
