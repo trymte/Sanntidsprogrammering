@@ -1,7 +1,7 @@
 #include "supervisor.h"
 
 
-void sv_manage_order_matrix(std::vector<Elevator> &elevators){
+void manage_order_matrix(std::vector<Elevator> &elevators){
 	
 	std::vector<Queue_element> order_matrix_merged[N_FLOORS][N_BUTTONS];
 	std::vector<Elevator>::iterator it;
@@ -18,13 +18,13 @@ void sv_manage_order_matrix(std::vector<Elevator> &elevators){
 }
 
 
-void sv_manage_completed_order(Elevator &elevator){
+void manage_completed_order(Elevator &elevator){
 	//Remove order that elevator is done with.
 	Status elevator_status = elevator.get_elevator_status();
 	
 }
 
 
-void sv_manage_incomplete_order(Elevator &elevator){
+void manage_incomplete_order(Elevator &elevator){
 
 }

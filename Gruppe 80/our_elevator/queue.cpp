@@ -66,7 +66,7 @@ Queue::~Queue(){
 //Private member functions
 //----------------------------------------------------------------------------------------------------
 
-unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& status_vector){
+unsigned int Queue::calculate_cost(Order order, std::vector<Status>& status_vector){
 	unsigned int temp_cost = 0;
 	unsigned int lowest_cost = 10000;
 	int elevator_ID = -1;
@@ -88,8 +88,10 @@ unsigned int Queue::queue_calculate_cost(Order order, std::vector<Status>& statu
 }
 
 
-
-void Queue::queue_write_order_matrix(){
+//--------------------------------------------------------------------------------------------------
+//Public member functions
+//----------------------------------------------------------------------------------------------------
+void Queue::write_order_matrix(){
 	std::ofstream file;
 	file.open("backup_file.txt");
 	
@@ -106,14 +108,8 @@ void Queue::queue_write_order_matrix(){
 		std::cout << "Unable to open file at queue_write_order_matrix" << std::endl;
 }
 
-
-//--------------------------------------------------------------------------------------------------
-//Public member functions
-//----------------------------------------------------------------------------------------------------
-
-
 //Not finished!
-void Queue::queue_read_order_matrix(){
+void Queue::read_order_matrix(){
 	std::string line;
 	std::vector<std::string> result;
 	std::ifstream file;
@@ -128,17 +124,11 @@ void Queue::queue_read_order_matrix(){
 		std::cout << "Unable to open file at queue_read_order_matrix" << std::endl;
 }
 
-
-
-
-
-
-
-std::vector<std::vector<Queue_element> > Queue::queue_get_order_matrix(){
+std::vector<std::vector<Queue_element> > Queue::get_order_matrix(){
 	return this->order_matrix;
 } 
 
-std::vector<std::vector<Queue_element> >* Queue::queue_get_order_matrix_ptr(){
+std::vector<std::vector<Queue_element> >* Queue::get_order_matrix_ptr(){
 	return this->order_matrix_ptr;
 }
 
@@ -146,7 +136,7 @@ std::vector<std::vector<Queue_element> >* Queue::queue_get_order_matrix_ptr(){
 
 
 
-std::vector<std::vector<Queue_element> > Queue::queue_merge_order_matrices(std::vector <std::vector <Queue_element> > &order_matrix_1,std::vector <std::vector <Queue_element> > &order_matrix_2){
+std::vector<std::vector<Queue_element> > Queue::merge_order_matrices(std::vector <std::vector <Queue_element> > &order_matrix_1,std::vector <std::vector <Queue_element> > &order_matrix_2){
 	if ((order_matrix_1.size() != order_matrix_2.size())||(order_matrix_1[0].size() != order_matrix_2[0].size())){
 		std::cout << "Dimensions disagree in queue_to_be_merged" << std::endl;
 		return order_matrix_1;
@@ -169,7 +159,7 @@ std::vector<std::vector<Queue_element> > Queue::queue_merge_order_matrices(std::
 }
 
 
-void Queue::queue_merge_order_matrices(Queue queue_to_be_merged){
+void Queue::merge_order_matrices(Queue queue_to_be_merged){
 	if ((this->order_matrix.size() != queue_to_be_merged.order_matrix.size())||(this->order_matrix[0].size() != queue_to_be_merged.order_matrix[0].size())){
 		std::cout << "Dimensions disagree in queue_to_be_merged" << std::endl;
 		return;
@@ -190,7 +180,7 @@ void Queue::queue_merge_order_matrices(Queue queue_to_be_merged){
 
 
 
-void Queue::queue_print_order_matrix(std::vector<std::vector<Queue_element> > order_matrix){
+void Queue::print_order_matrix(std::vector<std::vector<Queue_element> > order_matrix){
 	std::vector<std::vector<Queue_element> >::iterator row;
 	std::vector<Queue_element>::iterator col;
 
@@ -204,7 +194,7 @@ void Queue::queue_print_order_matrix(std::vector<std::vector<Queue_element> > or
 	std::cout << std::endl;
 }
 
-void Queue::queue_print_order_matrix(){
+void Queue::print_order_matrix(){
 	std::vector<std::vector<Queue_element> >::iterator row;
 	std::vector<Queue_element>::iterator col;
 
@@ -219,7 +209,7 @@ void Queue::queue_print_order_matrix(){
 }
 
 
-std::vector<std::vector<Queue_element> > Queue::queue_add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID){
+std::vector<std::vector<Queue_element> > Queue::add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID){
 	if (new_order.floor > N_FLOORS){
 		std::cout << "Floor in new_order doesn't match number of floors in system" << std::endl;
 		return order_matrix;
@@ -239,7 +229,7 @@ std::vector<std::vector<Queue_element> > Queue::queue_add_order(std::vector <std
 	return order_matrix;
 }
 
-void Queue::queue_add_order(Order new_order, int elevator_ID){
+void Queue::add_order(Order new_order, int elevator_ID){
 	if (new_order.floor > N_FLOORS){
 		std::cout << "Floor in new_order doesn't match number of floors in system" << std::endl;
 		return ;
@@ -253,12 +243,12 @@ void Queue::queue_add_order(Order new_order, int elevator_ID){
 }
 
 
-void Queue::queue_remove_order(Order order){
+void Queue::remove_order(Order order){
 	this->order_matrix[order.floor][order.btn].active_button = 0;
 	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
 }
 
-std::vector<std::vector<Queue_element> > Queue::queue_remove_order(std::vector <std::vector <Queue_element> > &order_matrix,Order order){
+std::vector<std::vector<Queue_element> > Queue::remove_order(std::vector <std::vector <Queue_element> > &order_matrix,Order order){
 	if ((order_matrix.size() < order.floor)||(order_matrix[0].size() < order.btn)){
 		std::cout << "Dimensions disagree in queue_remove_order" << std::endl;
 		return order_matrix;
@@ -269,7 +259,7 @@ std::vector<std::vector<Queue_element> > Queue::queue_remove_order(std::vector <
 }
 
 /*
-std::vector<std::vector<Queue_element> > queue_assign_elevators_to_orders(std::vector<Elevator> &elevators){
+std::vector<std::vector<Queue_element> > assign_elevators_to_orders(std::vector<Elevator> &elevators){
 
 	if (elevators.size() == 0){
 		cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << endl;
@@ -324,7 +314,7 @@ std::vector<std::vector<Queue_element> > queue_assign_elevators_to_orders(std::v
 
 
 
-void Queue::queue_reset_orders(Status status){
+void Queue::reset_orders(Status status){
 	std::vector<std::vector<Queue_element> >::iterator row;
 	std::vector<Queue_element>::iterator col;
 
@@ -338,7 +328,7 @@ void Queue::queue_reset_orders(Status status){
 
 
 
-Order Queue::queue_get_next_order(int elevator_ID){
+Order Queue::get_next_order(int elevator_ID){
 	Order next_order;
 	next_order.floor = 0;
 	next_order.btn = B_HallDown;

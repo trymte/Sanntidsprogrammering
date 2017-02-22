@@ -2,12 +2,20 @@
 #include <stdio.h>
 #include <pthread.h>
 
+pthread_mutex_t lock;
+
 void* state_machine_main(){
-	printf("Hello from state_machine\n");
+	while(1){
+        printf("Hello from state_machine\n");
+    }
+    
 }
 
 void* network_main(){
-	printf("Hello from network\n");
+    while(1){
+        printf("Hello from network\n");
+    }
+	
 }
 
 
@@ -19,7 +27,7 @@ int main(){
     }
 
     pthread_t state_machine_thread;
-    pthread_create(&state_machine_thread, NULL, statemachine_main, NULL);
+    pthread_create(&state_machine_thread, NULL, state_machine_main, NULL);
 
     pthread_t network_thread;
     pthread_create(&network_thread, NULL, network_main, NULL);

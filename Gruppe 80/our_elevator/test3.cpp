@@ -2,24 +2,23 @@
 #include <thread>
 
 pthread_mutex_t lock;
+int i = 0;
 
 void* state_machine_main(void*){
-	while(1){
+	for (int j=0;j<1000000;j++){
 		pthread_mutex_lock(&lock);
-		//If something needs to be locket, this is the syntax
+		i++;
 		pthread_mutex_unlock(&lock);
 	}
 }
 
 void* network_main(void*){
-	while(1){
+	for (int k=0;k<1000000;k++){
 		pthread_mutex_lock(&lock);
-		//If something needs to be locket, this is the syntax
+		i--;
 		pthread_mutex_unlock(&lock);
 	}
 }
-
-
 
 
 int main(){
@@ -35,7 +34,6 @@ int main(){
 	if(error_thread_2)
 		std::cout << "Error creating network_thread" << std::endl;
 
-//Joining threads
 	std::cout << "Joining threads" << std::endl;
 	pthread_join(state_machine_thread, NULL);
 	pthread_join(network_thread, NULL);
