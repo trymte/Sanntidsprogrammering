@@ -9,6 +9,9 @@ int main(){
 	Queue que;
 	Queue que2;
 
+	Elevator elev1;
+	Elevator elev2;
+
 	Order test_order;
 	test_order.floor = 2;
 	test_order.btn = B_HallDown;
@@ -29,12 +32,16 @@ int main(){
 	test_status2.elevator_ID = 1;
 	test_status2.out_of_order = 0;
 
+
+
+
+//	std::cout << elev1->get_order_matrix_ptr[1][1] << std::endl;
+
 /*
 ///////////////////////////////////////////////////////////
 //Testing av assign elevators to orders
 ///////////////////////////////////////////////////////////
-	Elevator elev1;
-	Elevator elev2;
+	
 
 	std::vector<std::vector<Queue_element> > test_order_matrix1 = vector_init();
 	std::vector<std::vector<Queue_element> > *test_order_matrix1_ptr = &test_order_matrix1;

@@ -31,7 +31,7 @@ public:
 
 	void slave_request_order_matrix();
 
-	void distribute_order_matrix(std::vector<std::vector<Queue_element> > *order_matrix_ptr);
+	void distribute_order_matrix(std::vector<std::vector<Queue_element> > &order_matrix);
 
 	void slave_order_complete(Elevator &elevator);
 

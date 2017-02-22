@@ -98,7 +98,11 @@ void Network::slave_request_order_matrix(){
 
 }
 
+<<<<<<< HEAD
 void Network::distribute_order_matrix(std::vector<std::vector<Queue_element> > *order_matrix_ptr){
+=======
+void Network::distribute_order_matrix(Queue_element &order_matrix){
+>>>>>>> morten
 
 
 }
