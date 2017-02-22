@@ -23,28 +23,28 @@ private:
 
 	std::vector<Elevator_online> elevators_online;
 
-	void nw_messagestring_to_elevator_object(std::string &message);
+	void messagestring_to_elevator_object(std::string &message);
 
-	void nw_elevator_object_to_messagestring(Elevator &elevator);
+	void elevator_object_to_messagestring(Elevator &elevator);
 public:
 	Network();
 	
 	Network(int n_elevators);
 
-	std::vector<Elevator> nw_get_elevators(){return elevators;}
+	std::vector<Elevator> get_elevators(){return elevators;}
 
-	void nw_message_recieve();
+	void message_recieve();
 
-	void nw_inform_supervisor(Elevator &elevator);
+	void inform_supervisor(Elevator &elevator);
 
-	void nw_slave_request_order_matrix();
+	void slave_request_order_matrix();
 
-	void nw_distribute_order_matrix(std::vector<std::vector<Queue_element> > *order_matrix_ptr);
+	void distribute_order_matrix(std::vector<std::vector<Queue_element> > *order_matrix_ptr);
 
-	void nw_slave_order_complete(Elevator &elevator);
+	void slave_order_complete(Elevator &elevator);
 
-	void nw_slave_order_incomplete(Elevator &elevator);
+	void slave_order_incomplete(Elevator &elevator);
 
-	bool nw_ping_elevator(Elevator &elevator);
+	bool ping_elevator(Elevator &elevator);
 
 };

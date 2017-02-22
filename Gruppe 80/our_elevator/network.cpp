@@ -1,14 +1,7 @@
 #include "network.h"
 
-int main(){
-	Network network1(3);
-	string message = "1"
-
-	return 0;
-}
 
 Network::Network(){
-	n_elevators = -1;
 	elevators = NULL;
 	elevators_online = NULL;
 }
@@ -24,7 +17,7 @@ Network::Network(int n_elevators){
 //Private functions
 //----------------------------------------------------------------------------------------------------
 
-void Network::nw_messagestring_to_elevator_object(std::string &message){
+void Network::messagestring_to_elevator_object(std::string &message){
 	messagestring_to_elevator_object(std::string messagestring){
 	Elevator temp_elevator;
 	std::vector<std::string> result;
@@ -60,7 +53,7 @@ void Network::nw_messagestring_to_elevator_object(std::string &message){
 	return temp_elevator;
 }
 
-std::string Network::nw_elevator_object_to_messagestring(Elevator &elevator){
+std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 
 }
 
@@ -68,7 +61,7 @@ std::string Network::nw_elevator_object_to_messagestring(Elevator &elevator){
 //----------------------------------------------------------------------------------------------------
 //Public functions
 //----------------------------------------------------------------------------------------------------
-void Network::nw_message_recieve(string message_id, int elevator_number){
+void Network::message_recieve(string message_id, int elevator_number){
 	switch(message_id){
 		case "supervisor_informed":
 
@@ -95,29 +88,29 @@ void Network::nw_message_recieve(string message_id, int elevator_number){
 
 }
 
-void Network::nw_inform_supervisor(Elevator &elevator){
+void Network::inform_supervisor(Elevator &elevator){
 
 }
 
-void Network::nw_slave_request_order_matrix(){
+void Network::slave_request_order_matrix(){
 
 }
 
-void Network::nw_distribute_order_matrix(Queue_element &order_matrix_ptr){
-
-
-}
-
-void Network::nw_slave_order_complete(Elevator &elevator){
+void Network::distribute_order_matrix(Queue_element &order_matrix_ptr){
 
 
 }
 
-void Network::nw_slave_order_incomplete(Elevator &elevator){
+void Network::slave_order_complete(Elevator &elevator){
+
 
 }
 
-bool Network::nw_ping_elevator(Elevator &elevator){
+void Network::slave_order_incomplete(Elevator &elevator){
+
+}
+
+bool Network::ping_elevator(Elevator &elevator){
 	bool is_elevator_responding;
 
 
