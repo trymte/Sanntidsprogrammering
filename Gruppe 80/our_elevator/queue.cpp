@@ -8,6 +8,8 @@
 
 #include "queue.h"
 #include "elevator.h"
+#include "const_struct_def.h"
+#include "const_struct_def.cpp"
 //#include "network.h"
 
 
@@ -66,6 +68,13 @@ Queue::~Queue(){
 //Private member functions
 //----------------------------------------------------------------------------------------------------
 
+//Her burde calculate_cost ligge
+//Fikk problemer med å kalle privat static funksjon fra assign_elevator_to_order, prøve igjen senere...
+
+
+//--------------------------------------------------------------------------------------------------
+//Public member functions
+//----------------------------------------------------------------------------------------------------
 unsigned int Queue::calculate_cost(Order order, std::vector<Status>& status_vector){
 	unsigned int temp_cost = 0;
 	unsigned int lowest_cost = 10000;
@@ -87,10 +96,6 @@ unsigned int Queue::calculate_cost(Order order, std::vector<Status>& status_vect
 	return elevator_ID;
 }
 
-
-//--------------------------------------------------------------------------------------------------
-//Public member functions
-//----------------------------------------------------------------------------------------------------
 void Queue::write_order_matrix(){
 	std::ofstream file;
 	file.open("backup_file.txt");
@@ -108,17 +113,18 @@ void Queue::write_order_matrix(){
 		std::cout << "Unable to open file at queue_write_order_matrix" << std::endl;
 }
 
-//Not finished!
+
 void Queue::read_order_matrix(){
 	std::string line;
-	std::vector<std::string> result;
+	std::string result;
 	std::ifstream file;
 	file.open("backup_file.txt");
 	if (file.is_open()){
 			while(getline(file,line,':')){
-				result.push_back(line);
+				result += line;
 			}
-			//this->order_matrix = string_to_order_matrix(result); //Funksjon fra network.h
+
+			this->order_matrix = string_to_order_matrix(result); 
 	}
 	else
 		std::cout << "Unable to open file at queue_read_order_matrix" << std::endl;
@@ -258,58 +264,81 @@ std::vector<std::vector<Queue_element> > Queue::remove_order(std::vector <std::v
 	return order_matrix;
 }
 
-/*
-std::vector<std::vector<Queue_element> > assign_elevators_to_orders(std::vector<Elevator> &elevators){
+
+std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::vector<Elevator> &elevators){
 
 	if (elevators.size() == 0){
-		cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << endl;
-		return;
+		std::cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << std::endl;
+		std::vector<std::vector<Queue_element> > empty_order_matrix;
+		return empty_order_matrix;
 	}
 
 	//Create a status_vector based on the input.
 	std::vector<Status> status_vector;
 	std::vector<Elevator>::iterator elevator_it;
-	status iteration_status;
-	for (elevator_it = elevators.begin();elevator_it != elevators.end();++elevator_it){
-		iteration_status.dir = *elevator_it.get_direction();
-		iteration_status.floor = *elevator_it.get_floor();
-		iteration_status.elevator_ID = *elevator_it.get_elevator_ID;
-		iteration_status.out_of_order = *elevator_it.get_out_of_order_status();
-		status_vector.push_back(iteration_status);	
+	Status iteration_status;
+	for (elevator_it = elevators.begin();elevator_it != elevators.end();++elevator_it){		
+		iteration_status = elevator_it->get_elevator_status();
+		status_vector.push_back(iteration_status);
 	}
 
 	//Create a order_matrix that contains all the orders assigned to an elevator
-	std::vector<std::vector<Queue_element> > assigned_order_matrix;
+	std::vector <std::vector <Queue_element> > assigned_order_matrix;
+	std::vector <std::vector <Queue_element > > curr_order_matrix;
 	assigned_order_matrix = vector_init();
 	Order order_to_be_assigned;
 	int assigned_elevator = -1;
 
 	for(elevator_it = elevators.begin();elevator_it != elevators.end();++elevator_it){
+		
+		curr_order_matrix = *elevator_it->get_order_matrix_ptr();
 		for (int i=0;i<N_FLOORS;i++){
 			for(int j=0;j<N_BUTTONS;j++){
+				
 				//If an order in an order_matrix in elevators is not found in assigned_order_matrix, add it.
-				if ((assigned_order_matrix[i][i].active_button == 0)&&(*it->get_order_matrix_prt()[i][j].active_button == 1)){
+				if ((assigned_order_matrix[i][i].active_button == 0)&&(curr_order_matrix[i][j].active_button == 1)){
 					order_to_be_assigned.floor = i;
-					order_to_be_assigned.btn = j;
-					assigned_order_matrix = Queue::queue_add_order(assigned_order_matrix,order_to_be_assigned,*it->get_order_matrix_ptr()[i][j].elevator_ID);
+					switch(j){
+						case 0:
+							order_to_be_assigned.btn = B_HallUp;
+							break;
+						case 1:
+							order_to_be_assigned.btn = B_HallDown;
+							break;
+						case 2:
+							order_to_be_assigned.btn = B_Cab;
+							break;
+					}
+					assigned_order_matrix = Queue::add_order(assigned_order_matrix,order_to_be_assigned,curr_order_matrix[i][j].elevator_ID);
 				}
 
 
 				//Find elevator with lowest cost and add order to assigned_order_matrix
-				if ((elevator_it->get_order_matrix_ptr()[i][j].active_button == 1) && (elevator_it->get_order_matrix_ptr()[i][j].elevator_ID == -1)){
+				if ((curr_order_matrix[i][j].active_button == 1) && (curr_order_matrix[i][j].elevator_ID == -1)){
 					order_to_be_assigned.floor = i;
-					order_to_be_assigned.btn = j;
-					assigned_elevator = Queue::queue_calculate_cost(order_to_be_assigned,status_vector);
-					assigned_order_matrix = Queue::queue_add_order(assigned_order_matrix, order_to_be_assigned,assigned_elevator);
+					switch(j){
+						case 0:
+							order_to_be_assigned.btn = B_HallUp;
+							break;
+						case 1:
+							order_to_be_assigned.btn = B_HallDown;
+							break;
+						case 2:
+							order_to_be_assigned.btn = B_Cab;
+							break;
+					}
 
+					assigned_elevator = Queue::calculate_cost(order_to_be_assigned,status_vector);
+					assigned_order_matrix = Queue::add_order(assigned_order_matrix, order_to_be_assigned,assigned_elevator);
 				}
+				
 			}
 		}
 	}
 
 	return assigned_order_matrix;
 }
-*/
+
 
 
 

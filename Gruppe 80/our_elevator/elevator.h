@@ -30,6 +30,8 @@ public:
 
 	void set_elevator_out_of_order(bool out_of_order){this->elevator_status.out_of_order = out_of_order;}
 
+	void set_elevator_status(Status &status){this->elevator_status = status;}
+
 	Elevator& operator=(const Elevator &rhs);
 
 	~Elevator();
