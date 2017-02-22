@@ -1,15 +1,9 @@
 #pragma once
 
-#include "queue.h"
+#include "Network_files/sverresnetwork.h"
 #include "supervisor.h"
 #include "elevator.h"
-#include "Network_files/sverresnetwork.h"
 #include "const_struct_def.h"
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <vector>
-
 
 typedef struct{
 	int elevator_ID;
@@ -18,18 +12,16 @@ typedef struct{
 
 class Network{
 private:
+	std::vector<Elevator> elevators(N_ELEVATORS);
 
-	std::vector<Elevator> elevators; //Tror elevators må være vector. N_ELEVATORS from const_struct_def.h
+	std::vector<Elevator_online> elevators_online(N_ELEVATORS);
 
-	std::vector<Elevator_online> elevators_online;
+	Elevator messagestring_to_elevator_object(std::string &message);
 
-	void messagestring_to_elevator_object(std::string &message);
+	std::string elevator_object_to_messagestring(Elevator &elevator);
 
-	void elevator_object_to_messagestring(Elevator &elevator);
 public:
 	Network();
-	
-	Network(int n_elevators);
 
 	std::vector<Elevator> get_elevators(){return elevators;}
 
