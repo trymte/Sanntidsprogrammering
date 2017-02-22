@@ -9,8 +9,6 @@
 #include "queue.h"
 #include "elevator.h"
 #include "const_struct_def.h"
-#include "const_struct_def.cpp"
-//#include "network.h"
 
 
 
@@ -33,26 +31,6 @@ Queue::Queue(){
 	}	
 	this->order_matrix_ptr = &order_matrix;
 }
-
-
-Queue::Queue(unsigned int n_floors,unsigned int n_buttons){
-	std::vector<std::vector<Queue_element> > temp;
-	this->order_matrix = temp;
-	Queue_element init_element;
-	init_element.active_button = 0;
-	init_element.elevator_ID = -1;
-	for (int i=0;i<n_floors;i++){
-		std::vector<Queue_element> rowvector;
-		for(int j=0;j<n_buttons;j++){
-			
-			rowvector.push_back(init_element);
-		}
-		order_matrix.push_back(rowvector);
-	}
-	this->order_matrix_ptr = &order_matrix;
-}
-//Forslag: Trur det går bra med bare ein konstruktør for queue, sidan N_FLOORS og N_BUTTONS er globale, og dei to konstruktørane er ganske like :) - Trym
-//Det kan vi gjøre. Beholde den øverste da? :) 
 
 Queue::~Queue(){
 	std::vector<std::vector<Queue_element> >::iterator row;
