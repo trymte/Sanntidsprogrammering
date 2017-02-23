@@ -24,7 +24,7 @@ int main(){
 	Status test_status;
 	test_status.dir = D_Stop;
 	test_status.floor = 2;
-	test_status.elevator_ID = 3;
+	test_status.elevator_ID = 1;
 	test_status.out_of_order = 0;
 
 	Status test_status2;
@@ -34,10 +34,17 @@ int main(){
 	test_status2.out_of_order = 0;
 
 
-	std::vector<std::vector<Queue_element> > elevator_order_matrix;
-	elevator_order_matrix = *elev1.get_order_matrix_ptr();
-	elev1.set_elevator_order_matrix(&elevator_order_matrix);
+	
+	std::vector <std::vector <Queue_element> > order_matrix = twoD_vector_init();
+	order_matrix = Queue::add_order(order_matrix,test_order,1);
+	Queue::print_order_matrix(order_matrix);
+	Queue::remove_order(order_matrix,test_order);
+	Queue::print_order_matrix(order_matrix);
 
+
+
+//	que.reset_orders(test_status);
+//	que.print_order_matrix();
 
 /*
 ///////////////////////////////////////////////////////////

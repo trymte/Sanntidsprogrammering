@@ -30,6 +30,7 @@ public:
 
 	std::vector<std::vector<Queue_element> >* get_order_matrix_ptr();
 
+	//Trenger heller ikke returnere. 
 	static std::vector<std::vector<Queue_element> > merge_order_matrices(std::vector <std::vector <Queue_element> > &order_matrix_1,std::vector <std::vector <Queue_element> > &order_matrix_2);
 
 	void merge_order_matrices(Queue queue_with_new_order_matrix); //Endre til UML std
@@ -48,6 +49,7 @@ public:
 
 	void reset_orders(Status status);
 
+	//Må lages
 	static void reset_orders(std::vector <std::vector <Queue_element> > &order_matrix, Status status);
 
 	Order get_next_order(int elevator_ID);
