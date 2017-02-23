@@ -193,24 +193,23 @@ void Queue::print_order_matrix(){
 }
 
 
-std::vector<std::vector<Queue_element> > Queue::add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID){
+void Queue::add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID){
 	if (new_order.floor > N_FLOORS){
 		std::cout << "Floor in new_order doesn't match number of floors in system" << std::endl;
-		return order_matrix;
+		return;
 	}
 	if (new_order.btn > N_BUTTONS){
 		std::cout << "Button in new_order doesn't match number of buttons in system, " << new_order.btn << " > " << N_BUTTONS <<  std::endl;
-		return order_matrix;
+		return;
 	}
 
 	if ((order_matrix.size() < new_order.floor)||(order_matrix[0].size() < new_order.btn)){
 		std::cout << "Dimensions disagree in queue_add_order" << std::endl;
-		return order_matrix;
+		return;
 	}
 
 	order_matrix[new_order.floor][new_order.btn].active_button = 1;
 	order_matrix[new_order.floor][new_order.btn].elevator_ID = elevator_ID;
-	return order_matrix;
 }
 
 void Queue::add_order(Order new_order, int elevator_ID){
@@ -288,7 +287,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 							order_to_be_assigned.btn = B_Cab;
 							break;
 					}
-					assigned_order_matrix = Queue::add_order(assigned_order_matrix,order_to_be_assigned,curr_order_matrix[i][j].elevator_ID);
+					Queue::add_order(assigned_order_matrix,order_to_be_assigned,curr_order_matrix[i][j].elevator_ID);
 				}
 
 
@@ -308,7 +307,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 					}
 
 					assigned_elevator = Queue::calculate_cost(order_to_be_assigned,status_vector);
-					assigned_order_matrix = Queue::add_order(assigned_order_matrix, order_to_be_assigned,assigned_elevator);
+					Queue::add_order(assigned_order_matrix, order_to_be_assigned,assigned_elevator);
 				}
 				
 			}
@@ -318,6 +317,17 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 	return assigned_order_matrix;
 }
 
+void Queue::reset_orders(std::vector <std::vector <Queue_element> > &order_matrix, Status status){
+	std::vector<std::vector<Queue_element> >::iterator row;
+	std::vector<Queue_element>::iterator col;
+
+	for (row = order_matrix.begin(); row!=order_matrix.end();++row){
+		for (col = row->begin(); col != row->end(); ++col){
+			if ((col->active_button == 1)&&(col->elevator_ID == status.elevator_ID))
+				col->elevator_ID = -1;
+		}
+	}
+}
 
 
 void Queue::reset_orders(Status status){

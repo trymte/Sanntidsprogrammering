@@ -36,9 +36,9 @@ int main(){
 
 	
 	std::vector <std::vector <Queue_element> > order_matrix = twoD_vector_init();
-	order_matrix = Queue::add_order(order_matrix,test_order,1);
+	Queue::add_order(order_matrix,test_order,1);
 	Queue::print_order_matrix(order_matrix);
-	Queue::remove_order(order_matrix,test_order);
+	Queue::reset_orders(order_matrix,test_status);
 	Queue::print_order_matrix(order_matrix);
 
 
