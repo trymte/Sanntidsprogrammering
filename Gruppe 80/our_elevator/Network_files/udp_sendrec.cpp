@@ -44,7 +44,7 @@ void udp_init(int localPort){
         die("lbind");
     }
 }
-int udp_Broadcaster(std::string message){
+int udp_broadcaster(std::string message){
     struct sockaddr_in baddr;
     char * sbuff;
     sbuff = (char *) malloc(BUFLEN);
@@ -65,7 +65,7 @@ int udp_Broadcaster(std::string message){
 
 }
 
-int udp_Sender(std::string message, int localPort, char * ip)
+int udp_sender(std::string message, int localPort, char * ip)
 {
     struct sockaddr_in addr;
     char sbuff[BUFLEN];
@@ -87,7 +87,7 @@ int udp_Sender(std::string message, int localPort, char * ip)
     return 0;
 }
 
-struct code_message udp_Reciever()
+struct code_message udp_reciever()
 {
     struct sockaddr_in addr;
     int recv_len;
@@ -137,7 +137,7 @@ struct code_message udp_recieve_broadcast(){
     return code; 
 }
 
-int Bytes(){
+int bytes(){
     char buff[BUFLEN];
     return recv(bsocket, buff, BUFLEN, 0);
 }

@@ -113,10 +113,10 @@ void Network::slave_order_incomplete(Elevator &elevator){
 
 }
 
-bool Network::ping_elevator(Elevator &elevator){
+void Network::ping_elevators(int elevator_ID){
 	bool is_elevator_responding;
-
-
-
-	return is_elevator_responding;
+	std::stringstream ss;
+	ss << elevator_ID;
+	std::string ping_string = "ping " + ss.str();
+	udp_broadcaster(ping_string);
 }

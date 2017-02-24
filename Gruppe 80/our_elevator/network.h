@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Network_files/sverresnetwork.h"
+#include "Network_files/udp_sendrec.h"
 #include "supervisor.h"
 #include "elevator.h"
 #include "const_struct_def.h"
@@ -37,6 +37,8 @@ public:
 
 	void slave_order_incomplete(Elevator &elevator);
 
-	bool ping_elevator(Elevator &elevator);
+	bool recieve_ping_elevators();
+
+	void ping_elevators(int elevator_ID);
 
 };

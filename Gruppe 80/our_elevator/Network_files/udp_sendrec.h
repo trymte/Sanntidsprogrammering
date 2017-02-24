@@ -11,7 +11,7 @@
 
 #define BUFLEN 512  //Max length of buffer
 #define BROADCASTPORT 8000   //The Broadcastport
-#define MASTERPORT 20019 //The localport
+#define MASTERPORT 20011 //The localport
 
 extern int bsocket, lsocket;
 
@@ -25,10 +25,10 @@ struct code_message{
 void die(char *);
 
 void udp_init(int localport);
-int udp_Broadcaster(std::string message);
-int udp_Sender(std::string message, int localport, char* ip);
-struct code_message udp_Reciever();
+int udp_broadcaster(std::string message);
+int udp_sender(std::string message, int localport, char* ip);
+struct code_message udp_reciever();
 struct code_message udp_recieve_broadcast();
 void udp_close();
 
-int Bytes();
+int bytes();
