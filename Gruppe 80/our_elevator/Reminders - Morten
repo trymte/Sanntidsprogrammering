@@ -1,0 +1,1 @@
+Assign elevators to orders need to check if the elevator_ID is in the elevators_online vector in addition to checking the "out_of_order" variable.
