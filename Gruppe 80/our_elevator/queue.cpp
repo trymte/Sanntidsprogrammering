@@ -347,12 +347,15 @@ void Queue::reset_orders(Status status){
 
 
 Order Queue::get_next_order(int elevator_ID){
-	Order next_order = empty_order;
+	Order next_order;
+	next_order.floor = 0;
+	next_order.btn = B_HallDown;
 
-	for (int floor = 0; floor<N_FLOORS;floor++){
+
+	for (int floors = 0; floors<N_FLOORS;floors++){
 		for (int btn = 0;btn<N_BUTTONS;btn++){
-			if ((this->order_matrix[floor][btn].active_button == 1)&&(this->order_matrix[floor][btn].elevator_ID == elevator_ID)){
-				next_order.floor = floor;
+			if ((this->order_matrix[floors][btn].active_button == 1)&&(this->order_matrix[floors][btn].elevator_ID == elevator_ID)){
+				next_order.floor = floors;
 				switch(btn){
 					case 0:
 						next_order.btn = B_HallUp;

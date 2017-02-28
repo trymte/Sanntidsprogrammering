@@ -1,17 +1,17 @@
-#include <stdlib.h>
-#include <stdbool.h>
 #include <iostream>
-#include <unistd.h>
-#include <deque>
-#include <algorithm>
 
-#include "statemachine.h"
-#include "driver/timer.h"
+#include "elev.h"
+#include "io.h"
+#include "channels.h"
+#include "../queue.h"
+#include "../queue.cpp"
+#include "../const_struct_def.cpp"
 
-//Hvor skal denne?
+#include "../elevator.cpp"
+
+/////////////////////////////////////////////////////////////////////////////
 int elevator_ID = 1;
-
-
+//testet
 void check_buttons(Queue &my_queue){
 	Order new_order;
 	for(int i=0; i<N_FLOORS;i++){
@@ -195,14 +195,20 @@ void state_machine_main(Elevator &my_elevator, Queue &my_queue){
 		//usleep(input_poll_rate_ms*1000);
 	}
 }
+//////////////////////////////////////////////////////
+
+
+int main(){
+	Queue my_queue;
+	Elevator my_elevator;
+
+	state_machine_main(my_elevator, my_queue);
+}
 
 
 
-
-
-
-
-
-
-
-
+/*
+To do:
+- Ignorere knappetrykk OPP når dir = ned --> get_next_order bør sjekke retning på heisen for å avgjøre hvilken ordre den skal returnere.
+- Timer
+*/
