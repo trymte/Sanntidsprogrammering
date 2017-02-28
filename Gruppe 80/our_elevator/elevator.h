@@ -18,9 +18,13 @@ public:
 
 	Status get_elevator_status(){return elevator_status;}
 
+	int get_elevator_ID(){return elevator_status.elevator_ID;}
+
 	std::vector<std::vector <Queue_element> >* get_order_matrix_ptr(){return this->order_matrix_ptr;}
 
 	void set_elevator_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
+
+	void set_elevator_role(Role role){this->elevator_status.role = role;}
 
 	void set_elevator_dir(Dirn dir){this->elevator_status.dir = dir;}
 

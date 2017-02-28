@@ -22,6 +22,18 @@ typedef enum {
     B_Cab = 2
 } Button;
 
+typedef enum {
+    SLAVE = 0,
+    MASTER = 1
+} Role;
+
+typedef enum{
+    SLAVE_REQUEST_ORDER_MATRIX = 0,
+    //SLAVE_ORDER_COMPLETE = 1, treng vell egentlig ikkje denne
+    SLAVE_ORDER_INCOMPLETE = 1,
+    SLAVE_SEND_ELEVATOR_INFORMATION = 2,
+    MASTER_DISTRIBUTE_ORDER_MATRIX = 3
+} Message;
 
 struct Queue_element{
     bool active_button;
@@ -39,13 +51,18 @@ struct Status{
 	unsigned int floor;
 	int elevator_ID;
 	bool out_of_order;
+    Role role;
 };
+
+
 
 std::vector<std::vector<Queue_element> > twoD_vector_init(); 
 
 std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string &order_matrix_string);
 
 std::string order_matrix_to_string(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
+
+Message message_id_string_to_enum(std::string str);
 
 /*void print_status(Status status){
     std::cout <<"Dir: " << status.dir << "\nFloor: " << status.floor << "\nID: " << status.elevator_ID << "\nOut of order: " << status.out_of_order << std::endl;

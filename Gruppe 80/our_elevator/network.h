@@ -6,10 +6,11 @@
 #include "const_struct_def.h"
 
 typedef struct{
+	char* ip;
 	int elevator_ID;
 	bool online;
 } Elevator_online;
-
+//integrere elevator online i out_of_order variabelen til kvar heis?
 class Network{
 private:
 	std::vector<Elevator> elevators;
@@ -25,20 +26,24 @@ public:
 
 	std::vector<Elevator> get_elevators(){return elevators;}
 
-	void message_recieve(std::string message_ID, int elevator_ID);
+	void handle_message(Message message_ID, int elevator_ID);
 
-	void inform_supervisor(Elevator &elevator);
+//------------------------------------------------------------------------
+// Kan sløyfe desse funksjonane :
+	void slave_send_elevator_information(int elevator_ID);
 
-	void slave_request_order_matrix();
+	void slave_request_order_matrix(int elevator_ID);
 
-	void distribute_order_matrix(std::vector<std::vector<Queue_element> > &order_matrix);
+	void distribute_order_matrix(int elevator_ID);
 
-	void slave_order_complete(Elevator &elevator);
+	void slave_order_complete(int elevator_ID); //treng me denne?
 
-	void slave_order_incomplete(Elevator &elevator);
+	void slave_order_incomplete(int elevator_ID);
 
-	bool recieve_ping_elevators();
+// ---------------------------------------------------------------------
 
-	void ping_elevators(int elevator_ID);
+	void recieve_message_packet();
+
+	void send_message_packet(Message message_ID, int elevator_ID);
 
 };

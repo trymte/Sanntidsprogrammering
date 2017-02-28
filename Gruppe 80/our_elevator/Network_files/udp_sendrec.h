@@ -10,7 +10,7 @@
 #include<string>
 
 #define BUFLEN 512  //Max length of buffer
-#define BROADCASTPORT 8000   //The Broadcastport
+#define BROADCASTPORT 9000   //The Broadcastport
 #define MASTERPORT 20011 //The localport
 
 extern int bsocket, lsocket;

@@ -1,0 +1,15 @@
+heis:network:
+types of messages:
+	- Send request for order_matrix:                 SLAVE_REQUEST_ORDER_MATRIX; 	
+	  //(initialize elevator) may not require this
+
+	- Send info about incomplete order:              SLAVE_ORDER_INCOMPLETE;		
+	  //a slave crashes/hangs/bugs
+	
+	- Send elevator info with order matrix :         SLAVE_ELEVATOR_INFORMATION; 	
+	  //by udp broadcast, to all other elevators by default, 
+	  because everyone can become master
+
+	- Send updated order matrix (created by master): MASTER_DISTRIBUTE_ORDER_MATRIX; 
+	  //by udp broadcast, to all
+	- More?
