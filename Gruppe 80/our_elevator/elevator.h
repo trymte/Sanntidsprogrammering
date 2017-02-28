@@ -26,6 +26,8 @@ public:
 
 	void set_elevator_floor(unsigned int floor){this->elevator_status.floor = floor;}
 
+	void set_elevator_current_state(State current_state){this->elevator_status.current_status = current_status;}
+
 	void set_elevator_ID(int elevator_ID){this->elevator_status.elevator_ID = elevator_ID;}
 
 	void set_elevator_out_of_order(bool out_of_order){this->elevator_status.out_of_order = out_of_order;}

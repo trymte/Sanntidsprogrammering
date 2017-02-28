@@ -9,6 +9,7 @@
 const unsigned int N_FLOORS = 4;
 const unsigned int N_BUTTONS = 3;
 const unsigned int N_ELEVATORS = 2;
+const unsigned int DOOR_TIME_S = 3;
 
 typedef enum { 
     D_Down  = -1,
@@ -23,20 +24,27 @@ typedef enum {
 } Button;
 
 
+typedef enum { 
+    Moving, 
+    Idle, 
+    Door_open
+}State;
+
 struct Queue_element{
     bool active_button;
     int elevator_ID;
 };
 
 struct Order{
-    unsigned int floor;
+    int floor;
     Button btn;
 };
 
 
 struct Status{
 	Dirn dir;
-	unsigned int floor;
+	int floor;
+    State current_state;
 	int elevator_ID;
 	bool out_of_order;
 };
