@@ -1,4 +1,5 @@
 #include <iostream>
+#include "driver/elev.h"
 
 
 
@@ -11,6 +12,5 @@ typedef enum {
 
 
 int main(){
-	Button test_button = B_HallUp;
-	test_button == (Button)0;
+	elev_set_motor_direction(DIRN_DOWN);
 }

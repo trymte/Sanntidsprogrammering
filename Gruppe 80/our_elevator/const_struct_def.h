@@ -36,11 +36,13 @@ typedef enum{
     MASTER_DISTRIBUTE_ORDER_MATRIX = 3
 } Message;
 
+
 typedef enum { 
-    Moving, 
-    Idle, 
-    Door_open
+    MOVING = 0, 
+    IDLE = 1, 
+    DOOR_OPEN = 2
 }State;
+
 
 struct Queue_element{
     bool active_button;

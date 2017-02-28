@@ -55,7 +55,5 @@ public:
 
 };
 
-Order empty_order;
-empty_order.floor = 0;
-empty_floor = HallDown;
+
 
