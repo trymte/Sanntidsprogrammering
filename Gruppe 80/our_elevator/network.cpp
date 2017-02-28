@@ -132,11 +132,11 @@ void Network::send_message_packet(Message message, int elevator_ID){
 	switch(message){
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			message = "0";
-			udp_sender(message + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, ip);
+			udp_sender(message + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
 		break;
 		case SLAVE_ORDER_INCOMPLETE:
 			message = "1",
-			udp_sender(message + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, ip);
+			udp_sender(message + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
 		break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
 			message = "2";
