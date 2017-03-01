@@ -350,12 +350,16 @@ Order Queue::get_next_order(int elevator_ID){
 	Order next_order;
 	next_order.floor = 0;
 	next_order.btn = B_HallDown;
+	next_order.active_order = 0;
 
 
 	for (int floors = 0; floors<N_FLOORS;floors++){
 		for (int btn = 0;btn<N_BUTTONS;btn++){
 			if ((this->order_matrix[floors][btn].active_button == 1)&&(this->order_matrix[floors][btn].elevator_ID == elevator_ID)){
 				next_order.floor = floors;
+				next_order.active_order = 1;
+				next_order.btn = (Button)btn;
+				/*
 				switch(btn){
 					case 0:
 						next_order.btn = B_HallUp;
@@ -367,6 +371,7 @@ Order Queue::get_next_order(int elevator_ID){
 						next_order.btn = B_Cab;
 						break;
 				}
+				*/
 				return next_order;
 			}
 		}

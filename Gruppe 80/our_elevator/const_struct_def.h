@@ -50,6 +50,7 @@ struct Queue_element{
 };
 
 struct Order{
+    bool active_order;
     int floor;
     Button btn;
 };

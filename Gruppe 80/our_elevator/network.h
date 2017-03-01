@@ -11,6 +11,7 @@ typedef struct{
 	bool online;
 } Elevator_online;
 //integrere elevator online i out_of_order variabelen til kvar heis?
+//Kan funke det. Så i stedet for en bool "out_of_order", så har vi en struct "condition" som tar for seg online og out_of_order? -Morten
 class Network{
 private:
 	std::vector<Elevator> elevators;
@@ -27,6 +28,8 @@ public:
 	std::vector<Elevator> get_elevators(){return elevators;}
 
 	void handle_message(Message message_ID, int elevator_ID);
+
+	//void inform_supervisor(Elevator elevator); Trenger vi? 
 
 //------------------------------------------------------------------------
 // Kan sløyfe desse funksjonane :

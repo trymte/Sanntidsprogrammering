@@ -12,19 +12,22 @@
 int elevator_ID = 1;
 
 
-void check_buttons(Queue &my_queue){
+bool check_buttons(Queue &my_queue){
 	Order new_order;
+	bool new_button_press = 0;
 	for(int i=0; i<N_FLOORS;i++){
 		for(int j=0;j<N_BUTTONS;j++){
 			if (elev_get_button_signal((elev_button_type_t)j,i) && (my_queue.get_order_matrix()[i][j].active_button == 0)){
 				new_order.floor = i;
 				new_order.btn = (Button)j;
+				new_button_press = 1;
 				
 				my_queue.add_order(new_order,1); //Skal være -1
 				my_queue.print_order_matrix(); //Kan fjernes
 			}
 		}
 	}
+	return new_button_press;
 }
 
 void set_all_lights(Queue &my_queue){
@@ -142,7 +145,9 @@ void fsm_on_door_timeout(Elevator &my_elevator,Queue &my_queue){
 
 
 void state_machine_main(Elevator &my_elevator, Queue &my_queue){
-
+////////////////////////////////////////////////////////////////////////////////
+//Initializing
+////////////////////////////////////////////////////////////////////////////////
 	std::cout << "State machine initializing..." << std::endl;
 	elev_init();
 	int input_poll_rate_ms = 25;
@@ -150,28 +155,34 @@ void state_machine_main(Elevator &my_elevator, Queue &my_queue){
 		elev_set_motor_direction(DIRN_DOWN);
 	}
 	elev_set_motor_direction(DIRN_STOP);
+
+	//Blir gjort i main
 	my_elevator.set_elevator_current_state(IDLE);
 	my_elevator.set_elevator_floor(0);
 	my_elevator.set_elevator_dir(D_Stop);
 	elev_set_floor_indicator(0);
+	//
+	
 	std::cout << "State machine initialized" << std::endl;
-
+/////////////////////////////////////////////////////////////////////////////////
 
 
 	while(1){
 		
-		check_buttons(my_queue);
+		if (check_buttons(my_queue)){
+			//inform_supervisor(my_elevator);
+		}
+
 		Order next_order = my_queue.get_next_order(elevator_ID);
 		//std::cout << "Floor: " << next_order.floor << "\t btn: " << next_order.btn << std::endl;
 		//std::cout << my_elevator.get_elevator_status().current_state << std::endl;
-		if (!((next_order.floor == 0) && (next_order.btn == B_HallDown))){ 
+		if (next_order.active_order == 1){//!((next_order.floor == 0) && (next_order.btn == B_HallDown))){ 
 			fsm_execute_order(my_elevator,my_queue,next_order);
 		}
 
 
 
-		//Check for new floor sensor signals
-		//Update status on my_elevator
+		
 		my_elevator.set_elevator_floor(elev_get_floor_sensor_signal());
 		if (elev_get_floor_sensor_signal() != -1){
 			fsm_on_floor_arrival(my_elevator,my_queue);
@@ -183,6 +194,7 @@ void state_machine_main(Elevator &my_elevator, Queue &my_queue){
 			//fsm_on_door_timeout;
 	//		timer_stop();
 	//	}
+		//Midlertidig inntil timer fungerer
 		if((Button)my_elevator.get_elevator_status().current_state == DOOR_OPEN){
 			fsm_on_door_timeout(my_elevator,my_queue);
 		}
@@ -198,7 +210,14 @@ void state_machine_main(Elevator &my_elevator, Queue &my_queue){
 
 
 
-
+/*
+To do:
+- Ignorere knappetrykk OPP når dir = ned --> get_next_order bør sjekke retning på heisen for å avgjøre hvilken ordre den skal returnere.
+- Timer
+- Role --> Assign elevators to orders etc (inform_supervisor)
+- Timer for elevator out of order
+- Kan my_elevator og my_queue legges i en header fil slik at man slipper callbyreference over alt?
+*/
 
 
 

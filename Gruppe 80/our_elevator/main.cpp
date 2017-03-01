@@ -13,14 +13,21 @@ void network_main(Elevator &my_elevator, Queue &my_queue, Network &my_network){
 	while(1){}
 }
 
-
+//Skrives mer kompakt? Legge i const_struct_def?
+Status init_status;
+init_status.dir = D_Stop;
+init_status.floor = 0;
+init_status.current_state I IDLE;
+init_status.out_of_order = 0;
+init_status.role = MASTER //Bør være slave til vanlig.
 
 
 int main(){
 
 	std::mutex my_mutex;
-	Elevator my_elevator;
+	
 	Queue my_queue;
+	Elevator my_elevator(init_status, my_queue.get_order_matrix_ptr());
 	Network my_network;
 
 	std::cout << "Initializing threads" << std::endl;
