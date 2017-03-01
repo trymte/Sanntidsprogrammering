@@ -9,7 +9,8 @@
 const unsigned int N_FLOORS = 4;
 const unsigned int N_BUTTONS = 3;
 const unsigned int N_ELEVATORS = 2;
-const unsigned int DOOR_TIME_S = 3;
+const unsigned int DOOR_TIME_S = 1;
+const unsigned int CONDITION_TIME_S = 10;
 
 typedef enum { 
     D_Down  = -1,

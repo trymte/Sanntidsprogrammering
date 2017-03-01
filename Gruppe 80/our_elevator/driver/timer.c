@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <sys/time.h>
 
-#include "timer.h"
+
+
 
 static double get_wall_time(void){
     struct timeval time;
@@ -13,20 +14,32 @@ static double get_wall_time(void){
 static  double          timerEndTime;
 static  int             timerActive;
 
-void timer_start(double duration){
+void timer_door_start(double duration){ //Duration in seconds
     timerEndTime    = get_wall_time() + duration;
     timerActive     = 1;
-    timer_started = 1;
 }
 
-void timer_stop(void){
+void timer_door_stop(void){
     timerActive = 0;
-    timer_started = 0;
 }
 
-int timer_timedOut(void){
+int timer_door_timedOut(void){
     return (timerActive  &&  get_wall_time() > timerEndTime);
 }
 
+/*
 
+void timer_condition_start(double duration){ //Duration in seconds
+    timerEndTime    = get_wall_time() + duration;
+    timerActive     = 1;
+}
 
+void timer_condition_stop(void){
+    timerActive = 0;
+}
+
+int timer_condition_timedOut(void){
+    return (timerActive  &&  get_wall_time() > timerEndTime);
+}
+
+*/
