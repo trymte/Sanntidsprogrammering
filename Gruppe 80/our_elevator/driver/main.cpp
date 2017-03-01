@@ -1,30 +1,38 @@
 #include <iostream>
+#include <unistd.h>
 
 #include "elev.h"
 #include "io.h"
 #include "channels.h"
-#include "../queue.h"
+
 #include "../queue.cpp"
 #include "../const_struct_def.cpp"
+#include "timer.h"
 
+#include "../fsm.cpp"
+//#include "../network.cpp"
 #include "../elevator.cpp"
 
 /////////////////////////////////////////////////////////////////////////////
-int elevator_ID = 1;
-//testet
-void check_buttons(Queue &my_queue){
+
+
+
+bool check_buttons(Queue &my_queue){
 	Order new_order;
+	bool new_button_press = 0;
 	for(int i=0; i<N_FLOORS;i++){
 		for(int j=0;j<N_BUTTONS;j++){
 			if (elev_get_button_signal((elev_button_type_t)j,i) && (my_queue.get_order_matrix()[i][j].active_button == 0)){
 				new_order.floor = i;
 				new_order.btn = (Button)j;
+				new_button_press = 1;
 				
 				my_queue.add_order(new_order,1); //Skal være -1
 				my_queue.print_order_matrix(); //Kan fjernes
 			}
 		}
 	}
+	return new_button_press;
 }
 
 void set_all_lights(Queue &my_queue){
@@ -43,172 +51,108 @@ void set_all_lights(Queue &my_queue){
 	}
 }
 
-void open_door(){
-	std::cout << "Door open" << std::endl;
-	elev_set_door_open_lamp(1);
-	//if (timer_started != 1)
-		//timer_start(DOOR_TIME_S);
-}
-
-void fsm_execute_order(Elevator &my_elevator, Queue &my_queue, Order &order){ //Status &status,Order &order) 
-	int current_floor = my_elevator.get_elevator_status().floor;
-	State current_state = my_elevator.get_elevator_status().current_state;
-
-	switch(current_state){
-		case MOVING:
-
-			if(current_floor == order.floor){	//Stop because the order to be executed is done.
-	   				elev_set_motor_direction(DIRN_STOP);
-	   				open_door();
-	   				my_elevator.set_elevator_dir(D_Stop);
-	   				my_elevator.set_elevator_current_state(DOOR_OPEN);
-	   				my_elevator.set_elevator_floor(elev_get_floor_sensor_signal());
-	   				my_queue.remove_order(order);
-	   			} 
-
-			break;
-
-   		case IDLE:
-
-   			if(current_floor == order.floor){
-   				elev_set_motor_direction(DIRN_STOP);
-   				open_door();
-   				my_elevator.set_elevator_dir(D_Stop);
-	   			my_elevator.set_elevator_current_state(DOOR_OPEN);
-	   			my_queue.remove_order(order);
-
-   			}
-
-   			else if(current_floor > order.floor){
-   				elev_set_motor_direction(DIRN_DOWN);
-   				my_elevator.set_elevator_dir(D_Down);
-	   			my_elevator.set_elevator_current_state(MOVING);
-   				
-   			}
-   			
-   			else{
-   				elev_set_motor_direction(DIRN_UP);
-   				my_elevator.set_elevator_dir(D_Up);
-	   			my_elevator.set_elevator_current_state(MOVING);
-   			}
-   			
-   			break;
 
 
-   		default:
-   			std::cout << "Default" << std::endl;
-   			//Waiting for door to close...
-   			break;
-	}
-}
 
+int main(){
+///////////////////////////////////////////////////////
+// For testing, skal i main
+//	Network my_network;
+	Elevator my_elevator; //Settes til å peke på elevator(elevator_ID) i elevators. Alle endringer på my_elevator i etterkant vil da endres i network. GUNSTIG!
+	Queue my_queue;
 
-void fsm_on_floor_arrival(Elevator &my_elevator,Queue &my_queue){
-	int current_floor = elev_get_floor_sensor_signal();
-	elev_set_floor_indicator(current_floor);
-	my_elevator.set_elevator_floor(current_floor);
-
-	for(int i=0;i<N_BUTTONS;i++){
-		if ((my_queue.get_order_matrix()[current_floor][i].active_button == 1) && (my_queue.get_order_matrix()[current_floor][i].elevator_ID == elevator_ID)){ //Readressere hvor elevator_ID kommer fra.
-			elev_set_motor_direction(DIRN_STOP);
-			open_door();
-			my_elevator.set_elevator_dir(D_Stop);
-   			my_elevator.set_elevator_current_state(DOOR_OPEN);
-   			Order order_to_be_removed;
-   			order_to_be_removed.floor = current_floor;
-   			order_to_be_removed.btn = (Button)i;
-   			my_queue.remove_order(order_to_be_removed);
-   		}
-	}
-}
-
-
-void fsm_on_door_timeout(Elevator &my_elevator,Queue &my_queue){
-	int current_floor = elev_get_floor_sensor_signal();
 	my_elevator.set_elevator_current_state(IDLE);
-	elev_set_door_open_lamp(0);
-	//timer_stop();
-
-	Order order_to_be_removed;
-	for(int i=0;i<N_BUTTONS;i++){
-		if((my_queue.get_order_matrix()[current_floor][i].active_button == 1) && (my_queue.get_order_matrix()[current_floor][i].elevator_ID == elevator_ID)){//Readressere hvor elevator_ID kommer fra.
-			order_to_be_removed.floor = current_floor;
-			order_to_be_removed.btn = (Button)i;
-			my_queue.remove_order(order_to_be_removed);
-		}
-	}
-}
+	my_elevator.set_elevator_floor(0);
+	my_elevator.set_elevator_dir(D_Stop);
+	my_elevator.set_elevator_role(MASTER);
+	elev_set_floor_indicator(0);
 
 
 
-void state_machine_main(Elevator &my_elevator, Queue &my_queue){
 
-	std::cout << "State machine initializing..." << std::endl;
+
+////////////////////////////////////////////////////////////////////////////////
+//Initializing
+////////////////////////////////////////////////////////////////////////////////
+	std::cout << "Event manager initializing..." << std::endl;
 	elev_init();
 	int input_poll_rate_ms = 25;
 	while(elev_get_floor_sensor_signal() != 0){
 		elev_set_motor_direction(DIRN_DOWN);
 	}
 	elev_set_motor_direction(DIRN_STOP);
-	my_elevator.set_elevator_current_state(IDLE);
-	my_elevator.set_elevator_floor(0);
-	my_elevator.set_elevator_dir(D_Stop);
 	elev_set_floor_indicator(0);
-	std::cout << "State machine initialized" << std::endl;
 
+
+	
+	std::cout << "Event manager initialized" << std::endl;
+/////////////////////////////////////////////////////////////////////////////////
 
 
 	while(1){
+		if (check_buttons(my_queue)){
+
+			//Update elevators in network --> NEI, fordi når queue blir oppdatert, blir my_elevator og elevators oppdatert siden de peker på ordrematrisen.
+			
+			
+			switch(my_elevator.get_elevator_status().role){
+				case MASTER:
+					std::cout << "Supervisor" << std::endl;
+					//sv_manage_order_matrix(network.get_elevators());
+					//Kall supervisor funksjon.
+					break;
+
+				case SLAVE:
+					std::cout << "Send_message_packet" << std::endl;
+					//send_message_packet;
+					break;
+			}
 		
-		check_buttons(my_queue);
+			
+		}
+
+
 		Order next_order = my_queue.get_next_order(elevator_ID);
-		//std::cout << "Floor: " << next_order.floor << "\t btn: " << next_order.btn << std::endl;
-		//std::cout << my_elevator.get_elevator_status().current_state << std::endl;
-		if (!((next_order.floor == 0) && (next_order.btn == B_HallDown))){ 
+		if (next_order.active_order == 1){
 			fsm_execute_order(my_elevator,my_queue,next_order);
 		}
 
 
 
-		//Check for new floor sensor signals
-		//Update status on my_elevator
+
 		my_elevator.set_elevator_floor(elev_get_floor_sensor_signal());
 		if (elev_get_floor_sensor_signal() != -1){
 			fsm_on_floor_arrival(my_elevator,my_queue);
 		}
 
 
-		//Check timer if timedout
-	//	if(timer_timedOut()){
-			//fsm_on_door_timeout;
-	//		timer_stop();
-	//	}
-		if((Button)my_elevator.get_elevator_status().current_state == DOOR_OPEN){
+		if(timer_door_timedOut()){
 			fsm_on_door_timeout(my_elevator,my_queue);
+			timer_door_stop();
 		}
 
+/* To come
+		if(timer_condition_timedOut()){
+			my_elevator.set_elevator_out_of_order(1);
+			std::cout << "Elevator is out of order" << std::endl;
+			timer_condition_stop();
+		}
+*/
 
 		set_all_lights(my_queue);
-
-
-
-		//usleep(input_poll_rate_ms*1000);
+		
+		usleep(input_poll_rate_ms*1000);
 	}
-}
-//////////////////////////////////////////////////////
-
-
-int main(){
-	Queue my_queue;
-	Elevator my_elevator;
-
-	state_machine_main(my_elevator, my_queue);
 }
 
 
 
 /*
 To do:
+- Timer for elevator out of order --> Lage egen timer
 - Ignorere knappetrykk OPP når dir = ned --> get_next_order bør sjekke retning på heisen for å avgjøre hvilken ordre den skal returnere.
-- Timer
+
+
+- Role --> Assign elevators to orders etc (inform_supervisor) -->Når network er ferdig. Litt mye feilmeldinger nå.
+- Supervisor funksjoner
 */

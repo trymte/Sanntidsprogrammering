@@ -70,8 +70,10 @@ void elev_set_button_lamp(elev_button_type_t button, int floor, int value) {
 
 
 void elev_set_floor_indicator(int floor) {
-    assert(floor >= 0);
-    assert(floor < N_FLOORS);
+//    assert(floor >= 0);
+//    assert(floor < N_FLOORS);
+    if ((floor<0)||(floor > N_FLOORS))
+        return;
 
     // Binary encoding. One light must always be on.
     if (floor & 0x02) {

@@ -31,10 +31,10 @@ int main(){
 	Network my_network;
 
 	std::cout << "Initializing threads" << std::endl;
-	std::thread state_machine_thread(state_machine_main(Elevator &my_elevator, Queue &my_queue, Network &my_network));
+	std::thread event_manager_thread(event_manager_main(Elevator &my_elevator, Queue &my_queue, Network &my_network));
 	std::thread network_thread(network_main(Elevator &my_elevator, Queue &my_queue, Network &my_network));
 
-	state_machine_thread.join();
+	event_manager_thread.join();
 	network_thread.join();
 
 

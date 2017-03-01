@@ -5,7 +5,7 @@
 #include <deque>
 #include <algorithm>
 
-#include "statemachine.h"
+#include "eventmanager.h"
 #include "driver/timer.h"
 
 //Hvor skal denne?
@@ -144,11 +144,11 @@ void fsm_on_door_timeout(Elevator &my_elevator,Queue &my_queue){
 
 
 
-void state_machine_main(Elevator &my_elevator, Queue &my_queue){
+void event_manager_main(Elevator &my_elevator, Queue &my_queue){
 ////////////////////////////////////////////////////////////////////////////////
 //Initializing
 ////////////////////////////////////////////////////////////////////////////////
-	std::cout << "State machine initializing..." << std::endl;
+	std::cout << "Event manager initializing..." << std::endl;
 	elev_init();
 	int input_poll_rate_ms = 25;
 	while(elev_get_floor_sensor_signal() != 0){
@@ -163,7 +163,7 @@ void state_machine_main(Elevator &my_elevator, Queue &my_queue){
 	elev_set_floor_indicator(0);
 	//
 	
-	std::cout << "State machine initialized" << std::endl;
+	std::cout << "Event manager initialized" << std::endl;
 /////////////////////////////////////////////////////////////////////////////////
 
 
