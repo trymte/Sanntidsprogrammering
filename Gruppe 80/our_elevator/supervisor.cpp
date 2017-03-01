@@ -1,12 +1,12 @@
 #include "supervisor.h"
 
 
-void manage_order_matrix(std::vector<Elevator> &elevators){	
+void sv_manage_order_matrix(std::vector<Elevator> &elevators){	
 	distribute_order_matrix(Queue::queue_assign_elevators_to_orders(elevators));
 }
 
 
-void manage_completed_order(Elevator &elevator){
+void sv_manage_completed_order(Elevator &elevator){
 	//Remove order that elevator is done with.
 	Status elevator_status = elevator.get_elevator_status();
 	
@@ -25,7 +25,7 @@ void manage_completed_order(Elevator &elevator){
 }
 
 
-void manage_incomplete_order(Elevator &elevator){
+void sv_manage_incomplete_order(Elevator &elevator){
 	//Queue::reset_orders(*elevator.get_order_matrix_ptr(),elevator.get_elevator_status());
 
 	//Queue reset orders
