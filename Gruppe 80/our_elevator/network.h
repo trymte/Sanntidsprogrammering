@@ -29,7 +29,6 @@ public:
 
 	void handle_message(Message message_ID, int elevator_ID);
 
-	//void inform_supervisor(Elevator elevator); Trenger vi? 
 
 //------------------------------------------------------------------------
 // Kan sløyfe desse funksjonane :

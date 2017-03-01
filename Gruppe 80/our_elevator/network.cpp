@@ -75,14 +75,19 @@ void Network::handle_message(Message message, int elevator_ID){
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			//distribute_orderMatrix
 		break;
+		case SLAVE_ORDER_COMPLETE:
+			sv_manage_completed_order(elevators[elevator_ID]);
+		break
 		case SLAVE_ORDER_INCOMPLETE:
-			//set out_of order til 0
+			sv_manage_incomplete_order(elevators[elevator_ID]);
 		break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
-			//update_order_matrix and distribute
+			sv_manage_order_matrix(elevators);
 		break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
-			//distribute_order_matrix
+			for(int i = 0; i < N_ELEVATORS; i ++){
+				elevators[i].set_elevator_order_matrix(elevators[elevator_ID].get_order_matrix_ptr());
+			}
 		break;
 	}
 
@@ -90,6 +95,7 @@ void Network::handle_message(Message message, int elevator_ID){
 
 
 //Trenger egentlig ikkje desse funksjonane, kan berre skrive send_message_packet(SLAVE_REQUEST_ORDER_MATRIX, elev.get_elevator_status().elevator_ID);
+/*
 void Network::slave_send_elevator_information(int elevator_ID){
 	Message message = SLAVE_SEND_ELEVATOR_INFORMATION;
 	send_message_packet(message, elevator_ID);
@@ -111,6 +117,7 @@ void Network::slave_order_incomplete(int elevator_ID){
 	Message message = SLAVE_ORDER_INCOMPLETE;
 	send_message_packet(message, elevator.get_elevator_status().elevator_ID);
 }
+*/
 
 void Network::recieve_message_packet(){
 	Message message;
@@ -134,16 +141,20 @@ void Network::send_message_packet(Message message, int elevator_ID){
 			message = "0";
 			udp_sender(message + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
 		break;
+		case SLAVE_ORDER_COMPLETE:
+			message = "1";
+			udp_sender(message + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, UDP_SEND_IP);
+		break;
 		case SLAVE_ORDER_INCOMPLETE:
-			message = "1",
+			message = "2",
 			udp_sender(message + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
 		break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
-			message = "2";
+			message = "3";
 			udp_broadcaster(message + elevator_object_to_messagestring(elevators[elevator_ID]));
 		break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
-			message = "3"; 
+			message = "4"; 
 			udp_broadcaster(message + elevator_object_to_messagestring(elevators[elevator_ID]));
 		break;	
 	}
