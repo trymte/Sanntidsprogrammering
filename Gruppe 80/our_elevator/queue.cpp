@@ -61,7 +61,6 @@ unsigned int Queue::calculate_cost(Order order, std::vector<Status>& status_vect
 
 	for(std::vector<Status>::iterator it = status_vector.begin(); it != status_vector.end();++it){
 		status_it = *it;
-		//Check status on the elevators that are not out of order.
 		if (status_it.out_of_order != 1){ 
 			temp_cost = abs(order.floor - status_it.floor)*10; //Rewrite cost calculation!!!!
 			if (temp_cost < lowest_cost){
@@ -132,13 +131,11 @@ std::vector<std::vector<Queue_element> > Queue::merge_order_matrices(std::vector
 	for (int i = 0;i<rows;i++){
 		for (int j=0;j<cols;j++){
 			if ((order_matrix_1[i][j].elevator_ID == -1) && (order_matrix_2[i][j].elevator_ID != -1)){
-
 				order_matrix_1[i][j].active_button = order_matrix_2[i][j].active_button;
 				order_matrix_1[i][j].elevator_ID = order_matrix_2[i][j].elevator_ID;
 			}
 		}
 	}
-
 	return order_matrix_1;
 }
 
@@ -239,7 +236,6 @@ void Queue::remove_order(std::vector <std::vector <Queue_element> > &order_matri
 		order_matrix[order.floor][order.btn].active_button = 0;
 		order_matrix[order.floor][order.btn].elevator_ID = -1;
 	}
-
 }
 
 
@@ -260,7 +256,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 		status_vector.push_back(iteration_status);
 	}
 
-	//Create a order_matrix that contains all the orders assigned to an elevator
+	//Create an order_matrix that contains all the orders assigned to an elevator
 	std::vector <std::vector <Queue_element> > assigned_order_matrix;
 	std::vector <std::vector <Queue_element > > curr_order_matrix;
 	assigned_order_matrix = twoD_vector_init();
@@ -268,7 +264,6 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 	int assigned_elevator = -1;
 
 	for(elevator_it = elevators.begin();elevator_it != elevators.end();++elevator_it){
-		
 		curr_order_matrix = *elevator_it->get_order_matrix_ptr();
 		for (int i=0;i<N_FLOORS;i++){
 			for(int j=0;j<N_BUTTONS;j++){
@@ -276,6 +271,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 				//If an order in an order_matrix in elevators is not found in assigned_order_matrix, add it.
 				if ((assigned_order_matrix[i][i].active_button == 0)&&(curr_order_matrix[i][j].active_button == 1)){
 					order_to_be_assigned.floor = i;
+					order_to_be_assigned.btn = (Button)j;/*
 					switch(j){
 						case 0:
 							order_to_be_assigned.btn = B_HallUp;
@@ -286,7 +282,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 						case 2:
 							order_to_be_assigned.btn = B_Cab;
 							break;
-					}
+					}*/
 					Queue::add_order(assigned_order_matrix,order_to_be_assigned,curr_order_matrix[i][j].elevator_ID);
 				}
 
@@ -294,6 +290,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 				//Find elevator with lowest cost and add order to assigned_order_matrix
 				if ((curr_order_matrix[i][j].active_button == 1) && (curr_order_matrix[i][j].elevator_ID == -1)){
 					order_to_be_assigned.floor = i;
+					order_to_be_assigned.btn = (Button)j;/*
 					switch(j){
 						case 0:
 							order_to_be_assigned.btn = B_HallUp;
@@ -304,7 +301,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 						case 2:
 							order_to_be_assigned.btn = B_Cab;
 							break;
-					}
+					}*/
 
 					assigned_elevator = Queue::calculate_cost(order_to_be_assigned,status_vector);
 					Queue::add_order(assigned_order_matrix, order_to_be_assigned,assigned_elevator);
