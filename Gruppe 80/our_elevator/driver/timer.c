@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <sys/time.h>
+#include "../const_struct_def.h"
 
 
 
@@ -13,33 +14,29 @@ static double get_wall_time(void){
 
 static  double          timerEndTime;
 static  int             timerActive;
+int timer_id;
+int* timer_id_ptr = &timer_id;
 
-void timer_door_start(double duration){ //Duration in seconds
+void timer_start(double duration, unsigned int id){ //Duration in seconds
     timerEndTime    = get_wall_time() + duration;
     timerActive     = 1;
+    *timer_id_ptr = id;
 }
 
-void timer_door_stop(void){
+void timer_stop(void){
     timerActive = 0;
+    *timer_id_ptr = 0;
 }
 
-int timer_door_timedOut(void){
+int timer_timedOut(void){
     return (timerActive  &&  get_wall_time() > timerEndTime);
 }
 
-/*
-
-void timer_condition_start(double duration){ //Duration in seconds
-    timerEndTime    = get_wall_time() + duration;
-    timerActive     = 1;
+unsigned int get_timer_id(){
+    return timer_id;
 }
 
-void timer_condition_stop(void){
-    timerActive = 0;
+void set_timer_id(unsigned int id){
+    *timer_id_ptr = id;
 }
 
-int timer_condition_timedOut(void){
-    return (timerActive  &&  get_wall_time() > timerEndTime);
-}
-
-*/

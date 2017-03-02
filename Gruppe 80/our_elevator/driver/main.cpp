@@ -53,7 +53,6 @@ void set_all_lights(Queue &my_queue){
 
 
 
-
 int main(){
 ///////////////////////////////////////////////////////
 // For testing, skal i main
@@ -65,22 +64,23 @@ int main(){
 	my_elevator.set_elevator_floor(0);
 	my_elevator.set_elevator_dir(D_Stop);
 	my_elevator.set_elevator_role(MASTER);
+	my_elevator.set_elevator_out_of_order(0);
+	my_elevator.set_elevator_ID(1); 
 	elev_set_floor_indicator(0);
 
 
 
-
-
-////////////////////////////////////////////////////////////////////////////////
+ 
+//////////////////////////////////////////////////////////////////////////////// 
 //Initializing
-////////////////////////////////////////////////////////////////////////////////
-	std::cout << "Event manager initializing..." << std::endl;
+////////////////////////////////////////////////////////////////////////////////     
+	std::cout << "Event manager initializing..." << std::endl; 
 	elev_init();
 	int input_poll_rate_ms = 25;
 	while(elev_get_floor_sensor_signal() != 0){
 		elev_set_motor_direction(DIRN_DOWN);
 	}
-	elev_set_motor_direction(DIRN_STOP);
+	elev_set_motor_direction(DIRN_STOP); 
 	elev_set_floor_indicator(0);
 
 
@@ -107,52 +107,60 @@ int main(){
 					//send_message_packet;
 					break;
 			}
+
 		
-			
 		}
 
-
-		Order next_order = my_queue.get_next_order(elevator_ID);
-		if (next_order.active_order == 1){
+		Order next_order = my_queue.get_next_order(my_elevator.get_elevator_status().elevator_ID);
+		if (next_order.active_order == 1){ 
 			fsm_execute_order(my_elevator,my_queue,next_order);
 		}
 
 
-
-
-		my_elevator.set_elevator_floor(elev_get_floor_sensor_signal());
+		int current_floor = elev_get_floor_sensor_signal();
+		my_elevator.set_elevator_floor(current_floor);
 		if (elev_get_floor_sensor_signal() != -1){
-			fsm_on_floor_arrival(my_elevator,my_queue);
+			fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
 		}
 
 
-		if(timer_door_timedOut()){
+		if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){ 
 			fsm_on_door_timeout(my_elevator,my_queue);
-			timer_door_stop();
 		}
 
-/* To come
-		if(timer_condition_timedOut()){
-			my_elevator.set_elevator_out_of_order(1);
+
+
+		if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ 
 			std::cout << "Elevator is out of order" << std::endl;
-			timer_condition_stop();
-		}
-*/
+			my_elevator.set_elevator_out_of_order(1);
+			timer_stop(); 
+		} 
 
-		set_all_lights(my_queue);
-		
-		usleep(input_poll_rate_ms*1000);
-	}
+//		std::cout << my_elevator.get_elevator_status().current_state << std::endl;      
+		set_all_lights(my_queue); 
+	 
+		usleep(input_poll_rate_ms*1000);   
+	}  
 }
-
-
-
 /*
+
+ 
+
+
 To do:
-- Timer for elevator out of order --> Lage egen timer
+
 - Ignorere knappetrykk OPP når dir = ned --> get_next_order bør sjekke retning på heisen for å avgjøre hvilken ordre den skal returnere.
 
 
 - Role --> Assign elevators to orders etc (inform_supervisor) -->Når network er ferdig. Litt mye feilmeldinger nå.
 - Supervisor funksjoner
 */
+
+
+
+
+
+
+
+
+
