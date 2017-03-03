@@ -93,8 +93,7 @@ int main(){
 		if (check_buttons(my_queue)){
 
 			//Update elevators in network --> NEI, fordi når queue blir oppdatert, blir my_elevator og elevators oppdatert siden de peker på ordrematrisen.
-			
-			
+						
 			switch(my_elevator.get_elevator_status().role){
 				case MASTER:
 					std::cout << "Supervisor" << std::endl;
@@ -107,8 +106,7 @@ int main(){
 					//send_message_packet;
 					break;
 			}
-
-		
+	
 		}
 
 		Order next_order = my_queue.get_next_order(my_elevator.get_elevator_status().elevator_ID);
@@ -129,12 +127,11 @@ int main(){
 		}
 
 
-
 		if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ 
 			std::cout << "Elevator is out of order" << std::endl;
 			my_elevator.set_elevator_out_of_order(1);
 			timer_stop(); 
-		} 
+		}
 
 //		std::cout << my_elevator.get_elevator_status().current_state << std::endl;      
 		set_all_lights(my_queue); 
@@ -143,13 +140,8 @@ int main(){
 	}  
 }
 /*
-
  
-
-
 To do:
-
-- Ignorere knappetrykk OPP når dir = ned --> get_next_order bør sjekke retning på heisen for å avgjøre hvilken ordre den skal returnere.
 
 
 - Role --> Assign elevators to orders etc (inform_supervisor) -->Når network er ferdig. Litt mye feilmeldinger nå.
