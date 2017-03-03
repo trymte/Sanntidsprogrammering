@@ -16,6 +16,8 @@ public:
 
 	Elevator(const Elevator &elevator);
 
+	void print_elevator();
+
 	Status get_elevator_status(){return elevator_status;}
 
 	int get_elevator_ID(){return elevator_status.elevator_ID;}
