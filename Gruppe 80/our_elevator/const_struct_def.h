@@ -62,7 +62,7 @@ struct Order{
 
 
 struct Status{
-    char* ip;
+    std::string ip;
 	Dirn dir;
 	int floor;
     State current_state;
