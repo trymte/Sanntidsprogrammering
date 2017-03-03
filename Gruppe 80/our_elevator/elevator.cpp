@@ -2,7 +2,7 @@
 
 
 
-Elevator::Elevator(): order_matrix_ptr(0)
+Elevator::Elevator(): order_matrix_ptr(NULL)
 {
 	elevator_status.dir = D_Stop;
 	elevator_status.floor = -1;

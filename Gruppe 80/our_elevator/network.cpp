@@ -2,11 +2,18 @@
 
 
 Network::Network(){
+	
+	std::vector<Elevator> temp;
+//	this->elevators = temp;
 	Elevator elev_temp;
-	for(int i = 0; i < N_ELEVATORS ; i++){
-		elevators.push_back(elev_temp);
-		elevators[i].set_elevator_ID(i);
-	}
+//	elev_temp.set_elevator_status(init_status);
+	temp.push_back(elev_temp);
+//	for(int i = 0; i < N_ELEVATORS ; i++){
+//		std::cout << "Hi from network constructor" << std::endl;
+//		temp.push_back(elev_temp);
+//		elevators[i].set_elevator_ID(i);
+//	}
+
 }
 
 //--------------------------------------------------------------------------------------------------
