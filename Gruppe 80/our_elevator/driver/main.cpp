@@ -37,10 +37,6 @@ bool check_buttons(Queue &my_queue){
 }
 
 void set_all_lights(Queue &my_queue){
-	//Må lages, alternativt tenne lysene underveis?
-	//Kan lese fra queue hvilke betjeningsknapper som skal lyse.
-
-
 	for(int i =0;i<N_FLOORS;i++){
 		for(int j=0;j<N_BUTTONS;j++){
 			if(my_queue.get_order_matrix()[i][j].active_button == 1){
@@ -49,36 +45,38 @@ void set_all_lights(Queue &my_queue){
 			else
 				elev_set_button_lamp((elev_button_type_t)j,i,0);
 		}
-	}
+	} 
 }
  
-
-
+ 
+ 
 int main(){
 ///////////////////////////////////////////////////////
 // For testing, skal i main
 	Status init_status = {
-		.dir = D_Stop,
-		.floor = 0,
-		.current_state = IDLE,
-		.elevator_ID = 1,
-		.out_of_order = 0,
-		.role = MASTER
+	    .dir = D_Stop,
+	    .floor = 0,
+	    .current_state = IDLE,
+	    .elevator_ID = 1,
+	    .out_of_order = 0,
+	    .role = MASTER
 	};
-    
-   
-
-//	Network my_network; //Får seg.fault, skjekke konstruktør.
+      
+      
+ 
+	Network my_network; 
 	Queue my_queue;
 	Elevator my_elevator; //Settes til å peke på elevator(elevator_ID) i elevators. Alle endringer på my_elevator i etterkant vil da endres i network. GUNSTIG!
 	my_elevator.set_elevator_status(init_status);
+	my_elevator.set_elevator_order_matrix(my_queue.get_order_matrix_ptr());
 
     
 
+	std::vector<Elevator> temp;
+	temp.push_back(my_elevator);
 
 
-
- 
+  
  
 //////////////////////////////////////////////////////////////////////////////// 
 //Initializing
@@ -92,13 +90,13 @@ int main(){
 	elev_set_motor_direction(DIRN_STOP); 
 	elev_set_floor_indicator(0);
 
-
+ 
 	
 	std::cout << "Event manager initialized" << std::endl;
 /////////////////////////////////////////////////////////////////////////////////
+ 
 
-
-	while(1){
+	while(1){ 
 		if (check_buttons(my_queue)){
 
 			//Update elevators in network --> NEI, fordi når queue blir oppdatert, blir my_elevator og elevators oppdatert siden de peker på ordrematrisen.
@@ -140,20 +138,20 @@ int main(){
 			std::cout << "Elevator is out of order" << std::endl;
 			my_elevator.set_elevator_out_of_order(1);
 			timer_stop(); 
-		}
+		} 
 
 //		std::cout << my_elevator.get_elevator_status().current_state << std::endl;      
 		set_all_lights(my_queue); 
 	 
 		usleep(input_poll_rate_ms*1000);   
 	}  
-
-	
-
-
+  
+	   
+ 
+  
 }
 /*
- 
+  
 To do:
 
 
