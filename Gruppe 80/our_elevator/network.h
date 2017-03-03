@@ -3,7 +3,6 @@
 #include "Network_files/udp_sendrec.h"
 #include "supervisor.h"
 #include "elevator.h"
-#include "const_struct_def.h"
 
 
 class Network{

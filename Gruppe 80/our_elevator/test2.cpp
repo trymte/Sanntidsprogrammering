@@ -1,17 +1,46 @@
+#include <stdio.h>      
+#include <sys/types.h>
+#include <ifaddrs.h>
+#include <netinet/in.h> 
+#include <string.h> 
+#include <arpa/inet.h>
+#include <sys/types.h>
+#include <ifaddrs.h>
 #include <vector>
 #include <stdlib.h>
 #include <iostream>
-#include "const_struct_def.h"
+#include <string>
+
+
+void get_my_ipaddress(std::string &ip){
+    struct ifaddrs * ifAddrStruct=NULL;
+    struct ifaddrs * ifa=NULL;
+    void * tmpAddrPtr=NULL;
+
+    getifaddrs(&ifAddrStruct);
+
+    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
+        if (!ifa->ifa_addr) {
+            continue;
+        }
+        if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
+            // is a valid IP4 Address
+            tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
+            char addressBuffer[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+            printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
+            std::string temp(addressBuffer);
+            ip = temp;
+        }
+    }
+
+    if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
+    
+}
+
 
 int main(){
-	std::vector<std::vector<Queue_element> > temp = vector_init();
-	
-	Queue_element temp2;
-	temp2.active_button = 1;
-	temp2.elevator_ID = 3;
-	temp[0][1] = temp2;
-	std::cout << temp[0][1].active_button << " : " << temp[0][1].elevator_ID << std::endl;
-
-
-	return 0;
+	std::string ip;
+	get_my_ipaddress(ip);
+	std::cout << "ipaddress of this computer: " << ip << std::endl;
 }

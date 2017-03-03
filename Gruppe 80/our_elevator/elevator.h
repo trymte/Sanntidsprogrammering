@@ -1,7 +1,7 @@
 #pragma once
 
 #include "const_struct_def.h"
-
+#include "Network_files/udp_sendrec.h"
 
 
 class Elevator{
@@ -21,6 +21,8 @@ public:
 	int get_elevator_ID(){return elevator_status.elevator_ID;}
 
 	std::vector<std::vector <Queue_element> >* get_order_matrix_ptr(){return this->order_matrix_ptr;}
+
+	void set_elevator_ip(std::string ip){this->elevator_status.ip = ip;}
 
 	void set_elevator_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
 
