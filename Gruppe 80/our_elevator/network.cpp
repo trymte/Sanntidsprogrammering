@@ -3,16 +3,20 @@
 
 Network::Network(){
 	
-	std::vector<Elevator> temp;
-//	this->elevators = temp;
+
 	Elevator elev_temp;
 //	elev_temp.set_elevator_status(init_status);
-	temp.push_back(elev_temp);
-//	for(int i = 0; i < N_ELEVATORS ; i++){
-//		std::cout << "Hi from network constructor" << std::endl;
-//		temp.push_back(elev_temp);
-//		elevators[i].set_elevator_ID(i);
-//	}
+
+//Ikke god løsning, se på det senere
+	Queue q_temp;
+	elev_temp.set_elevator_order_matrix(q_temp.get_order_matrix_ptr());
+//
+
+
+	for(int i = 0; i < N_ELEVATORS ; i++){
+		this->elevators.push_back(elev_temp);
+		elevators[i].set_elevator_ID(i);
+	}
 
 }
 
@@ -144,16 +148,16 @@ void Network::send_message_packet(Message message, int elevator_ID){
 	std::string message_string;
 	switch(message){
 		case SLAVE_REQUEST_ORDER_MATRIX:
-			message_string = "0";
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
+//morten			message_string = "0";
+//morten			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
 			break;
 		case SLAVE_ORDER_COMPLETE:
-			message_string = "1";
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, UDP_SEND_IP);
+//morten			message_string = "1";
+//morten			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, UDP_SEND_IP);
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
-			message_string = "2",
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
+//morten			message_string = "2",
+//morten			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
 			message_string = "3";

@@ -18,9 +18,11 @@ int timer_id;
 int* timer_id_ptr = &timer_id;
 
 void timer_start(double duration, unsigned int id){ //Duration in seconds
+    //if(timer_id == 0){
     timerEndTime    = get_wall_time() + duration;
     timerActive     = 1;
     *timer_id_ptr = id;
+    //} 
 }
 
 void timer_stop(void){
