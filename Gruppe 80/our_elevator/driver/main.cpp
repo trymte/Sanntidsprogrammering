@@ -4,13 +4,14 @@
 #include "elev.h"
 #include "io.h"
 #include "channels.h"
-
-#include "../queue.cpp"
-#include "../const_struct_def.cpp"
 #include "timer.h"
 
+//To be deleted, as they are called from makefile
+#include "../queue.cpp"
+#include "../const_struct_def.cpp"
 #include "../fsm.cpp"
-//#include "../network.cpp"
+#include "../network.cpp"
+#include "../Network_files/udp_sendrec.cpp"
 #include "../elevator.cpp"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -50,26 +51,34 @@ void set_all_lights(Queue &my_queue){
 		}
 	}
 }
-
+ 
 
 
 int main(){
 ///////////////////////////////////////////////////////
 // For testing, skal i main
-//	Network my_network;
-	Elevator my_elevator; //Settes til å peke på elevator(elevator_ID) i elevators. Alle endringer på my_elevator i etterkant vil da endres i network. GUNSTIG!
+	Status init_status = {
+		.dir = D_Stop,
+		.floor = 0,
+		.current_state = IDLE,
+		.elevator_ID = 1,
+		.out_of_order = 0,
+		.role = MASTER
+	};
+    
+   
+
+//	Network my_network; //Får seg.fault, skjekke konstruktør.
 	Queue my_queue;
+	Elevator my_elevator; //Settes til å peke på elevator(elevator_ID) i elevators. Alle endringer på my_elevator i etterkant vil da endres i network. GUNSTIG!
+	my_elevator.set_elevator_status(init_status);
 
-	my_elevator.set_elevator_current_state(IDLE);
-	my_elevator.set_elevator_floor(0);
-	my_elevator.set_elevator_dir(D_Stop);
-	my_elevator.set_elevator_role(MASTER);
-	my_elevator.set_elevator_out_of_order(0);
-	my_elevator.set_elevator_ID(1); 
-	elev_set_floor_indicator(0);
+    
 
 
 
+
+ 
  
 //////////////////////////////////////////////////////////////////////////////// 
 //Initializing
@@ -138,6 +147,10 @@ int main(){
 	 
 		usleep(input_poll_rate_ms*1000);   
 	}  
+
+	
+
+
 }
 /*
  
@@ -148,7 +161,15 @@ To do:
 - Supervisor funksjoner
 */
 
+/*
+int my_network = 1;
+int *my_elevator = &my_network;	
 
+std::cout << "My_network = " << my_network << std::endl;
+*my_elevator = 2;
+std::cout << "My_elevator = " << *my_elevator << std::endl;
+std::cout << "My_network = " << my_network << std::endl;
+*/
 
 
 

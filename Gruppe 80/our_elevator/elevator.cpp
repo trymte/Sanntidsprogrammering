@@ -2,7 +2,7 @@
 
 
 
-Elevator::Elevator(): order_matrix_ptr(0)
+Elevator::Elevator(): order_matrix_ptr(NULL)
 {
 	get_my_ipaddress(elevator_status.ip);
 	elevator_status.dir = D_Stop;
