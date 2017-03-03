@@ -35,10 +35,10 @@ typedef enum {
 
 typedef enum{
     SLAVE_REQUEST_ORDER_MATRIX = 0,
-    //SLAVE_ORDER_COMPLETE = 1, treng vell egentlig ikkje denne
-    SLAVE_ORDER_INCOMPLETE = 1,
-    SLAVE_SEND_ELEVATOR_INFORMATION = 2,
-    MASTER_DISTRIBUTE_ORDER_MATRIX = 3
+    SLAVE_ORDER_COMPLETE = 1,
+    SLAVE_ORDER_INCOMPLETE = 2,
+    SLAVE_SEND_ELEVATOR_INFORMATION = 3,
+    MASTER_DISTRIBUTE_ORDER_MATRIX = 4
 } Message;
 
 
@@ -62,6 +62,7 @@ struct Order{
 
 
 struct Status{
+    char* ip;
 	Dirn dir;
 	int floor;
     State current_state;

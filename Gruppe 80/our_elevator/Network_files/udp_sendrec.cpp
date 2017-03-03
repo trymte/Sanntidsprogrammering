@@ -1,4 +1,4 @@
-#include "sendrec.h"
+#include "udp_sendrec.h"
 
 int bsocket, lsocket;
 

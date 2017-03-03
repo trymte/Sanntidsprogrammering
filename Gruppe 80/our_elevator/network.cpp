@@ -2,14 +2,10 @@
 
 
 Network::Network(){
-	Elevator_online temp_elev_online;
-	temp_elev_online.online = false;
 	Elevator elev_temp;
 	for(int i = 0; i < N_ELEVATORS ; i++){
 		elevators.push_back(elev_temp);
 		elevators[i].set_elevator_ID(i);
-		elevators_online.push_back(temp_elev_online);
-		elevators_online[i].elevator_ID = i;
 	}
 }
 
@@ -74,21 +70,21 @@ void Network::handle_message(Message message, int elevator_ID){
 	switch(message){
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			//distribute_orderMatrix
-		break;
+			break;
 		case SLAVE_ORDER_COMPLETE:
-			sv_manage_completed_order(elevators[elevator_ID]);
-		break
+			//sv_manage_completed_order(elevators[elevator_ID]);
+			break;
 		case SLAVE_ORDER_INCOMPLETE:
-			sv_manage_incomplete_order(elevators[elevator_ID]);
-		break;
+			//sv_manage_incomplete_order(elevators[elevator_ID]);
+			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
-			sv_manage_order_matrix(elevators);
-		break;
+			//sv_manage_order_matrix(elevators);
+			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
 			for(int i = 0; i < N_ELEVATORS; i ++){
 				elevators[i].set_elevator_order_matrix(elevators[elevator_ID].get_order_matrix_ptr());
 			}
-		break;
+			break;
 	}
 
 }
@@ -126,36 +122,38 @@ void Network::recieve_message_packet(){
 	struct code_message packet = udp_recieve_broadcast();
 	datastring.assign(packet.data);
 	message = message_id_string_to_enum(datastring.substr(0,1));
-	messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos());
+	messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 
 	Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 	Status temp_status = temp_elevator.get_elevator_status();
-	elevators[temp_status.elevator_ID] = temp_elevator;
+	elevators[temp_status.elevator_ID].set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
 	handle_message(message, temp_status.elevator_ID);
 }
 
 void Network::send_message_packet(Message message, int elevator_ID){
-	std::string message;
+	std::string message_string;
 	switch(message){
 		case SLAVE_REQUEST_ORDER_MATRIX:
-			message = "0";
-			udp_sender(message + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
-		break;
+			message_string = "0";
+			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
+			break;
 		case SLAVE_ORDER_COMPLETE:
-			message = "1";
-			udp_sender(message + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, UDP_SEND_IP);
-		break;
+			message_string = "1";
+			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, UDP_SEND_IP);
+			break;
 		case SLAVE_ORDER_INCOMPLETE:
-			message = "2",
-			udp_sender(message + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
-		break;
+			message_string = "2",
+			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
+			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
-			message = "3";
-			udp_broadcaster(message + elevator_object_to_messagestring(elevators[elevator_ID]));
-		break;
+			message_string = "3";
+			udp_broadcaster(message_string + elevator_object_to_messagestring(elevators[elevator_ID]));
+			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
-			message = "4"; 
-			udp_broadcaster(message + elevator_object_to_messagestring(elevators[elevator_ID]));
-		break;	
+			message_string = "4"; 
+			udp_broadcaster(message_string + elevator_object_to_messagestring(elevators[elevator_ID]));
+			break;	
+		default:
+			std::cout << "No valid message" << std::endl;
 	}
 }

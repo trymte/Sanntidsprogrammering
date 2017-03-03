@@ -5,18 +5,10 @@
 #include "elevator.h"
 #include "const_struct_def.h"
 
-typedef struct{
-	char* ip;
-	int elevator_ID;
-	bool online;
-} Elevator_online;
-//integrere elevator online i out_of_order variabelen til kvar heis?
-//Kan funke det. Så i stedet for en bool "out_of_order", så har vi en struct "condition" som tar for seg online og out_of_order? -Morten
+
 class Network{
 private:
 	std::vector<Elevator> elevators;
-
-	std::vector<Elevator_online> elevators_online;
 
 	Elevator messagestring_to_elevator_object(std::string &messagestring);
 
@@ -32,6 +24,7 @@ public:
 
 //------------------------------------------------------------------------
 // Kan sløyfe desse funksjonane :
+/*
 	void slave_send_elevator_information(int elevator_ID);
 
 	void slave_request_order_matrix(int elevator_ID);
@@ -41,7 +34,7 @@ public:
 	void slave_order_complete(int elevator_ID); //treng me denne?
 
 	void slave_order_incomplete(int elevator_ID);
-
+*/
 // ---------------------------------------------------------------------
 
 	void recieve_message_packet();

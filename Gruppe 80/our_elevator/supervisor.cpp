@@ -2,7 +2,7 @@
 
 
 void sv_manage_order_matrix(std::vector<Elevator> &elevators){	
-	distribute_order_matrix(Queue::queue_assign_elevators_to_orders(elevators));
+	//distribute_order_matrix(Queue::queue_assign_elevators_to_orders(elevators));
 }
 
 
@@ -21,7 +21,7 @@ void sv_manage_completed_order(Elevator &elevator){
 			elevator_order_matrix[elevator_status.floor][i].elevator_ID = -1;
 		}
 	}
-	distribute_order_matrix(elevator_order_matrix);
+	//distribute_order_matrix(elevator_order_matrix);
 }
 
 
