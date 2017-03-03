@@ -1,6 +1,19 @@
 #pragma once
 
 
+#include <stdlib.h> //exit(0);
+#include <stdio.h>      
+#include <ifaddrs.h>
+#include <netinet/in.h> 
+#include <string.h> 
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <ifaddrs.h>
+#include <vector>
+#include <iostream>
+#include <string>
 
 
 

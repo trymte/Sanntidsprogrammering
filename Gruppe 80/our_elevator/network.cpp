@@ -142,18 +142,21 @@ void Network::recieve_message_packet(){
 
 void Network::send_message_packet(Message message, int elevator_ID){
 	std::string message_string;
+	char * ip = new char[message_string.size() + 1];
+	std::copy(message_string.begin(), message_string.end(), ip);
+	ip[message_string.size()] = '\0'; // don't forget the terminating 0
 	switch(message){
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			message_string = "0";
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
+			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, ip);
 			break;
 		case SLAVE_ORDER_COMPLETE:
 			message_string = "1";
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, UDP_SEND_IP);
+			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, ip);
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
 			message_string = "2",
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, UDP_SEND_IP);
+			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, ip);
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
 			message_string = "3";
@@ -166,4 +169,5 @@ void Network::send_message_packet(Message message, int elevator_ID){
 		default:
 			std::cout << "No valid message" << std::endl;
 	}
+	delete[] ip;
 }

@@ -20,6 +20,8 @@ public:
 
 	int get_elevator_ID(){return elevator_status.elevator_ID;}
 
+	std::string get_elevator_ip(){return elevator_status.ip;}
+
 	std::vector<std::vector <Queue_element> >* get_order_matrix_ptr(){return this->order_matrix_ptr;}
 
 	void set_elevator_ip(std::string ip){this->elevator_status.ip = ip;}
