@@ -20,6 +20,8 @@ public:
 
 	Status get_elevator_status(){return elevator_status;}
 
+	Role get_elevator_role(){return elevator_status.role;}
+
 	int get_elevator_ID(){return elevator_status.elevator_ID;}
 
 	std::string get_elevator_ip(){return elevator_status.ip;}
