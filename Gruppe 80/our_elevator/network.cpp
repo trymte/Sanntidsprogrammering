@@ -79,7 +79,7 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 void Network::handle_message(Message message, int elevator_ID){
 	switch(message){
 		case SLAVE_REQUEST_ORDER_MATRIX:
-			//distribute_orderMatrix
+			std::cout << "I recieved your message: SLAVE_REQUEST_ORDER_MATRIX, here is the elevator you sent me: " << 
 			break;
 		case SLAVE_ORDER_COMPLETE:
 			//sv_manage_completed_order(elevators[elevator_ID]);
