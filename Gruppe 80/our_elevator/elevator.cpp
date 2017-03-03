@@ -36,6 +36,15 @@ Elevator::~Elevator(){
 //Public functions
 //--------------------------------------------------------------------------------------------------
 
+void Elevator::print_elevator(){
+	std::cout << "Elevator ip : " << elevator_status.ip << std::endl;
+	std::cout << "Elevator Role : " << elevator_status.role << std::endl;
+	std::cout << "Elevator floor : " << elevator_status.floor << std::endl;
+	std::cout << "Elevator direction : " << elevator_status.dir << std::endl;
+	std::cout << "Elevator out_of_order : " << elevator_status.out_of_order << std::endl;
+	print_order_matrix(order_matrix_ptr);
+}
+
 void Elevator::set_elevator_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr){
 	if(this->order_matrix_ptr == 0){
 		this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;

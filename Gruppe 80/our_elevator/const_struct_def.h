@@ -81,6 +81,10 @@ std::string order_matrix_to_string(std::vector<std::vector <Queue_element> > *or
 
 Message message_id_string_to_enum(std::string str);
 
+void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
+
+
+
 /*void print_status(Status status){
     std::cout <<"Dir: " << status.dir << "\nFloor: " << status.floor << "\nID: " << status.elevator_ID << "\nOut of order: " << status.out_of_order << std::endl;
 }*/

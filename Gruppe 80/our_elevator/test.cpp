@@ -3,22 +3,8 @@
 #include <sstream>
 #include <string>
 #include <stdlib.h>
-#include "elevator.h"
 #include "network.h"
-
-void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr){
-	std::cout << "Order matrix: " << std::endl;
-	std::vector<std::vector <Queue_element> > ordr = *order_matrix_ptr;
-	for(int i = 0; i < N_FLOORS;i++){
-		for(int j = 0; j < N_BUTTONS; j++){
-			Queue_element temp = ordr[i][j];
-			std::cout << temp.active_button << ":" << temp.elevator_ID << ";";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-}
-
+#include "elevator.h"
 
 
 Elevator test_messagestring_to_elevator_object(std::string &messagestring){
@@ -84,11 +70,12 @@ int main(){
 	std::string text = "129.241.187.161:1:1:1:3:0:01&13&01&0-1&11&1-1&0-1&14&01&1-1&13&00&";
 	Elevator temp = test_messagestring_to_elevator_object(text);
 	Status elev_status = temp.get_elevator_status();
-	std::cout << "elev id: " << elev_status.elevator_ID << " dir: " << elev_status.dir << " floor: " << elev_status.floor << " out_of_order: " \
+	//std::cout << "elev id: " << elev_status.elevator_ID << " dir: " << elev_status.dir << " floor: " << elev_status.floor << " out_of_order: " \
 	<< "role: " << elev_status.role << " ip: " << elev_status.ip << std::endl;
-	print_order_matrix(temp.get_order_matrix_ptr());
-	std::string messagestring = elevator_object_to_messagestring(temp);
-	std::cout << messagestring << std::endl;
+	//print_order_matrix(temp.get_order_matrix_ptr());
+	//std::string messagestring = elevator_object_to_messagestring(temp);
+	//std::cout << messagestring << std::endl;
+	temp.print_elevator();
 	return 0;
 }
 
