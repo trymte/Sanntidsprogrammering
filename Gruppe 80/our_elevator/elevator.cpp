@@ -4,7 +4,7 @@
 
 Elevator::Elevator(): order_matrix_ptr(NULL)
 {
-	get_my_ipaddress(elevator_status.ip);
+//	get_my_ipaddress(elevator_status.ip);
 	elevator_status.dir = D_Stop;
 	elevator_status.floor = -1;
 	elevator_status.elevator_ID = -1;
