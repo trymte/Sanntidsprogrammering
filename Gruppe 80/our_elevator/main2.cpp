@@ -1,44 +1,67 @@
-//MORTEN MAIN
+//MORTEN MAIN - har lagt inn litt diverse, bruke denne som hovedmain? -trym
 
 #include <iostream>
 #include <thread>
 #include <unistd.h>
 
-#include "statemachine.h"
+#include "eventmanager.h"
 
 pthread_mutex_t lock;
 
 
 
-//Kan plasseres i network.cpp
-void network_main(Elevator &my_elevator, Queue &my_queue, Network &my_network){
-	while(1){}
-}
+/*
+void network_main(Elevator* my_elevator, Network &my_network, Queue &my_queue){
+	while(1){
+		switch(my_elevator->get_elevator_role()){
+			case MASTER:
+				std::cout << "hello1 master" << std::endl;
+				usleep(250000);
+				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
+				std::cout << "hello2 master" << std::endl;
+				my_network.master_recieve_message_packet();
+				break;
+			case SLAVE:
 
-//Skrives mer kompakt? Legge i const_struct_def?
-Status init_status;
-init_status.dir = D_Stop;
-init_status.floor = 0;
-init_status.current_state I IDLE;
-init_status.out_of_order = 0;
-init_status.role = MASTER //Bør være slave til vanlig.
+				usleep(250000);
+				std::cout << "Send via broadcast" << std::endl;
+				my_network.send_message_packet(SLAVE_REQUEST_ORDER_MATRIX, my_elevator->get_elevator_ID());
+				std::cout << "Recieve via broadcast" << std::endl;
+				my_network.slave_recieve_message_packet();
+				break;
+		}
+	}
+}
+*/
+
+
 
 
 int main(){
 
+	Status init_status;
+	init_status.dir = D_Stop;
+	init_status.floor = 0;
+	init_status.current_state I IDLE;
+	init_status.out_of_order = 0;
+	init_status.role = MASTER;
 	std::mutex my_mutex;
 
 	Queue my_queue;
-	Elevator my_elevator(init_status, my_queue.get_order_matrix_ptr());
-	Network my_network;
+	Elevator * my_elevator;
+	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr());
+
+	int this_elev_id;
+	std::cout << "Write in elevator id: " << std::endl;
+	std::cin >> this_elev_id; 
+    my_elevator = my_network.get_elevator_ptr(this_elev_id);
 
 
-	std::cout << "Initializing threads" << std::endl;
-	//std::thread event_manager_thread(event_manager_main(Elevator &my_elevator, Queue &my_queue, Network &my_network));
-	std::thread network_thread(network_main(Elevator &my_elevator, Queue &my_queue, Network &my_network));
+	std::thread event_manager_thread(event_manager_main(std::ref(my_elevator), std::ref(my_queue), std::ref(my_network)));
+	//std::thread network_thread(network_main, std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
 
-	//event_manager_thread.join();
-	network_thread.join();
+	event_manager_thread.join();
+	//network_thread.join();
 
 
 

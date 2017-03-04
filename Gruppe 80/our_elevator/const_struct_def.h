@@ -36,6 +36,7 @@ typedef enum {
 } Role;
 
 typedef enum{
+	//SLAVE_INIT
     SLAVE_REQUEST_ORDER_MATRIX = 0,
     SLAVE_ORDER_COMPLETE = 1,
     SLAVE_ORDER_INCOMPLETE = 2,

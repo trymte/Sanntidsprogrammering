@@ -11,7 +11,7 @@
 #include "../const_struct_def.cpp"
 #include "../fsm.cpp"
 #include "../network.cpp"
-#include "../Network_files/udp_sendrec.cpp"
+#include "../udp_sendrec.cpp"
 #include "../elevator.cpp"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,9 @@ int main(){
  
 	Network my_network; 
 	Queue my_queue;
+
 	Elevator my_elevator; //Settes til å peke på elevator(elevator_ID) i elevators. Alle endringer på my_elevator i etterkant vil da endres i network. GUNSTIG!
+	/*
 	my_elevator.set_elevator_status(init_status);
 	my_elevator.set_elevator_order_matrix(my_queue.get_order_matrix_ptr());
 
@@ -75,7 +77,7 @@ int main(){
 	std::vector<Elevator> temp;
 	temp.push_back(my_elevator);
 
-
+	*/
   
  
 //////////////////////////////////////////////////////////////////////////////// 

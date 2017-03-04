@@ -1,6 +1,3 @@
-#include "elevator.h"
-#include "queue.h"
-#include "const_struct_def.h"
 #include "fsm.h"
 #include "driver/timer.h"
 

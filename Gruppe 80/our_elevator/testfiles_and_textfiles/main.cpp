@@ -52,7 +52,7 @@ int main(){
     my_elevator = my_network.get_elevator_ptr(this_elev_id);
 
 
-	//std::thread event_manager_thread(event_manager_main(std::ref(my_elevator), std::ref(my_queue), std::ref(my_network)));
+	//std::thread event_manager_thread(event_manager_main(Elevator &my_elevator, Queue &my_queue, Network &my_network));
 	std::thread network_thread(network_main, std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
 
 	//event_manager_thread.join();

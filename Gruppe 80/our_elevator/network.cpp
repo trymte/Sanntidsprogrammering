@@ -25,6 +25,7 @@ Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> 
 	for(unsigned int i = 0; i < N_ELEVATORS ; i++){
 		this->elevators.push_back(elev_temp);
 		elevators[i].set_elevator_ID(i);
+		std::cout << "elev id" << elevators[i].get_elevator_ID() << std::endl;
 	}
 }
 
@@ -69,10 +70,20 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 	} else{
 		temp_elevator.set_elevator_out_of_order(true);
 	}
-	order_matrix_string = result[6];
+	switch(atoi(result[6].c_str())){
+		case 0:
+			temp_elevator.set_elevator_current_state(MOVING);
+			break;
+		case 1:
+			temp_elevator.set_elevator_current_state(IDLE);
+			break;
+		case 2:
+			temp_elevator.set_elevator_current_state(DOOR_OPEN);
+			break;
+	}
+	order_matrix_string = result[7];
 	std::vector<std::vector <Queue_element> > order_matrix_temp = string_to_order_matrix(order_matrix_string);
 	temp_elevator.set_elevator_order_matrix(&order_matrix_temp);
-	Status elev_status = temp_elevator.get_elevator_status();
 	
 	return temp_elevator;
 }
@@ -81,7 +92,7 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 	std::stringstream ss;
 	Status elev_status = elevator.get_elevator_status();
 	std::string order_matrix_string = order_matrix_to_string(elevator.get_order_matrix_ptr());
-	ss << elev_status.ip << ":" << elev_status.role << ":" << elev_status.elevator_ID << ":" << elev_status.dir << ":" << elev_status.floor << ":" << elev_status.out_of_order << ":" << order_matrix_string;
+	ss << elev_status.ip << ":" << elev_status.role << ":" << elev_status.elevator_ID << ":" << elev_status.dir << ":" << elev_status.floor << ":" << elev_status.out_of_order << ":" << elev_status.current_state << ":" << order_matrix_string;
 	return ss.str();
 }
 
@@ -131,6 +142,12 @@ void Network::slave_recieve_message_packet(){
 
 	Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 	Status temp_status = temp_elevator.get_elevator_status();
+	elevators[temp_status.elevator_ID].set_elevator_floor(temp_status.floor);
+	elevators[temp_status.elevator_ID].set_elevator_role(temp_status.role);
+	std::cout << "hello" << std::endl;
+	elevators[temp_status.elevator_ID].set_elevator_dir(temp_status.dir);
+	elevators[temp_status.elevator_ID].set_elevator_ip(temp_status.ip);
+	elevators[temp_status.elevator_ID].set_elevator_current_state(temp_status.current_state);
 	elevators[temp_status.elevator_ID].set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
 	handle_message(message, temp_status.elevator_ID);
 }
@@ -146,6 +163,13 @@ void Network::master_recieve_message_packet(){
 
 	Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 	Status temp_status = temp_elevator.get_elevator_status();
+	elevators[temp_status.elevator_ID].set_elevator_floor(temp_status.floor);
+	elevators[temp_status.elevator_ID].set_elevator_role(temp_status.role);
+	elevators[temp_status.elevator_ID].set_elevator_dir(temp_status.dir);
+	elevators[temp_status.elevator_ID].set_elevator_ip(temp_status.ip);
+
+	elevators[temp_status.elevator_ID].set_elevator_out_of_order(temp_status.out_of_order);
+	elevators[temp_status.elevator_ID].set_elevator_current_state(temp_status.current_state);
 	elevators[temp_status.elevator_ID].set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
 	handle_message(message, temp_status.elevator_ID);
 
@@ -159,7 +183,7 @@ void Network::send_message_packet(Message message, int elevator_ID){
 	switch(message){
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			message_string = "0:";
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, ip);
+			udp_broadcaster(message_string + elevator_object_to_messagestring(elevators[elevator_ID]));
 			break;
 		case SLAVE_ORDER_COMPLETE:
 			message_string = "1:";

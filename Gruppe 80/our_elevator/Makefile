@@ -1,18 +1,18 @@
 
-OBJS = udp_sendrec.o const_struct_def.o network.o elevator.o queue.o main.o  
+OBJS = udp_sendrec.o const_struct_def.o network.o elevator.o queue.o main.o eventmanager.o fsm.o  
 CC = g++
 DEBUG = -g
-CFLAGS = -Wall -c $(DEBUG)
+CFLAGS = -Wall -c -std=c++11 $(DEBUG)
 LFLAGS = -Wall $(DEBUG)
+LIBS = -pthread
 
-program_LIBRARIES := comedi m thread
 
 .PHONY: all clean
 
 all: test_heis
 
 test_heis : $(OBJS)
-	$(CC) $(LFLAGS) $(OBJS) -o test_heis
+	$(CC) $(LFLAGS) $(OBJS) $(LIBS) -o test_heis
 
 network.o : network.h network.cpp elevator.h const_struct_def.h
 	$(CC) $(CFLAGS) network.cpp
@@ -33,6 +33,6 @@ udp_sendrec.o : udp_sendrec.cpp udp_sendrec.h
 	$(CC) $(CFLAGS) udp_sendrec.cpp
 
 clean:
-	\rm *.o *~ test_heis
+	\rm *.o test_heis
 
 .PHONY: all clean

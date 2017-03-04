@@ -1,6 +1,5 @@
 #pragma once
 
-#include "const_struct_def.h"
 #include "elevator.h"
 
 

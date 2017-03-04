@@ -33,6 +33,32 @@ void get_my_ipaddress(std::string &ip){
     
 }
 
+std::string get_my_ipaddress(){
+    std::string ip;
+    struct ifaddrs * ifAddrStruct=NULL;
+    struct ifaddrs * ifa=NULL;
+    void * tmpAddrPtr=NULL;
+
+    getifaddrs(&ifAddrStruct);
+
+    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
+        if (!ifa->ifa_addr) {
+            continue;
+        }
+        if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
+            // is a valid IP4 Address
+            tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
+            char addressBuffer[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+            //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
+            std::string temp(addressBuffer);
+            ip = temp;
+        }
+    }
+    if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
+    
+    return ip;
+}
 
 
 void udp_init(int localPort){
@@ -70,6 +96,7 @@ void udp_init(int localPort){
     {
         die("lbind");
     }
+    printf("Client successfully binded to localport and broadcastport! \n" );
 }
 int udp_broadcaster(std::string message){
     struct sockaddr_in baddr;
@@ -86,7 +113,7 @@ int udp_broadcaster(std::string message){
     {
         die("bcast");
     }
-        printf("Data from sender: %s\n" , sbuff);
+        //printf("Data from sender: %s\n" , sbuff);
 
     return 0;
 
@@ -109,7 +136,7 @@ int udp_sender(std::string message, int localPort, char * ip)
         die("sendto()");
         
     }
-        printf("Data from sender: %s\n" , sbuff);    
+        //printf("Data from sender: %s\n" , sbuff);    
  
     return 0;
 }
@@ -137,7 +164,7 @@ struct code_message udp_reciever()
     code.rip = inet_ntoa(addr.sin_addr);
     code.port = addr.sin_port;
 
-    printf("Data received: %s \n" , rbuff);
+    //printf("Data received: %s \n" , rbuff);
  
     return code;
 }
@@ -160,7 +187,7 @@ struct code_message udp_recieve_broadcast(){
     code.rip= inet_ntoa(addr.sin_addr);
     code.port = addr.sin_port;
 
-    printf("Data received: %s\n" , rbuff);
+    //printf("Data received: %s\n" , rbuff);
     return code; 
 }
 

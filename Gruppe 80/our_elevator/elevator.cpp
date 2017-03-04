@@ -39,6 +39,8 @@ Elevator::~Elevator(){
 void Elevator::print_elevator(){
 	std::cout << "Elevator ip : " << elevator_status.ip << std::endl;
 	std::cout << "Elevator Role : " << elevator_status.role << std::endl;
+	std::cout << "Elevator id : " << elevator_status.elevator_ID << std::endl;
+	std::cout << "Elevator current state: " << elevator_status.current_state << std::endl;
 	std::cout << "Elevator floor : " << elevator_status.floor << std::endl;
 	std::cout << "Elevator direction : " << elevator_status.dir << std::endl;
 	std::cout << "Elevator out_of_order : " << elevator_status.out_of_order << std::endl;
