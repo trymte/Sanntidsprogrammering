@@ -1,48 +1,38 @@
-program_EXECUTABLE := elevator
 
-CXX = clang++-3.6
+OBJS = udp_sendrec.o const_struct_def.o network.o elevator.o queue.o main.o  
+CC = g++
+DEBUG = -g
+CFLAGS = -Wall -c $(DEBUG)
+LFLAGS = -Wall $(DEBUG)
 
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-current_path := $(abspath ../$(current_dir))
+program_LIBRARIES := comedi m thread
 
-program_CXX_SRCS := $(wildcard *.cpp)
-program_CXX_OBJS := ${program_CXX_SRCS:.cpp=.o}
+.PHONY: all clean
 
-program_C_SRCS := $(wildcard *.c)
-program_C_OBJS += ${program_C_SRCS:.c=.o}
+all: test_heis
 
-program_OBJS := $(program_C_OBJS)
-program_OBJS += $(program_CXX_OBJS)
+test_heis : $(OBJS)
+	$(CC) $(LFLAGS) $(OBJS) -o test_heis
 
+network.o : network.h network.cpp elevator.h const_struct_def.h
+	$(CC) $(CFLAGS) network.cpp
 
-program_LIBRARY_DIRS := $(current_dir) $(current_dir)/headers/  
-program_LIBRARIES := comedi m pthread
+elevator.o : elevator.h elevator.cpp const_struct_def.h
+	$(CC) $(CFLAGS) elevator.cpp
 
-CXXFLAGS += -Wall -g -std=c++11
-CFLAGS += -Wall -g -std=c99
+queue.o : queue.cpp queue.h elevator.h
+	$(CC) $(CFLAGS) queue.cpp
 
-CPPFLAGS += $(foreach includedir,$(program_INCLUDE_DIRS),-I$(includedir))
-LDFLAGS += $(foreach librarydir,$(program_LIBRARY_DIRS),-L$(librarydir))
-LDFLAGS += $(foreach library,$(program_LIBRARIES),-l$(library))
+main.o : network.h queue.h const_struct_def.h elevator.h
+	$(CC) $(CFLAGS) main.cpp
 
-.PHONY: all clean distclean
-all: $(program_EXECUTABLE)
+const_struct_def.o : const_struct_def.h const_struct_def.cpp
+	$(CC) $(CFLAGS) const_struct_def.cpp
 
-$(program_CXX_OBJS):%.o:%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(CPPFLAGS) $(LDFLAGS)
-
-$(program_C_OBJS):%.o:%.c
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(CPPFLAGS) $(LDFLAGS)
-
-$(program_EXECUTABLE):$(program_OBJS)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -o $(program_EXECUTABLE) $(program_OBJS) $(LDFLAGS)
+udp_sendrec.o : udp_sendrec.cpp udp_sendrec.h
+	$(CC) $(CFLAGS) udp_sendrec.cpp
 
 clean:
-	@- $(RM) $(program_EXECUTABLE)
-	@- $(RM) $(program_C_OBJS)
-	@- $(RM) $(program_CXX_OBJS)
-
-distclean: clean
+	\rm *.o *~ test_heis
 
 .PHONY: all clean

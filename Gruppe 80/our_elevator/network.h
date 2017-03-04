@@ -1,7 +1,8 @@
 #pragma once
-#include "supervisor.h"
-#include "elevator.h"
 #include "const_struct_def.h"
+//#include "supervisor.h"
+#include "elevator.h"
+
 
 class Network{
 private:

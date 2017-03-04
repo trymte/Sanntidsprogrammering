@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
-#include "elevator.h"
 #include "const_struct_def.h"
+#include "elevator.h"
+
 
 
 
@@ -31,7 +31,7 @@ public:
 
 	static std::vector<std::vector<Queue_element> > merge_order_matrices(std::vector <std::vector <Queue_element> > &order_matrix_1,std::vector <std::vector <Queue_element> > &order_matrix_2);
 
-	void merge_order_matrices(Queue queue_with_new_order_matrix); //Endre til UML std
+	void merge_order_matrices(Queue queue_with_new_order_matrix); 
 
 	void write_order_matrix();
 	

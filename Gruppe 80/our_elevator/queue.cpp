@@ -1,14 +1,5 @@
-
-#include <iostream>
-#include <vector>
-#include <cmath>
-#include <fstream>
-#include <string>
-#include <stdlib.h>
-
 #include "queue.h"
-#include "elevator.h"
-#include "const_struct_def.h"
+
 
 
 
@@ -22,9 +13,9 @@ Queue::Queue(){
 	Queue_element init_element;
 	init_element.active_button = 0;
 	init_element.elevator_ID = -1;
-	for (int i=0;i<N_FLOORS;i++){
+	for (unsigned int i=0;i<N_FLOORS;i++){
 		std::vector<Queue_element> rowvector;
-		for(int j=0;j<N_BUTTONS;j++){
+		for(unsigned int j=0;j<N_BUTTONS;j++){
 			rowvector.push_back(init_element);
 		}
 		order_matrix.push_back(rowvector);
@@ -79,8 +70,8 @@ void Queue::write_order_matrix(){
 	
 	if (file.is_open()){
 
-		for (int i=0;i<N_FLOORS;i++){
-			for (int j=0;j<N_BUTTONS;j++){
+		for (unsigned int i=0;i<N_FLOORS;i++){
+			for (unsigned int j=0;j<N_BUTTONS;j++){
 				file << this->order_matrix[i][j].active_button << this->order_matrix[i][j].elevator_ID << "&";
 			}
 		}
@@ -265,8 +256,8 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 
 	for(elevator_it = elevators.begin();elevator_it != elevators.end();++elevator_it){
 		curr_order_matrix = *elevator_it->get_order_matrix_ptr();
-		for (int i=0;i<N_FLOORS;i++){
-			for(int j=0;j<N_BUTTONS;j++){
+		for (unsigned int i=0;i<N_FLOORS;i++){
+			for(unsigned int j=0;j<N_BUTTONS;j++){
 				
 				//If an order in an order_matrix in elevators is not found in assigned_order_matrix, add it.
 				if ((assigned_order_matrix[i][i].active_button == 0)&&(curr_order_matrix[i][j].active_button == 1)){
@@ -350,8 +341,8 @@ Order Queue::get_next_order(int elevator_ID){
 	next_order.active_order = 0;
 
 
-	for (int floors = 0; floors<N_FLOORS;floors++){
-		for (int btn = 0;btn<N_BUTTONS;btn++){
+	for (unsigned int floors = 0; floors<N_FLOORS;floors++){
+		for (unsigned int btn = 0;btn<N_BUTTONS;btn++){
 			if ((this->order_matrix[floors][btn].active_button == 1)&&(this->order_matrix[floors][btn].elevator_ID == elevator_ID)){
 				next_order.floor = floors;
 				next_order.active_order = 1;
