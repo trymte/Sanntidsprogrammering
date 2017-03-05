@@ -155,7 +155,7 @@ int main(){
 /*
   
 To do:
-
+- Out of order -> Slette jobber med sin elevator id, deretter send elevator til master.
 
 - Role --> Assign elevators to orders etc (inform_supervisor) -->Når network er ferdig. Litt mye feilmeldinger nå.
 - Supervisor funksjoner
