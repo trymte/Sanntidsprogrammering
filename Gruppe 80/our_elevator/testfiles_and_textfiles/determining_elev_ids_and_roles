@@ -1,0 +1,7 @@
+
+
+//in progress
+determine role:
+if sum(ip[len-1] + ip[len-2]+ip[len-3] > 10) : role = MASTER ?
+determine elevator id:
+send ip addresses to master via masterport: ip

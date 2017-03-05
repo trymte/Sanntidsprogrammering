@@ -32,3 +32,7 @@ void sv_manage_incomplete_order(Elevator &elevator){
 	//Assign elevators to orders
 	//Distribute order matrix
 }
+
+void sv_distribute_order_matrix(std::vector<std::vector<Queue_element> > new_order_matrix){
+	
+}
