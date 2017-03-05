@@ -17,7 +17,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-
 bool check_buttons(Queue &my_queue){
 	Order new_order;
 	bool new_button_press = 0;
@@ -29,7 +28,7 @@ bool check_buttons(Queue &my_queue){
 				new_button_press = 1;
 				
 				my_queue.add_order(new_order,1); //Skal være -1
-				my_queue.print_order_matrix(); //Kan fjernes
+				//my_queue.print_order_matrix(); //Kan fjernes
 			}
 		}
 	}
@@ -54,6 +53,7 @@ int main(){
 ///////////////////////////////////////////////////////
 // For testing, skal i main
 	Status init_status = {
+		.ip = get_my_ipaddress(),
 	    .dir = D_Stop,
 	    .floor = 0,
 	    .current_state = IDLE,
@@ -61,23 +61,17 @@ int main(){
 	    .out_of_order = 0,
 	    .role = MASTER
 	};
-      
-      
  
 	Network my_network; 
 	Queue my_queue;
 
 	Elevator my_elevator; //Settes til å peke på elevator(elevator_ID) i elevators. Alle endringer på my_elevator i etterkant vil da endres i network. GUNSTIG!
-	/*
+	
 	my_elevator.set_elevator_status(init_status);
 	my_elevator.set_elevator_order_matrix(my_queue.get_order_matrix_ptr());
 
-    
-
 	std::vector<Elevator> temp;
 	temp.push_back(my_elevator);
-
-	*/
   
  
 //////////////////////////////////////////////////////////////////////////////// 
@@ -97,7 +91,6 @@ int main(){
 	std::cout << "Event manager initialized" << std::endl;
 /////////////////////////////////////////////////////////////////////////////////
  
-
 	while(1){ 
 		if (check_buttons(my_queue)){
 

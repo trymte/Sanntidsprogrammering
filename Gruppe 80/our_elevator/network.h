@@ -21,11 +21,9 @@ public:
 
 	Elevator* get_elevator_ptr(int elevator_ID){return &elevators[elevator_ID];}
 
-	void handle_message(Message message_ID, int elevator_ID);
+	void handle_message(Message message_ID, int foreign_elevator_ID, int this_elevator_ID);
 
-	void slave_recieve_message_packet();
-
-	void master_recieve_message_packet();
+	void recieve_message_packet(int this_elevator_ID);
 
 	void send_message_packet(Message message_ID, int elevator_ID);
 

@@ -25,9 +25,9 @@ Elevator::Elevator(const Elevator &elevator): elevator_status(elevator.elevator_
 
 
 Elevator::~Elevator(){
-	if(order_matrix_ptr != 0){
+	if(order_matrix_ptr != NULL){
 		delete order_matrix_ptr;
-		order_matrix_ptr = 0;
+		order_matrix_ptr = NULL;
 	}
 }
 
@@ -48,7 +48,7 @@ void Elevator::print_elevator(){
 }
 
 void Elevator::set_elevator_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr){
-	if(this->order_matrix_ptr == 0){
+	if(this->order_matrix_ptr == NULL){
 		this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
 	}
 	*this->order_matrix_ptr = *order_matrix_ptr;
@@ -56,7 +56,7 @@ void Elevator::set_elevator_order_matrix(std::vector<std::vector <Queue_element>
 
 Elevator& Elevator::operator=(const Elevator &rhs){
 	this->elevator_status = rhs.elevator_status;
-	if(this->order_matrix_ptr == 0){
+	if(this->order_matrix_ptr == NULL){
 		this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
 	}
 	*this->order_matrix_ptr = *order_matrix_ptr;

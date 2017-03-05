@@ -8,18 +8,9 @@
 //Constructor and destructor
 //----------------------------------------------------------------------------------------------------
 Queue::Queue(){
-	std::vector<std::vector<Queue_element> > temp;
+	this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >; //la til nokre linjer her for å fjerne segfault
+	std::vector<std::vector<Queue_element> > temp = twoD_vector_init();
 	this->order_matrix = temp;
-	Queue_element init_element;
-	init_element.active_button = 0;
-	init_element.elevator_ID = -1;
-	for (unsigned int i=0;i<N_FLOORS;i++){
-		std::vector<Queue_element> rowvector;
-		for(unsigned int j=0;j<N_BUTTONS;j++){
-			rowvector.push_back(init_element);
-		}
-		order_matrix.push_back(rowvector);
-	}	
 	this->order_matrix_ptr = &order_matrix;
 }
 
@@ -30,6 +21,9 @@ Queue::~Queue(){
 		row->erase(row->begin(),row->end());
 	}
 	this->order_matrix.erase(this->order_matrix.begin(),this->order_matrix.end());
+	if(this->order_matrix_ptr != NULL){
+		delete[] this->order_matrix_ptr;	//og her
+	}
 }
 
 
@@ -44,6 +38,43 @@ Queue::~Queue(){
 //--------------------------------------------------------------------------------------------------
 //Public member functions
 //----------------------------------------------------------------------------------------------------
+
+
+
+void Queue::print_order_matrix(std::vector<std::vector<Queue_element> > order_matrix){
+	std::vector<std::vector<Queue_element> >::iterator row;
+	std::vector<Queue_element>::iterator col;
+
+	std::cout << std::endl;
+	for (row = order_matrix.begin(); row!=order_matrix.end();++row){
+		for (col = row->begin(); col != row->end(); ++col){
+			std::cout << col->active_button<< ":" << col->elevator_ID << "\t";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+
+	//print_order_matrix(&order_matrix); kan også brukast
+}
+
+
+void Queue::print_order_matrix(){
+	std::vector<std::vector<Queue_element> >::iterator row;
+	std::vector<Queue_element>::iterator col;
+
+	std::cout << std::endl;
+	for (row = this->order_matrix.begin(); row!=this->order_matrix.end();++row){
+		for (col = row->begin(); col != row->end(); ++col){
+			std::cout << col->active_button<< ":" << col->elevator_ID << "\t";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+	//print_order_matrix(this->order_matrix_ptr);
+}
+
+
+
 unsigned int Queue::calculate_cost(Order order, std::vector<Status>& status_vector){
 	unsigned int temp_cost = 0;
 	unsigned int lowest_cost = 10000;
@@ -63,51 +94,6 @@ unsigned int Queue::calculate_cost(Order order, std::vector<Status>& status_vect
 	}
 	return elevator_ID;
 }
-
-void Queue::write_order_matrix(){
-	std::ofstream file;
-	file.open("backup_file.txt");
-	
-	if (file.is_open()){
-
-		for (unsigned int i=0;i<N_FLOORS;i++){
-			for (unsigned int j=0;j<N_BUTTONS;j++){
-				file << this->order_matrix[i][j].active_button << this->order_matrix[i][j].elevator_ID << "&";
-			}
-		}
-		file.close();
-	}
-	else
-		std::cout << "Unable to open file at queue_write_order_matrix" << std::endl;
-}
-
-
-void Queue::read_order_matrix(){
-	std::string line;
-	std::string result;
-	std::ifstream file;
-	file.open("backup_file.txt");
-	if (file.is_open()){
-			while(getline(file,line,':')){
-				result += line;
-			}
-
-			this->order_matrix = string_to_order_matrix(result); 
-	}
-	else
-		std::cout << "Unable to open file at queue_read_order_matrix" << std::endl;
-}
-
-std::vector<std::vector<Queue_element> > Queue::get_order_matrix(){
-	return this->order_matrix;
-} 
-
-std::vector<std::vector<Queue_element> >* Queue::get_order_matrix_ptr(){
-	return this->order_matrix_ptr;
-}
-
-
-
 
 
 std::vector<std::vector<Queue_element> > Queue::merge_order_matrices(std::vector <std::vector <Queue_element> > &order_matrix_1,std::vector <std::vector <Queue_element> > &order_matrix_2){
@@ -131,7 +117,7 @@ std::vector<std::vector<Queue_element> > Queue::merge_order_matrices(std::vector
 }
 
 
-void Queue::merge_order_matrices(Queue queue_to_be_merged){
+void Queue::merge_order_matrices(Queue &queue_to_be_merged){
 	if ((this->order_matrix.size() != queue_to_be_merged.order_matrix.size())||(this->order_matrix[0].size() != queue_to_be_merged.order_matrix[0].size())){
 		std::cout << "Dimensions disagree in queue_to_be_merged" << std::endl;
 		return;
@@ -151,34 +137,6 @@ void Queue::merge_order_matrices(Queue queue_to_be_merged){
 }
 
 
-
-void Queue::print_order_matrix(std::vector<std::vector<Queue_element> > order_matrix){
-	std::vector<std::vector<Queue_element> >::iterator row;
-	std::vector<Queue_element>::iterator col;
-
-	std::cout << std::endl;
-	for (row = order_matrix.begin(); row!=order_matrix.end();++row){
-		for (col = row->begin(); col != row->end(); ++col){
-			std::cout << col->active_button<< ":" << col->elevator_ID << "\t";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-}
-
-void Queue::print_order_matrix(){
-	std::vector<std::vector<Queue_element> >::iterator row;
-	std::vector<Queue_element>::iterator col;
-
-	std::cout << std::endl;
-	for (row = this->order_matrix.begin(); row!=this->order_matrix.end();++row){
-		for (col = row->begin(); col != row->end(); ++col){
-			std::cout << col->active_button<< ":" << col->elevator_ID << "\t";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-}
 
 
 void Queue::add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID){
@@ -256,7 +214,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 
 	for(elevator_it = elevators.begin();elevator_it != elevators.end();++elevator_it){
 		curr_order_matrix = *elevator_it->get_order_matrix_ptr();
-		for (unsigned int i=0;i<N_FLOORS;i++){
+		for (unsigned int i=0;i<N_FLOORS;i++){           //la til unsigned foran int pga uendelig mange warnings i kompilering - trym
 			for(unsigned int j=0;j<N_BUTTONS;j++){
 				
 				//If an order in an order_matrix in elevators is not found in assigned_order_matrix, add it.
@@ -365,5 +323,48 @@ Order Queue::get_next_order(int elevator_ID){
 		}
 	}
 	return next_order;	
+}
+
+
+void Queue::write_order_matrix_to_file(){
+	std::ofstream file;
+	file.open("backup_file.txt");
+	
+	if (file.is_open()){
+
+		for (unsigned int i=0;i<N_FLOORS;i++){ 
+			for (unsigned int j=0;j<N_BUTTONS;j++){
+				file << this->order_matrix[i][j].active_button << this->order_matrix[i][j].elevator_ID << "&";
+			}
+		}
+		file.close();
+	}
+	else
+		std::cout << "Unable to open file at queue_write_order_matrix_to_file" << std::endl; //la til _to_file her for økt lesbarhet :) -trym, tilsvarande i funksjonen under her 
+}
+
+
+void Queue::read_order_matrix_from_file(){
+	std::string line;
+	std::string result;
+	std::ifstream file;
+	file.open("backup_file.txt");
+	if (file.is_open()){
+			while(getline(file,line,':')){
+				result += line;
+			}
+
+			this->order_matrix = string_to_order_matrix(result); 
+	}
+	else
+		std::cout << "Unable to open file at queue_read_order_matrix_from_file" << std::endl;
+}
+
+std::vector<std::vector<Queue_element> > Queue::get_order_matrix(){
+	return this->order_matrix;
+} 
+
+std::vector<std::vector<Queue_element> >* Queue::get_order_matrix_ptr(){
+	return this->order_matrix_ptr;
 }
 
