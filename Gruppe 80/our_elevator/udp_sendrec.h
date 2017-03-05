@@ -19,8 +19,9 @@
 
 
 #define BUFLEN 512  //Max length of buffer
-#define BROADCASTPORT 30000   //The Broadcastport
-#define MASTERPORT 20012 //The localport
+#define BROADCASTPORT 29999   //The Broadcastport
+#define MASTERPORT 20013 //The localport
+#define LOCALHOST "127.0.0.1"
 extern int bsocket, lsocket;
 
 struct code_message{

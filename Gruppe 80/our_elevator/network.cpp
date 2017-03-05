@@ -110,6 +110,9 @@ void Network::handle_message(Message message, int elevator_ID){
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			std::cout << "I recieved your message: SLAVE_REQUEST_ORDER_MATRIX, here is the elevator you sent me: " << std::endl;
 			elevators[elevator_ID].print_elevator();
+			std::cout << "Distributing order matrix:" << std::endl;
+			std::cout << "-------------------------------------------------------------------------------------------" << std::endl;
+			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, 1);
 			break;
 		case SLAVE_ORDER_COMPLETE:
 			//sv_manage_completed_order(elevators[elevator_ID]);
@@ -122,6 +125,9 @@ void Network::handle_message(Message message, int elevator_ID){
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
 			std::cout << "I recieved your message: MASTER_DISTRIBUTE_ORDER_MATRIX, master" << std::endl;
+			std::cout << ", here is the elevator you sent me: " << std::endl;
+			elevators[elevator_ID].print_elevator();
+			std::cout << "---------------------------------------------------" << std::endl;
 			for(unsigned int i = 0; i < N_ELEVATORS; i ++){
 				elevators[i].set_elevator_order_matrix(elevators[elevator_ID].get_order_matrix_ptr());
 			}
@@ -135,7 +141,9 @@ void Network::slave_recieve_message_packet(){
 	Message message;
 	std::string datastring;
 	std::string messagestring;
+	std::cout << "hello" << std::endl;
 	struct code_message packet = udp_recieve_broadcast();
+	std::cout << "heee" << std::endl;
 	datastring.assign(packet.data);
 	message = message_id_string_to_enum(datastring.substr(0,1));
 	messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
@@ -144,7 +152,6 @@ void Network::slave_recieve_message_packet(){
 	Status temp_status = temp_elevator.get_elevator_status();
 	elevators[temp_status.elevator_ID].set_elevator_floor(temp_status.floor);
 	elevators[temp_status.elevator_ID].set_elevator_role(temp_status.role);
-	std::cout << "hello" << std::endl;
 	elevators[temp_status.elevator_ID].set_elevator_dir(temp_status.dir);
 	elevators[temp_status.elevator_ID].set_elevator_ip(temp_status.ip);
 	elevators[temp_status.elevator_ID].set_elevator_current_state(temp_status.current_state);

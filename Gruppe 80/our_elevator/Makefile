@@ -1,5 +1,5 @@
 
-OBJS = udp_sendrec.o const_struct_def.o network.o elevator.o queue.o main.o eventmanager.o fsm.o  
+OBJS = udp_sendrec.o const_struct_def.o network.o elevator.o queue.o main.o 
 CC = g++
 DEBUG = -g
 CFLAGS = -Wall -c -std=c++11 $(DEBUG)
