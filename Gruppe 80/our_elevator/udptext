@@ -1,0 +1,9 @@
+On your server side, I presume that you called bind() to associate the UDP socket with an address (or INADDR_ANY) and a port.
+
+On the client side, after a UDP socket is opened, sendto() should use this same address and port to send the message.
+
+Once the server-side UDP port receives the message from the client, using recvfrom(), it should then have the contact information (sockaddr struct) for the client, thus allowing for two-way communications. In other words, when the server uses sendto(), it should use the client's contact information.
+
+
+P.S. The client needs to build a sockaddr struct of its own using the server's address and port contact information.
+  
