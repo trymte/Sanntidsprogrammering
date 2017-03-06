@@ -45,11 +45,12 @@ int main(){
 	init_status.current_state I IDLE;
 	init_status.out_of_order = 0;
 	init_status.role = MASTER;
+
 	std::mutex my_mutex;
 
 	Queue my_queue;
 	Elevator * my_elevator;
-	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr());
+	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr()); //Blir det slik at alle elementene i elevators har ordrematrise som peker til my_queue her? Passe på overskrivelse fra network.
 
 	int this_elev_id;
 	std::cout << "Write in elevator id: " << std::endl;

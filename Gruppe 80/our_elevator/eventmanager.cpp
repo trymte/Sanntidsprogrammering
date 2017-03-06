@@ -55,58 +55,68 @@ void event_manager_main(Elevator &my_elevator, Queue &my_queue){
 	elev_set_motor_direction(DIRN_STOP); 
 	elev_set_floor_indicator(0);
 
- 
-	
+	//Få master/slave status fra network. Vente på dette, eller bare beholde init-status (MASTER) til master inntil videre?
+
+
 	std::cout << "Event manager initialized" << std::endl;
 /////////////////////////////////////////////////////////////////////////////////
  
 
-	while(1){ 
+	while(1){ //Går an å ha en switch/case som tar for seg hele main-koden. Og ta alle bolkene med kode inn i hver sin funksjon. Ryddigere?
 		if (check_buttons(my_queue)){
-
-			//Update elevators in network --> NEI, fordi når queue blir oppdatert, blir my_elevator og elevators oppdatert siden de peker på ordrematrisen.
-						
+		
 			switch(my_elevator.get_elevator_status().role){
-				case MASTER:
-					std::cout << "Supervisor" << std::endl;
-					//sv_manage_order_matrix(network.get_elevators());
-					//Kall supervisor funksjon.
-					break;
+			case MASTER:
+				std::cout << "Supervisor" << std::endl;
+				//sv_manage_order_matrix(network.get_elevators());.
+				break;
 
-				case SLAVE:
-					std::cout << "Send_message_packet" << std::endl;
-					//send_message_packet;
+			case SLAVE:
+				std::cout << "Send_message_packet" << std::endl;
+				//send_message_packet;
 					break;
 			}
 	
 		}
 
+		//Check order to be executed
 		Order next_order = my_queue.get_next_order(my_elevator.get_elevator_status().elevator_ID);
 		if (next_order.active_order == 1){ 
 			fsm_execute_order(my_elevator,my_queue,next_order);
 		}
 
-
+		//Check floor arrival
 		int current_floor = elev_get_floor_sensor_signal();
 		my_elevator.set_elevator_floor(current_floor);
 		if (elev_get_floor_sensor_signal() != -1){
 			fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
 		}
 
-
+		//Check door timer
 		if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){ 
 			fsm_on_door_timeout(my_elevator,my_queue);
 		}
 
-
-		if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ 
+		//Check condition timer
+		if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ //Går an å ha en event på dette. Blir kanskje litt mer ryddig?
 			std::cout << "Elevator is out of order" << std::endl;
 			my_elevator.set_elevator_out_of_order(1);
-			timer_stop(); 
+			timer_stop();
+
+			my_queue.reset_orders(my_elevator.get_elevator_status());
+			switch(my_elevator.get_elevator_status().role){
+			case MASTER:
+				//sv_manage_incomplete_order(my_elevator);
+
+			case SLAVE:
+				//Kall netverksfunksjon som sender elevator objekt til master.
+			}
+
 		} 
 
 //		std::cout << my_elevator.get_elevator_status().current_state << std::endl;      
-		set_all_lights(my_queue); 
+		set_all_lights(my_queue);
+		my_queue.write_order_matrix_to_file();
 	 
 		usleep(input_poll_rate_ms*1000);   
 	}  
@@ -118,9 +128,11 @@ void event_manager_main(Elevator &my_elevator, Queue &my_queue){
 /*
   
 To do:
+- Read/write ordermatrix to file
+- Calculate cost
 - Out of order -> Slette jobber med sin elevator id, deretter send elevator til master.
 
-- Role --> Assign elevators to orders etc (inform_supervisor) -->Når network er ferdig. Litt mye feilmeldinger nå.
+- Role --> Assign elevators to orders etc (inform_supervisor)
 - Supervisor funksjoner
 */
 
