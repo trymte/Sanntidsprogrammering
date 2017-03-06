@@ -34,5 +34,5 @@ void sv_manage_incomplete_order(Elevator &elevator){ //Blir kalt dersom det oppd
 }
 
 void sv_distribute_order_matrix(std::vector<std::vector<Queue_element> > new_order_matrix){
-	//Kaller noen funksjoer i network
+	//Kaller noen funksjoer i network 
 }
