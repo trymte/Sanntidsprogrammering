@@ -78,7 +78,17 @@ void udp_init(int localPort, int elevator_role){
     {
         die("setsockopt");
     }
-    
+    int reuse = 1;
+    if (setsockopt(bsocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) == -1)
+    {
+        die("setsockopt");
+    }
+    #ifdef SO_REUSEPORT
+    if (setsockopt(bsocket, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse)) == -1)
+    {
+        die("setsockopt");
+    }
+    #endif
 
     memset((char *) &baddr, 0, sizeof(baddr));
     baddr.sin_family = AF_INET;

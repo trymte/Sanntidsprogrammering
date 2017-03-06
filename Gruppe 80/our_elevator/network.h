@@ -1,7 +1,8 @@
 #pragma once
-#include "const_struct_def.h"
+//#include "const_struct_def.h"
 //#include "supervisor.h"
-#include "elevator.h"
+#include "queue.h"
+
 
 
 class Network{
@@ -28,3 +29,6 @@ public:
 	void send_message_packet(Message message_ID, int elevator_ID);
 
 };
+
+
+void network_main(Elevator* my_elevator, Network &my_network, Queue &my_queue);

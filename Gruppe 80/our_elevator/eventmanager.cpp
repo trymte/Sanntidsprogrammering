@@ -7,7 +7,8 @@
 
 #include "eventmanager.h"
 #include "driver/timer.h"
-#include "timer.h"
+
+
 
 
 
@@ -42,7 +43,7 @@ void set_all_lights(Queue &my_queue){
 }
  
  
-void event_manager_main(Elevator &my_elevator, Queue &my_queue){
+void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_network){
 //////////////////////////////////////////////////////////////////////////////// 
 //Initializing
 ////////////////////////////////////////////////////////////////////////////////     
@@ -65,10 +66,10 @@ void event_manager_main(Elevator &my_elevator, Queue &my_queue){
 	while(1){ //Går an å ha en switch/case som tar for seg hele main-koden. Og ta alle bolkene med kode inn i hver sin funksjon. Ryddigere?
 		if (check_buttons(my_queue)){
 		
-			switch(my_elevator.get_elevator_status().role){
+			switch(my_elevator->get_elevator_status().role){
 			case MASTER:
 				std::cout << "Supervisor" << std::endl;
-				//sv_manage_order_matrix(network.get_elevators());.
+				//sv_manage_order_matrix(network.get_elevators());
 				break;
 
 			case SLAVE:
@@ -79,40 +80,45 @@ void event_manager_main(Elevator &my_elevator, Queue &my_queue){
 	
 		}
 
-		//Check order to be executed
-		Order next_order = my_queue.get_next_order(my_elevator.get_elevator_status().elevator_ID);
-		if (next_order.active_order == 1){ 
-			fsm_execute_order(my_elevator,my_queue,next_order);
-		}
+		//Check condition timer
+		if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ //Går an å ha en event på dette. Blir kanskje litt mer ryddig?
+			std::cout << "Elevator is out of order" << std::endl;
+			my_elevator->set_elevator_out_of_order(1);
+			timer_stop();
 
-		//Check floor arrival
-		int current_floor = elev_get_floor_sensor_signal();
-		my_elevator.set_elevator_floor(current_floor);
-		if (elev_get_floor_sensor_signal() != -1){
-			fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
-		}
+			my_queue.reset_orders(my_elevator->get_elevator_status());
+			switch(my_elevator->get_elevator_status().role){
+			case MASTER:
+				//sv_manage_incomplete_order(my_elevator);
+				break;
+
+			case SLAVE:
+				//Kall netverksfunksjon som sender elevator objekt til master.
+				break;
+			}
+		} 
 
 		//Check door timer
 		if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){ 
 			fsm_on_door_timeout(my_elevator,my_queue);
 		}
 
-		//Check condition timer
-		if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ //Går an å ha en event på dette. Blir kanskje litt mer ryddig?
-			std::cout << "Elevator is out of order" << std::endl;
-			my_elevator.set_elevator_out_of_order(1);
-			timer_stop();
+		//Check order to be executed
+		Order next_order = my_queue.get_next_order(my_elevator->get_elevator_status().elevator_ID);
+		if (next_order.active_order == 1){ 
+			fsm_execute_order(my_elevator,my_queue,next_order);
+		}
 
-			my_queue.reset_orders(my_elevator.get_elevator_status());
-			switch(my_elevator.get_elevator_status().role){
-			case MASTER:
-				//sv_manage_incomplete_order(my_elevator);
+		//Check floor arrival
+		int current_floor = elev_get_floor_sensor_signal();
+		my_elevator->set_elevator_floor(current_floor);
+		if (elev_get_floor_sensor_signal() != -1){
+			fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
+		}
 
-			case SLAVE:
-				//Kall netverksfunksjon som sender elevator objekt til master.
-			}
+		
 
-		} 
+	
 
 //		std::cout << my_elevator.get_elevator_status().current_state << std::endl;      
 		set_all_lights(my_queue);

@@ -11,7 +11,7 @@ void sv_manage_completed_order(Elevator &elevator){
 	Status elevator_status = elevator.get_elevator_status();
 	
 	std::vector<std::vector<Queue_element> > elevator_order_matrix;
-	elevator_order_matrix = *elevator->get_order_matrix_ptr();
+	elevator_order_matrix = *elevator.get_order_matrix_ptr();
 
 	//Removes all orders on current floor with correct elevator_ID
 	for(int i=0;i<N_BUTTONS;i++){

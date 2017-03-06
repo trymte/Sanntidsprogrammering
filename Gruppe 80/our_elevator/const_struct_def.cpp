@@ -66,16 +66,22 @@ Message message_id_string_to_enum(std::string str){
 	switch(atoi(str.c_str())){
 		case 0:
 			message = SLAVE_REQUEST_ORDER_MATRIX;
-		break;
+			break;
 		case 1:
-			message = SLAVE_ORDER_INCOMPLETE;
-		break;
+			message = SLAVE_ORDER_COMPLETE;
+			break;
 		case 2: 
-			message = SLAVE_SEND_ELEVATOR_INFORMATION;
-		break;
+			message = SLAVE_ORDER_INCOMPLETE;
+			break;
 		case 3: 
+			message = SLAVE_SEND_ELEVATOR_INFORMATION;
+			break;
+		case 4: 
 			message = MASTER_DISTRIBUTE_ORDER_MATRIX;
-		break;
+			break;
+		default:
+			break;
+
 	}
 	return message;
 }

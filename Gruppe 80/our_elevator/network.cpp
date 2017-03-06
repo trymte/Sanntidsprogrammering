@@ -93,8 +93,6 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 
 
 
-
-
 void Network::handle_message(Message message, int foreign_elevator_ID, int this_elevator_ID){
 	std::cout << "Message reciever side: " << message << std::endl;
 	switch(message){
@@ -144,7 +142,7 @@ void Network::recieve_message_packet(int this_elevator_ID){
 	}
 	datastring.assign(packet.data);
 	message = message_id_string_to_enum(datastring.substr(0,1));
-	std::cout << "Message: " << message << std::endl;
+	std::cout << "Message: " << datastring.substr(0,1) << std::endl;
 	messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 
 	Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
@@ -186,4 +184,26 @@ void Network::send_message_packet(Message message, int elevator_ID){
 			std::cout << "Not a valid message" << std::endl;
 	}
 	delete[] ip;
+}
+
+
+void network_main(Elevator* my_elevator, Network &my_network, Queue &my_queue){
+	while(1){
+		switch(my_elevator->get_elevator_role()){
+			case MASTER:
+				usleep(250000);
+				//std::cout << "master send via broadcast" << std::endl;
+				//my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
+				//std::cout << "master recieve via reciever" << std::endl;
+				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
+				break;
+			case SLAVE:
+				usleep(250000);
+				std::cout << "slave Send via send" << std::endl;
+				my_network.send_message_packet(SLAVE_REQUEST_ORDER_MATRIX, my_elevator->get_elevator_ID());
+				//std::cout << "slave Recieve via recieve broadcast" << std::endl;
+				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
+				break;
+		}
+	}
 }

@@ -24,7 +24,7 @@ public:
 
 	static unsigned int calculate_cost(Order order, Status status);
 
-	static unsigned int get_lowest_cost_elevator(Order order, std::vector<Status>& status_vector)
+	static unsigned int get_lowest_cost_elevator(Order order, std::vector<Status>& status_vector);
 
 	static std::vector<std::vector<Queue_element> > merge_order_matrices(std::vector <std::vector <Queue_element> > &order_matrix_1, std::vector <std::vector <Queue_element> > &order_matrix_2);
 
