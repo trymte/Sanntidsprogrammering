@@ -1,5 +1,5 @@
 
-OBJS = udp_sendrec.o const_struct_def.o network.o elevator.o queue.o main.o 
+OBJS = udp_sendrec.o utilities.o network.o elevator.o queue.o main_network_testing.o 
 CC = g++
 DEBUG = -g
 CFLAGS = -Wall -c -std=c++11 $(DEBUG)
@@ -14,19 +14,19 @@ all: test_heis
 test_heis : $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) $(LIBS) -o test_heis
 
-network.o : network.h network.cpp elevator.h const_struct_def.h
+network.o : network.h network.cpp elevator.h utilities.h
 	$(CC) $(CFLAGS) network.cpp
 
-elevator.o : elevator.h elevator.cpp const_struct_def.h
+elevator.o : elevator.h elevator.cpp utilities.h
 	$(CC) $(CFLAGS) elevator.cpp
 
 queue.o : queue.cpp queue.h elevator.h
 	$(CC) $(CFLAGS) queue.cpp
 
-main.o : network.h queue.h const_struct_def.h elevator.h
-	$(CC) $(CFLAGS) main.cpp
+main_network_testing.o : network.h queue.h utilities.h elevator.h
+	$(CC) $(CFLAGS) main_network_testing.cpp
 
-const_struct_def.o : const_struct_def.h const_struct_def.cpp
+utilities.o : utilities.h utilities.cpp
 	$(CC) $(CFLAGS) const_struct_def.cpp
 
 udp_sendrec.o : udp_sendrec.cpp udp_sendrec.h

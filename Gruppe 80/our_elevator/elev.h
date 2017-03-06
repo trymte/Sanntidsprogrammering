@@ -1,7 +1,7 @@
 // Wrapper for libComedi Elevator control.
 // These functions provide an interface to the elevators in the real time lab
 #pragma once
-#include "const_struct_def.h"
+#include "utilities.h"
 // Number of floors. Hardware-dependent, do not modify.
 //#define N_FLOORS 4
 

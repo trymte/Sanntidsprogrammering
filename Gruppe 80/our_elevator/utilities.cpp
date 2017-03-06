@@ -80,6 +80,7 @@ Message message_id_string_to_enum(std::string str){
 			message = MASTER_DISTRIBUTE_ORDER_MATRIX;
 			break;
 		default:
+			std::cout << "No valid message" << std::endl;
 			break;
 
 	}
