@@ -27,7 +27,7 @@ main_network_testing.o : network.h queue.h utilities.h elevator.h
 	$(CC) $(CFLAGS) main_network_testing.cpp
 
 utilities.o : utilities.h utilities.cpp
-	$(CC) $(CFLAGS) const_struct_def.cpp
+	$(CC) $(CFLAGS) utilities.cpp
 
 udp_sendrec.o : udp_sendrec.cpp udp_sendrec.h
 	$(CC) $(CFLAGS) udp_sendrec.cpp
