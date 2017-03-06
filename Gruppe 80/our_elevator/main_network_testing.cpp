@@ -1,5 +1,5 @@
 //TEST MAIN FOR Å PRØVE Å SENDE MELDING OVER NETTVERK
-#include "const_struct_def.h"
+#include "utilities.h"
 #include "queue.h"
 #include "network.h"
 #include <stdio.h>
