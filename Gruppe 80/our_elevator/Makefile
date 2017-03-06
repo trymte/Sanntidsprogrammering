@@ -1,5 +1,6 @@
 
-OBJS = udp_sendrec.o utilities.o network.o elevator.o queue.o main_network_testing.o 
+OBJS = udp_sendrec.o utilities.o network.o\
+elevator.o queue.o main.o eventmanager.o fsm.o supervisor.o elev.o io.o timer.o
 CC = g++
 DEBUG = -g
 CFLAGS = -Wall -c -std=c++11 $(DEBUG)
@@ -17,14 +18,30 @@ test_heis : $(OBJS)
 network.o : network.h network.cpp elevator.h utilities.h
 	$(CC) $(CFLAGS) network.cpp
 
-elevator.o : elevator.h elevator.cpp utilities.h
+elev.o : elev.c elev.h utilities.h
+	$(CC) $(CFLAGS) elev.c
+
+io.o : io.c io.h
+
+timer.o : timer.c timer.h
+
+elevator.o : elevator.h elevator.cpp  queue.h udp_sendrec.h utilities.h
 	$(CC) $(CFLAGS) elevator.cpp
 
-queue.o : queue.cpp queue.h elevator.h
+fsm.o : fsm.cpp fsm.h queue.h
+	$(CC) $(CFLAGS) fsm.cpp
+
+supervisor.o : supervisor.cpp supervisor.h queue.h utilities.h
+	$(CC) $(CFLAGS) supervisor.cpp
+
+queue.o : queue.cpp queue.h elevator.h 
 	$(CC) $(CFLAGS) queue.cpp
 
-main_network_testing.o : network.h queue.h utilities.h elevator.h
-	$(CC) $(CFLAGS) main_network_testing.cpp
+main.o : main.cpp eventmanager.h elevator.h network.h queue.h supervisor.h
+	$(CC) $(CFLAGS) main.cpp
+
+eventmanager.o : eventmanager.h eventmanager.cpp queue.h elev.h network.h
+	$(CC) $(CFLAGS) eventmanager.cpp
 
 utilities.o : utilities.h utilities.cpp
 	$(CC) $(CFLAGS) utilities.cpp

@@ -46,9 +46,9 @@ int main(){
 	Status init_status;
 	init_status.ip = get_my_ipaddress();
 	std::cout << "My ip address: " << init_status.ip << std::endl;
-	init_status.dir = D_Up;
-	init_status.floor = 3;
-	init_status.current_state = IDLE;
+	init_status.dir = D_Down;
+	init_status.floor = 0;
+	init_status.current_state = MOVING;
 	init_status.out_of_order = false;
 	init_status.role = SLAVE;
 	std::cout << "I am: " << init_status.role << std::endl;
