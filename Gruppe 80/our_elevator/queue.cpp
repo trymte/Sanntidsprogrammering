@@ -75,11 +75,33 @@ void Queue::print_order_matrix(){
 
 
 unsigned int Queue::calculate_cost(Order order, Status status){
-	unsigned int cost = 1;
+	unsigned int cost = 0;
+	switch(status.current_state){
+	case MOVING:
 
-	cost += abs(order.floor - status.floor)*10;
+		
+		if((order.floor-status.floor >= 0) && (status.dir == D_Up))
+			cost += abs(order.floor - status.floor)*10;
 
-	//switch/case på state
+		else if((order.floor-status.floor < 0) && (status.dir == D_Down))
+			cost += abs(order.floor - status.floor)*10;
+
+		else
+			cost += 50;
+
+		break;
+
+	case IDLE:
+		cost += abs(order.floor-status.floor)*15;
+		break;
+
+	case DOOR_OPEN:
+		cost += abs(order.floor-status.floor)*30;
+		break;
+
+	default:
+		cost += 200;
+	}
 
 	return cost;
 }
