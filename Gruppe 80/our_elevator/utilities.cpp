@@ -65,18 +65,21 @@ Message message_id_string_to_enum(std::string str){
 	Message message;
 	switch(atoi(str.c_str())){
 		case 0:
-			message = SLAVE_REQUEST_ORDER_MATRIX;
+			message = MASTER_IP_INIT;
 			break;
 		case 1:
+			message = SLAVE_REQUEST_ORDER_MATRIX;
+			break;
+		case 2:
 			message = SLAVE_ORDER_COMPLETE;
 			break;
-		case 2: 
+		case 3: 
 			message = SLAVE_ORDER_INCOMPLETE;
 			break;
-		case 3: 
+		case 4: 
 			message = SLAVE_SEND_ELEVATOR_INFORMATION;
 			break;
-		case 4: 
+		case 5: 
 			message = MASTER_DISTRIBUTE_ORDER_MATRIX;
 			break;
 		default:
@@ -91,9 +94,10 @@ void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_
 	std::cout << "Order matrix: " << std::endl;
 	std::vector<std::vector <Queue_element> > ordr = *order_matrix_ptr;
 	for(unsigned int i = 0; i < N_FLOORS;i++){
+		;
 		for(unsigned int j = 0; j < N_BUTTONS; j++){
 			Queue_element temp = ordr[i][j];
-			std::cout << temp.active_button << ":" << temp.elevator_ID << ";";
+			std::cout << "  | " temp.active_button << " : " << temp.elevator_ID << "  |  ";
 		}
 		std::cout << std::endl;
 	}

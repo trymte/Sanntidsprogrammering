@@ -54,7 +54,7 @@ int main(){
 
 	udp_init(MASTERPORT, static_cast<int>(init_status.role));
 	Queue my_queue;
-	Elevator * my_elevator;
+	Elevator* my_elevator;
 	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr());
 
 
@@ -63,6 +63,8 @@ int main(){
 	std::cin >> this_elev_id; 
 	my_elevator = my_network.get_elevator_ptr(this_elev_id);
     my_elevator->set_elevator_order_matrix_ptr(my_queue.get_order_matrix_ptr());
+    
+    usleep(5000000);
     switch(init_status.role){
 		case MASTER:
 			my_network.send_message_packet(MASTER_IP_INIT, this_elev_id);
@@ -70,38 +72,13 @@ int main(){
 		case SLAVE:
 			break;
 	}
-    usleep(5000000);
-    std::vector<Elevator> elevs = my_network.get_elevators();
-    while(1){
-    	my_network.recieve_message_packet(my_elevator->get_elevator_ID());
-    }
+    
 
+	std::thread event_manager_thread(event_manager_main,std::ref(my_elevator), std::ref(my_queue), std::ref(my_network));
+	std::thread network_thread(listen_on_network, std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
 
-	//std::thread event_manager_thread(event_manager_main,std::ref(my_elevator), std::ref(my_queue), std::ref(my_network));
-	//std::thread network_thread(listen_on_network, std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
+	event_manager_thread.join();
+	network_thread.join();
 
-	//event_manager_thread.join();
-	//network_thread.join();
-
-
-
-
-
-/*
-	std::cout << "Initializing threads" << std::endl;
-	pthread_t state_machine_thread, network_thread;
-	int error_thread_1,error_thread_2;
-	error_thread_1 = pthread_create(&state_machine_thread, NULL, state_machine_main, NULL);
-	if(error_thread_1)
-		std::cout << "Error createing state_machine_thread" << std::endl;
-	
-	error_thread_2 = pthread_create(&network_thread, NULL, network_main, NULL);
-	if(error_thread_2)
-		std::cout << "Error creating network_thread" << std::endl;
-
-//Joining threads
-	std::cout << "Joining threads" << std::endl;
-	pthread_join(state_machine_thread, NULL);
-	pthread_join(network_thread, NULL);
-	*/
+    return 0;
 }

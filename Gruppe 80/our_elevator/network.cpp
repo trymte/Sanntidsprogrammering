@@ -104,6 +104,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 	switch(message){
 		case MASTER_IP_INIT:
 			this->master_ip = elevators[foreign_elevator_ID].get_elevator_ip();
+			break;
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			std::cout << "I recieved your message: SLAVE_REQUEST_ORDER_MATRIX, here is the elevator you sent me: " << std::endl;
 			elevators[foreign_elevator_ID].print_elevator();
@@ -174,7 +175,7 @@ void Network::send_message_packet(Message message, int elevator_ID){
 	ip[master_ip.size()] = '\0'; // don't forget the terminating 0
 	switch(message){
 		case MASTER_IP_INIT:
-			message_string = "0";
+			message_string = "0:";
 			udp_broadcaster(message_string + elevator_object_to_messagestring(elevators[elevator_ID]));
 			break;
 		case SLAVE_REQUEST_ORDER_MATRIX:
