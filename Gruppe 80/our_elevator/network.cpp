@@ -196,23 +196,17 @@ void Network::send_message_packet(Message message, int elevator_ID){
 
 
 
-void network_main(Elevator* my_elevator, Network &my_network, Queue &my_queue){
+void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_queue){
 	while(1){
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
-				usleep(250000);
-				//std::cout << "master send via broadcast" << std::endl;
-				//my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
-				//std::cout << "master recieve via reciever" << std::endl;
+				//usleep(250000);
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 			case SLAVE:
-				usleep(250000);
-				std::cout << "slave Send via send" << std::endl;
-				my_network.send_message_packet(SLAVE_REQUEST_ORDER_MATRIX, my_elevator->get_elevator_ID());
-				//std::cout << "slave Recieve via recieve broadcast" << std::endl;
+				//usleep(250000);
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}
-}
 	}
+}

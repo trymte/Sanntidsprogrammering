@@ -93,6 +93,7 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 
 			case SLAVE:
 				//Kall netverksfunksjon som sender elevator objekt til master.
+				my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID());
 				break;
 			}
 		} 

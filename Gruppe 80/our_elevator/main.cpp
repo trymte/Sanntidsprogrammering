@@ -47,7 +47,7 @@ int main(){
 	init_status.floor = 3;
 	init_status.current_state = IDLE;
 	init_status.out_of_order = false;
-	init_status.role = SLAVE;
+	init_status.role = MASTER;
 	std::cout << "I am: " << init_status.role << std::endl;
 	
 
@@ -68,7 +68,7 @@ int main(){
 
 
 	std::thread event_manager_thread(event_manager_main,std::ref(my_elevator), std::ref(my_queue), std::ref(my_network));
-	std::thread network_thread(network_main, std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
+	std::thread network_thread(listen_on_network, std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
 
 	event_manager_thread.join();
 	network_thread.join();
