@@ -40,68 +40,33 @@ Queue::~Queue(){
 //----------------------------------------------------------------------------------------------------
 
 
-
-void Queue::print_order_matrix(std::vector<std::vector<Queue_element> > order_matrix){
-	std::vector<std::vector<Queue_element> >::iterator row;
-	std::vector<Queue_element>::iterator col;
-
-	std::cout << std::endl;
-	for (row = order_matrix.begin(); row!=order_matrix.end();++row){
-		for (col = row->begin(); col != row->end(); ++col){
-			std::cout << col->active_button<< ":" << col->elevator_ID << "\t";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-
-	//print_order_matrix(&order_matrix); kan også brukast
-}
-
-
-void Queue::print_order_matrix(){
-	std::vector<std::vector<Queue_element> >::iterator row;
-	std::vector<Queue_element>::iterator col;
-
-	std::cout << std::endl;
-	for (row = this->order_matrix.begin(); row!=this->order_matrix.end();++row){
-		for (col = row->begin(); col != row->end(); ++col){
-			std::cout << col->active_button<< ":" << col->elevator_ID << "\t";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-	//print_order_matrix(this->order_matrix_ptr);
-}
-
-
 unsigned int Queue::calculate_cost(Order order, Status status){
 	unsigned int cost = 0;
 	switch(status.current_state){
-	case MOVING:
+		case MOVING:
 
-		
-		if((order.floor-status.floor >= 0) && (status.dir == D_Up))
-			cost += abs(order.floor - status.floor)*10;
+			if((order.floor-status.floor >= 0) && (status.dir == D_Up))
+				cost += abs(order.floor - status.floor)*10;
 
-		else if((order.floor-status.floor < 0) && (status.dir == D_Down))
-			cost += abs(order.floor - status.floor)*10;
+			else if((order.floor-status.floor < 0) && (status.dir == D_Down))
+				cost += abs(order.floor - status.floor)*10;
 
-		else
-			cost += 50;
+			else
+				cost += 50;
 
-		break;
+			break;
 
-	case IDLE:
-		cost += abs(order.floor-status.floor)*15;
-		break;
+		case IDLE:
+			cost += abs(order.floor-status.floor)*15;
+			break;
 
-	case DOOR_OPEN:
-		cost += abs(order.floor-status.floor)*30;
-		break;
+		case DOOR_OPEN:
+			cost += abs(order.floor-status.floor)*30;
+			break;
 
-	default:
-		cost += 200;
-	}
+		default:
+			cost += 200;
+		}
 
 	return cost;
 }
