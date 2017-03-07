@@ -9,6 +9,8 @@ class Network{
 private:
 	std::vector<Elevator> elevators;
 
+	std::string master_ip;
+
 	Elevator messagestring_to_elevator_object(std::string &messagestring);
 
 	std::string elevator_object_to_messagestring(Elevator &elevator);
@@ -31,6 +33,10 @@ public:
 	void send_message_packet(Message message_ID, int elevator_ID);
 
 	static void send_message_packet(Message message_ID);
+
+	void set_master_ip(std::string master_ip){this->master_ip = master_ip;}
+
+	std::string get_master_ip(){return master_ip;}
 
 };
 

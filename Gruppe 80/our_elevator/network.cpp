@@ -94,8 +94,9 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 
 
 void Network::handle_message(Message message, int foreign_elevator_ID, int this_elevator_ID){
-	std::cout << "Message reciever side: " << message << std::endl;
 	switch(message){
+		case MASTER_IP_INIT:
+			this->master_ip = elevators[foreign_elevator_ID].get_elevator_ip();
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			std::cout << "I recieved your message: SLAVE_REQUEST_ORDER_MATRIX, here is the elevator you sent me: " << std::endl;
 			elevators[foreign_elevator_ID].print_elevator();
@@ -123,8 +124,6 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 		case MASTER_DISTRIBUTE_ORDER_MATRIX: //Slave receives
 			std::cout << "I recieved your message: MASTER_DISTRIBUTE_ORDER_MATRIX, thank you for the \
 			new elevator" << std::endl;
-
-			
 			break;
 		default:
 			std::cout << "Invalid message, but i will accept your elevator" << std::endl;
@@ -162,29 +161,32 @@ void Network::recieve_message_packet(int this_elevator_ID){
 
 void Network::send_message_packet(Message message, int elevator_ID){
 	std::string message_string;
-	char * ip = new char[message_string.size() + 1];
-	std::copy(message_string.begin(), message_string.end(), ip);
-	ip[message_string.size()] = '\0'; // don't forget the terminating 0
+	char * ip = new char[master_ip.size() + 1];
+	std::copy(master_ip.begin(), master_ip.end(), ip);
+	ip[master_ip.size()] = '\0'; // don't forget the terminating 0
 	switch(message){
-		case SLAVE_REQUEST_ORDER_MATRIX:
-			message_string = "0:";
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, ip);
+		case MASTER_IP_INIT:
+			message_string = "0";
+			udp_broadcaster(message_string + elevator_object_to_messagestring(elevators[elevator_ID]));
 			break;
-		case SLAVE_ORDER_COMPLETE:
+		case SLAVE_REQUEST_ORDER_MATRIX:
 			message_string = "1:";
 			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, ip);
 			break;
+		case SLAVE_ORDER_COMPLETE:
+			message_string = "2:";
+			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, ip);
+			break;
 		case SLAVE_ORDER_INCOMPLETE:
-			message_string = "2:",
+			message_string = "3:",
 			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, ip);
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
-			message_string = "3:";
-			//std::cout << "hello " << std::endl;
+			message_string = "4:";
 			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, ip);
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
-			message_string = "4:"; 
+			message_string = "5:"; 
 			udp_broadcaster(message_string + elevator_object_to_messagestring(elevators[elevator_ID]));
 			break;	
 		default:

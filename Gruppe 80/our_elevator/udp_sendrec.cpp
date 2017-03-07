@@ -115,18 +115,14 @@ void udp_init(int localPort, int elevator_role){
     laddr.sin_family = AF_INET;
     laddr.sin_port = htons(localPort);
     //
-
+    laddr.sin_addr.s_addr = INADDR_ANY;
     //Bind to socket if role = master <=> elevator_role = 1
     if(elevator_role == 1){
-        laddr.sin_addr.s_addr = INADDR_ANY;
         if( bind(lsocket, (struct sockaddr*)&laddr, sizeof(laddr) ) == -1)
         {
         die("lbind");
         }
-    }else{
-        laddr.sin_addr.s_addr = inet_addr("127.0.0.1");
     }
-    
 
     
     printf("Client successfully binded to localPort and broadcastport! \n" );
@@ -154,7 +150,7 @@ int udp_broadcaster(std::string message){
 
 }
 
-int udp_sender(std::string message, int localPort, char * ip)
+int udp_sender(std::string message, int localPort, char * reciever_ip) //master_ip = reciever_ip
 {
     struct sockaddr_in addr;
     char sbuff[BUFLEN];
@@ -164,12 +160,10 @@ int udp_sender(std::string message, int localPort, char * ip)
     memset((char *) &addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_port = htons(localPort);
-    addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    addr.sin_addr.s_addr = inet_addr(reciever_ip);
     if (sendto(lsocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr)) == -1)
     {
-        die("sendto()");
-
-        
+        die("sendto");
     }
         //printf("Data from sender: %s\n" , sbuff);    
  

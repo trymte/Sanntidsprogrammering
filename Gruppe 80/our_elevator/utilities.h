@@ -10,7 +10,7 @@
 
 const unsigned int N_FLOORS = 4;
 const unsigned int N_BUTTONS = 3;
-const unsigned int N_ELEVATORS = 3;
+const unsigned int N_ELEVATORS = 2;
 const unsigned int DOOR_TIME_S = 1;
 const unsigned int TIME_CONDITION_S = 10;
 const unsigned int TIMER_DOOR_ID = 1;
@@ -37,11 +37,12 @@ typedef enum {
 
 typedef enum{
 	//SLAVE_INIT
-    SLAVE_REQUEST_ORDER_MATRIX = 0,
-    SLAVE_ORDER_COMPLETE = 1,
-    SLAVE_ORDER_INCOMPLETE = 2,
-    SLAVE_SEND_ELEVATOR_INFORMATION = 3,
-    MASTER_DISTRIBUTE_ORDER_MATRIX = 4
+    MASTER_IP_INIT = 0,
+    SLAVE_REQUEST_ORDER_MATRIX = 1,
+    SLAVE_ORDER_COMPLETE = 2,
+    SLAVE_ORDER_INCOMPLETE = 3,
+    SLAVE_SEND_ELEVATOR_INFORMATION = 4,
+    MASTER_DISTRIBUTE_ORDER_MATRIX = 5
 } Message;
 
 

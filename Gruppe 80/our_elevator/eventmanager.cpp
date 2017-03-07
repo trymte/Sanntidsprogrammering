@@ -23,6 +23,7 @@ bool check_buttons(Queue &my_queue){
 				new_button_press = 1;
 				
 				my_queue.add_order(new_order,-1); //Skal være -1
+				print_order_matrix(my_queue.get_order_matrix_ptr());
 			}
 		}
 	}

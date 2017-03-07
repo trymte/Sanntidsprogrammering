@@ -258,8 +258,6 @@ void Queue::reset_orders(Status status){
 
 
 
-
-
 Order Queue::get_next_order(int elevator_ID){
 	Order next_order;
 	next_order.floor = 0;

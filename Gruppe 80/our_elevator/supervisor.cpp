@@ -3,6 +3,10 @@
 
 void sv_manage_order_matrix(std::vector<Elevator> *elevators, int master_elevator_ID){	
 	std::vector<std::vector<Queue_element> > temp = Queue::assign_elevators_to_orders(*elevators);
+	std::cout << "------------------------------------------------------------------------"<< std::endl;
+	std::cout << "Global order matrix: " << std::endl;
+	std::cout << "------------------------------------------------------------------------- " <<std::endl;
+	print_order_matrix(&temp);
 	for(unsigned int i = 0; i < N_ELEVATORS; i ++){
 		(*elevators)[i].set_elevator_order_matrix(&temp);
 	}

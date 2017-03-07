@@ -36,7 +36,7 @@ void die(char *);
 
 void udp_init(int localport, int elevator_role);
 int udp_broadcaster(std::string message);
-int udp_sender(std::string message, int localport, char* ip);
+int udp_sender(std::string message, int localport, char* reciever_ip);
 struct code_message udp_reciever();
 struct code_message udp_recieve_broadcast();
 void udp_close();
