@@ -104,6 +104,7 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 	switch(my_elevator->get_elevator_status().current_state){
 	case MOVING:
 		if (requests_should_stop(my_elevator, my_queue)){
+			std::cout << "Requst should not stop" << std::endl;
 			stopped = true;			
 			elev_set_motor_direction(DIRN_STOP);
 			if (get_timer_id() == TIMER_CONDITION_ID)

@@ -18,6 +18,7 @@ bool check_buttons(Elevator *my_elevator, Queue &my_queue){
 	for(int i=0; i<N_FLOORS;i++){
 		for(int j=0;j<N_BUTTONS;j++){
 			if (elev_get_button_signal((elev_button_type_t)j,i) && (my_queue.get_order_matrix()[i][j].active_button == 0)){
+				std::cout << "Button pressed" << std::endl;
 				new_order.floor = i;
 				new_order.btn = (Button)j;
 				new_button_press = 1;
@@ -26,8 +27,6 @@ bool check_buttons(Elevator *my_elevator, Queue &my_queue){
 					my_queue.add_order(new_order,my_elevator->get_elevator_ID());
 				else
 					my_queue.add_order(new_order,-1);
-
-				print_order_matrix(my_queue.get_order_matrix_ptr());
 			}
 		}
 	}
@@ -47,15 +46,15 @@ void set_all_lights(Elevator *my_elevator, Queue &my_queue){
 		//Set cab lights
 		if (i == (int)B_Cab){
 			if((my_queue.get_order_matrix()[i][N_BUTTONS-1].active_button == 1) && (my_queue.get_order_matrix()[i][N_BUTTONS-1].elevator_ID == my_elevator->get_elevator_ID()))
-				elev_set_button_lamp((elev_button_type_t)N_BUTTONS-1,i,1);
+				elev_set_button_lamp((elev_button_type_t)(N_BUTTONS-1),i,1);
 			else
-				elev_set_button_lamp((elev_button_type_t)N_BUTTONS-1,i,0);
+				elev_set_button_lamp((elev_button_type_t)(N_BUTTONS-1),i,0);
 		}
 	} 
 }
 
 
-void check_condition_timer(Elevator* my_elevator, Network &my_network){
+void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my_queue){
 	if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ 
 		std::cout << "Elevator is out of order" << std::endl;
 		my_elevator->set_elevator_out_of_order(1);
@@ -64,7 +63,7 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network){
 		my_queue.reset_orders(my_elevator->get_elevator_status());
 		switch(my_elevator->get_elevator_status().role){
 			case MASTER:
-				//sv_manage_incomplete_order(my_elevator);
+				//sv_manage_order_matrix(my_network.get_elevators_ptr());  //my_elevator);
 				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
 				break;
 			case SLAVE:
@@ -87,14 +86,17 @@ void check_order_to_be_executed(Elevator* my_elevator, Queue &my_queue){
 		}
 }
 
-void check_floor_arrival(Elevator* my_elevator){
+void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_network){
 	int current_floor = elev_get_floor_sensor_signal();
 	my_elevator->set_elevator_floor(current_floor);
 	if (elev_get_floor_sensor_signal() != -1){
 		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
 			switch(my_elevator->get_elevator_role()){
 				case MASTER:
+					std::cout << "My elevator:" << std::endl;
+					my_elevator->print_elevator();
 					sv_manage_completed_order(my_elevator);
+					sv_manage_order_matrix(my_network.get_elevators_ptr());
 					break;
 				case SLAVE:
 					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID());
@@ -103,6 +105,7 @@ void check_floor_arrival(Elevator* my_elevator){
 		}
 	}
  }
+
 
 void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_network){    
 	std::cout << "------------------------------------------------" << std::endl; 
@@ -138,13 +141,13 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 				break;
 			}
 		}
-		check_condition_timer(my_elevator, my_network);
+		check_condition_timer(my_elevator, my_network, my_queue);
 
 		check_door_timer(my_elevator, my_queue);
 		
 		check_order_to_be_executed(my_elevator, my_queue);
 		
-		check_floor_arrival(my_elevator);
+		check_floor_arrival(my_elevator, my_queue, my_network);
 
 //		std::cout << my_elevator.get_elevator_status().current_state << std::endl;      
 

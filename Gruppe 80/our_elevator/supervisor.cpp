@@ -7,9 +7,12 @@ void sv_manage_order_matrix(std::vector<Elevator> *elevators){
 	std::cout << "Global order matrix: " << std::endl;
 	std::cout << "------------------------------------------------------------------------- " <<std::endl;
 	print_order_matrix(&temp);
+
+
 	for(unsigned int i = 0; i < N_ELEVATORS; i ++){
 		(*elevators)[i].set_elevator_order_matrix(&temp);
 	}
+//	(*elevators)[0].print_elevator();
 }
 
 
@@ -28,8 +31,13 @@ void sv_manage_completed_order(Elevator* elevator){
 	}
 }
 
+/*
+void sv_manage_incomplete_order(std::vector<Elevator> *elevators){
 
-void sv_manage_incomplete_order(Elevator* elevator){
 	std::vector<std::vector<Queue_element> > temp = Queue::assign_elevators_to_orders(*elevators);
-	*elevator->set_elevator_order_matrix(&temp);
+	
+	for(unsigned int i=0;i<N_ELEVATORS;i++){
+		(*elevators)[i].set_elevator_order_matrix(&temp);
+	}
 }
+*/

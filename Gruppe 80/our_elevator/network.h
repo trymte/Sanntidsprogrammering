@@ -18,7 +18,7 @@ private:
 public:
 	Network();
 
-	Network(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix_ptr);
+	Network(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix_ptr, int elevator_ID);
 
 	std::vector<Elevator> get_elevators(){return elevators;}
 

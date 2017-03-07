@@ -53,17 +53,19 @@ int main(){
 	init_status.role = static_cast<Role>(role);
 
 	udp_init(MASTERPORT, static_cast<int>(init_status.role));
-	Queue my_queue;
-	Elevator* my_elevator;
-	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr());
-
+	
 
 	int this_elev_id;
 	std::cout << "Write in your elevator id: " << std::endl;
 	std::cin >> this_elev_id; 
+	Queue my_queue;
+	Elevator* my_elevator;
+	std::cout << "Hei 1 " << std::endl;
+	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr(), this_elev_id);
+	std::cout << "Hei 2 " << std::endl;
 	my_elevator = my_network.get_elevator_ptr(this_elev_id);
     my_elevator->set_elevator_order_matrix_ptr(my_queue.get_order_matrix_ptr());
-    
+    std::cout << "Hei 3 " << std::endl;
     usleep(5000000);
     switch(init_status.role){
 		case MASTER:

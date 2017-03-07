@@ -6,11 +6,14 @@
 
 class Elevator{
 private:
+	int count_ptr;
 	Status elevator_status;
 	std::vector<std::vector<Queue_element> > *order_matrix_ptr;
 	
 public:
 	Elevator();
+
+	Elevator(Status elevator_status);
 
 	Elevator(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix);
 

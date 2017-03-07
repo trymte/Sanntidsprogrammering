@@ -2,8 +2,9 @@
 
 
 
-Elevator::Elevator(): order_matrix_ptr(NULL)
+Elevator::Elevator(): order_matrix_ptr(NULL), count_ptr(0)
 {
+
 	get_my_ipaddress(elevator_status.ip);
 	elevator_status.dir = D_Stop;
 	elevator_status.floor = -1;
@@ -11,10 +12,17 @@ Elevator::Elevator(): order_matrix_ptr(NULL)
 	elevator_status.out_of_order = 1;
 }
 
+Elevator::Elevator(Status elevator_status): elevator_status(elevator_status), count_ptr(0)
+{
+	std::vector<std::vector <Queue_element> > temp = twoD_vector_init();
+	this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
+	*this->order_matrix_ptr = temp;
+}
+
 Elevator::Elevator(Status elevator_status, std::vector<std::vector <Queue_element> > *order_matrix_ptr): elevator_status(elevator_status)
 {
-	this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
-	*this->order_matrix_ptr = *order_matrix_ptr;
+	count_ptr += 1;
+	this->order_matrix_ptr = order_matrix_ptr;
 }
 
 Elevator::Elevator(const Elevator &elevator): elevator_status(elevator.elevator_status)
@@ -25,9 +33,15 @@ Elevator::Elevator(const Elevator &elevator): elevator_status(elevator.elevator_
 
 
 Elevator::~Elevator(){
+
 	if(order_matrix_ptr != NULL){
-		delete order_matrix_ptr;
+		if(count_ptr != 0){
+			count_ptr -= 1;
+		} else{
+			delete order_matrix_ptr;
+		}
 		order_matrix_ptr = NULL;
+
 	}
 }
 
