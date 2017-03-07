@@ -97,7 +97,7 @@ void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_
 		;
 		for(unsigned int j = 0; j < N_BUTTONS; j++){
 			Queue_element temp = ordr[i][j];
-			std::cout << "  | " temp.active_button << " : " << temp.elevator_ID << "  |  ";
+			std::cout << " | " << temp.active_button << " : " << temp.elevator_ID << "  |  ";
 		}
 		std::cout << std::endl;
 	}

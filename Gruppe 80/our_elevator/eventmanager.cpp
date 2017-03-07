@@ -45,17 +45,17 @@ void set_all_lights(Elevator *my_elevator, Queue &my_queue){
 		}
 
 		//Set cab lights
-		if (j == (int)B_Cab){
-			if((my_queue.get_order_matrix()[i][j].active_button == 1) && (my_queue.get_order_matrix()[i][j].elevator_ID == my_elevator->get_elevator_ID()))
-				elev_set_button_lamp((elev_button_type_t)j,i,1);
+		if (i == (int)B_Cab){
+			if((my_queue.get_order_matrix()[i][N_BUTTONS-1].active_button == 1) && (my_queue.get_order_matrix()[i][N_BUTTONS-1].elevator_ID == my_elevator->get_elevator_ID()))
+				elev_set_button_lamp((elev_button_type_t)N_BUTTONS-1,i,1);
 			else
-				elev_set_button_lamp((elev_button_type_t)j,i,0);
+				elev_set_button_lamp((elev_button_type_t)N_BUTTONS-1,i,0);
 		}
 	} 
 }
 
 
-void check_condition_timer(Elevator* my_elevator){
+void check_condition_timer(Elevator* my_elevator, Network &my_network){
 	if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ 
 		std::cout << "Elevator is out of order" << std::endl;
 		my_elevator->set_elevator_out_of_order(1);
@@ -94,7 +94,7 @@ void check_floor_arrival(Elevator* my_elevator){
 		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
 			switch(my_elevator->get_elevator_role()){
 				case MASTER:
-					sv_manage_completed_order(my_elevator, my_elevator->get_elevator_ID());
+					sv_manage_completed_order(my_elevator);
 					break;
 				case SLAVE:
 					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID());
@@ -130,7 +130,7 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 			switch(my_elevator->get_elevator_status().role){
 			case MASTER:
 				std::cout << "Supervisor" << std::endl;
-				sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());
+				sv_manage_order_matrix(my_network.get_elevators_ptr());
 				break;
 			case SLAVE:
 				std::cout << "Send_message_packet" << std::endl;
@@ -138,7 +138,7 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 				break;
 			}
 		}
-		check_condition_timer(my_elevator);
+		check_condition_timer(my_elevator, my_network);
 
 		check_door_timer(my_elevator, my_queue);
 		
