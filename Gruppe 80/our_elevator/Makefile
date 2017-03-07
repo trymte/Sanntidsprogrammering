@@ -15,20 +15,22 @@ all: test_heis
 test_heis : $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) $(LIBS) -o test_heis
 
-network.o : network.h network.cpp elevator.h utilities.h
+network.o : network.h network.cpp elevator.h utilities.h supervisor.h
 	$(CC) $(CFLAGS) network.cpp
 
 elev.o : elev.c elev.h utilities.h
 	$(CC) $(CFLAGS) elev.c
 
 io.o : io.c io.h
+	$(CC) $(CFLAGS) io.c
 
 timer.o : timer.c timer.h
+	$(CC) $(CFLAGS) timer.c
 
 elevator.o : elevator.h elevator.cpp  queue.h udp_sendrec.h utilities.h
 	$(CC) $(CFLAGS) elevator.cpp
 
-fsm.o : fsm.cpp fsm.h queue.h
+fsm.o : fsm.cpp fsm.h queue.h network.h supervisor.h
 	$(CC) $(CFLAGS) fsm.cpp
 
 supervisor.o : supervisor.cpp supervisor.h queue.h utilities.h
@@ -40,7 +42,7 @@ queue.o : queue.cpp queue.h elevator.h
 main.o : main.cpp eventmanager.h elevator.h network.h queue.h supervisor.h
 	$(CC) $(CFLAGS) main.cpp
 
-eventmanager.o : eventmanager.h eventmanager.cpp queue.h elev.h network.h
+eventmanager.o : eventmanager.h eventmanager.cpp queue.h elev.h network.h fsm.h
 	$(CC) $(CFLAGS) eventmanager.cpp
 
 utilities.o : utilities.h utilities.cpp

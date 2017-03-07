@@ -55,30 +55,24 @@ int main(){
 	udp_init(MASTERPORT, static_cast<int>(init_status.role));
 	
 
-	int this_elev_id;
+	int my_elevator_id;
 	std::cout << "Write in your elevator id: " << std::endl;
-	std::cin >> this_elev_id; 
+	std::cin >> my_elevator_id; 
 	Queue my_queue;
-	Elevator* my_elevator;
-	std::cout << "Hei 1 " << std::endl;
-	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr(), this_elev_id);
-	std::cout << "Hei 2 " << std::endl;
-	my_elevator = my_network.get_elevator_ptr(this_elev_id);
-    my_elevator->set_elevator_order_matrix_ptr(my_queue.get_order_matrix_ptr());
-    std::cout << "Hei 3 " << std::endl;
+	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr(), my_elevator_id);
     usleep(5000000);
     switch(init_status.role){
 		case MASTER:
-			my_network.send_message_packet(MASTER_IP_INIT, this_elev_id);
+			my_network.send_message_packet(MASTER_IP_INIT, my_elevator_id);
 			break;
 		case SLAVE:
-			my_network.recieve_message_packet(my_elevator->get_elevator_ID());
+			my_network.recieve_message_packet(my_elevator_id);
 			break;
 	}
     
 
-	std::thread event_manager_thread(event_manager_main,std::ref(my_elevator), std::ref(my_queue), std::ref(my_network));
-	std::thread network_thread(listen_on_network, std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
+	std::thread event_manager_thread(event_manager_main,std::ref(my_elevator_id), std::ref(my_queue), std::ref(my_network));
+	std::thread network_thread(listen_on_network, std::ref(my_elevator_id), std::ref(my_network), std::ref(my_queue));
 
 	event_manager_thread.join();
 	network_thread.join();

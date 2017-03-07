@@ -124,11 +124,11 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_ORDER_COMPLETE:
-			sv_manage_completed_order(&elevators[this_elevator_ID]);
+			sv_manage_completed_order(foreign_elevator_ID, &elevators);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
-			//sv_manage_incomplete_order(elevators[elevator_ID]);
+			//sv_manage_order_matrix(&elevators);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
@@ -216,16 +216,16 @@ void Network::send_message_packet(Message message, int elevator_ID){
 
 
 
-void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_queue){
+void listen_on_network(int &my_elevator_ID, Network &my_network, Queue &my_queue){
 	while(1){
-		switch(my_elevator->get_elevator_role()){
+		switch((*my_network.get_elevators_ptr())[my_elevator_ID].get_elevator_role()){
 			case MASTER:
 				//usleep(250000);
-				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
+				my_network.recieve_message_packet(my_elevator_ID);
 				break;
 			case SLAVE:
 				//usleep(250000);
-				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
+				my_network.recieve_message_packet(my_elevator_ID);
 				break;
 		}
 	}

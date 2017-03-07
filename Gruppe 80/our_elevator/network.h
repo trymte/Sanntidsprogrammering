@@ -41,6 +41,6 @@ public:
 };
 
 
-void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_queue);
+void listen_on_network(int &my_elevator_ID, Network &my_network, Queue &my_queue);
 
 
