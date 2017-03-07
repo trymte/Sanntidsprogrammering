@@ -79,7 +79,6 @@ void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){ //
    				elev_set_motor_direction(DIRN_DOWN);
    				my_elevator->set_elevator_dir(D_Down);
 	   			my_elevator->set_elevator_current_state(MOVING);
-   				
    			}
    			
    			else{

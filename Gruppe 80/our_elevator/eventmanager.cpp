@@ -12,7 +12,7 @@
 
 
 
-bool check_buttons(Queue &my_queue){
+bool check_buttons(Elevator *my_elevator, Queue &my_queue){
 	Order new_order;
 	bool new_button_press = 0;
 	for(int i=0; i<N_FLOORS;i++){
@@ -22,7 +22,11 @@ bool check_buttons(Queue &my_queue){
 				new_order.btn = (Button)j;
 				new_button_press = 1;
 				
-				my_queue.add_order(new_order,-1); //Skal være -1
+				if (new_order.btn == B_Cab)
+					my_queue.add_order(new_order,my_elevator->get_elevator_ID());
+				else
+					my_queue.add_order(new_order,-1);
+
 				print_order_matrix(my_queue.get_order_matrix_ptr());
 			}
 		}
@@ -30,18 +34,26 @@ bool check_buttons(Queue &my_queue){
 	return new_button_press;
 }
 
-void set_all_lights(Queue &my_queue){
+void set_all_lights(Elevator *my_elevator, Queue &my_queue){
 	for(int i =0;i<N_FLOORS;i++){
-		for(int j=0;j<N_BUTTONS;j++){
-			if(my_queue.get_order_matrix()[i][j].active_button == 1){
+		//Set external lights
+		for(int j=0;j<N_BUTTONS-1;j++){
+			if(my_queue.get_order_matrix()[i][j].active_button == 1)
 				elev_set_button_lamp((elev_button_type_t)j,i,1);
-			}
+			else
+				elev_set_button_lamp((elev_button_type_t)j,i,0);
+		}
+
+		//Set cab lights
+		if (j == (int)B_Cab){
+			if((my_queue.get_order_matrix()[i][j].active_button == 1) && (my_queue.get_order_matrix()[i][j].elevator_ID == my_elevator->get_elevator_ID()))
+				elev_set_button_lamp((elev_button_type_t)j,i,1);
 			else
 				elev_set_button_lamp((elev_button_type_t)j,i,0);
 		}
 	} 
 }
- 
+
  
 void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_network){
 //////////////////////////////////////////////////////////////////////////////// 
@@ -50,21 +62,17 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 	std::cout << "Event manager initializing..." << std::endl; 
 	elev_init();
 	int input_poll_rate_ms = 25;
-	while(elev_get_floor_sensor_signal() != 0){
+	while(elev_get_floor_sensor_signal() != 0)
 		elev_set_motor_direction(DIRN_DOWN);
-	}
 	elev_set_motor_direction(DIRN_STOP); 
 	elev_set_floor_indicator(0);
-
-	//Få master/slave status fra network. Vente på dette, eller bare beholde init-status (MASTER) til master inntil videre?
-
 
 	std::cout << "Event manager initialized" << std::endl;
 /////////////////////////////////////////////////////////////////////////////////
  
 
 	while(1){ //Går an å ha en switch/case som tar for seg hele main-koden. Og ta alle bolkene med kode inn i hver sin funksjon. Ryddigere?
-		if (check_buttons(my_queue)){
+		if (check_buttons(my_elevator, my_queue)){
 		
 			switch(my_elevator->get_elevator_status().role){
 			case MASTER:
@@ -132,7 +140,7 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 	
 
 //		std::cout << my_elevator.get_elevator_status().current_state << std::endl;      
-		set_all_lights(my_queue);
+		set_all_lights(my_elevator,my_queue);
 		my_queue.write_order_matrix_to_file();
 	 
 		usleep(input_poll_rate_ms*1000);   
