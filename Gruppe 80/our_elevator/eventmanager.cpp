@@ -6,7 +6,7 @@
 #include <algorithm>
 
 #include "eventmanager.h"
-#include "driver/timer.h"
+#include "timer.h"
 
 
 
@@ -22,7 +22,7 @@ bool check_buttons(Queue &my_queue){
 				new_order.btn = (Button)j;
 				new_button_press = 1;
 				
-				my_queue.add_order(new_order,1); //Skal være -1
+				my_queue.add_order(new_order,-1); //Skal være -1
 				my_queue.print_order_matrix(); //Kan fjernes
 			}
 		}
