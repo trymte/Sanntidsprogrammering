@@ -9,10 +9,17 @@ Network::Network(){
 		this->elevators.push_back(elev_temp);
 		elevators[i].set_elevator_ID(i);
 	}
+	this->master_ip = "0";
 }
 
 Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix_ptr){
 	Elevator elev_temp(elevator_status, order_matrix_ptr);
+	if(elevator_status.role == MASTER){	
+		this->master_ip = elevator_status.ip;
+	}
+	else{
+		this->master_ip = "0";
+	}
 	for(unsigned int i = 0; i < N_ELEVATORS ; i++){
 		this->elevators.push_back(elev_temp);
 		elevators[i].set_elevator_ID(i);
@@ -124,6 +131,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 		case MASTER_DISTRIBUTE_ORDER_MATRIX: //Slave receives
 			std::cout << "I recieved your message: MASTER_DISTRIBUTE_ORDER_MATRIX, thank you for the \
 			new elevator" << std::endl;
+			this->master_ip = elevators[foreign_elevator_ID].get_elevator_ip();
 			break;
 		default:
 			std::cout << "Invalid message, but i will accept your elevator" << std::endl;
