@@ -1,6 +1,6 @@
 #pragma once
-//#include "const_struct_def.h"
-//#include "supervisor.h"
+
+#include "supervisor.h"
 #include "queue.h"
 
 
@@ -27,6 +27,8 @@ public:
 	void recieve_message_packet(int this_elevator_ID);
 
 	void send_message_packet(Message message_ID, int elevator_ID);
+
+	static void send_message_packet(Message message_ID);
 
 };
 

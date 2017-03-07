@@ -101,22 +101,29 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			elevators[foreign_elevator_ID].print_elevator();
 			std::cout << "Distributing order matrix:" << std::endl;
 			std::cout << "-------------------------------------------------------------------------------------------" << std::endl;
-			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, 1);
+			sv_manage_order_matrix(elevators, this_elevator_ID);
+			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_ORDER_COMPLETE:
-			//sv_manage_completed_order(elevators[elevator_ID]);
+			sv_manage_completed_order(elevators[this_elevator_ID],this_elevator_ID);
+			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
-			//sv_manage_incomplete_order(elevators[elevator_ID]);
+			//sv_manage_incomplete_order(elevators[elevator_ID], this_elevator_ID);
+			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
 			std::cout << "I recieved your message: SLAVE_SEND_ELEVATOR_INFORMATION" << std::endl;
 			std::cout << ", here is the elevator you sent me: " << std::endl;
 			elevators[foreign_elevator_ID].print_elevator();
 			std::cout << "---------------------------------------------------" << std::endl;
+			sv_manage_order_matrix(elevators, this_elevator_ID);
+			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
-		case MASTER_DISTRIBUTE_ORDER_MATRIX:
-			std::cout << "I recieved your message: MASTER_DISTRIBUTE_ORDER_MATRIX, thank you for the new elevator" << std::endl;
+		case MASTER_DISTRIBUTE_ORDER_MATRIX: //Slave receives
+			std::cout << "I recieved your message: MASTER_DISTRIBUTE_ORDER_MATRIX, thank you for the \
+			new elevator" << std::endl;
+
 			
 			break;
 		default:
@@ -177,7 +184,7 @@ void Network::send_message_packet(Message message, int elevator_ID){
 			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, ip);
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
-			message_string = "4:"; //får feil melding vba slave send elevator info
+			message_string = "4:"; 
 			udp_broadcaster(message_string + elevator_object_to_messagestring(elevators[elevator_ID]));
 			break;	
 		default:
@@ -185,6 +192,8 @@ void Network::send_message_packet(Message message, int elevator_ID){
 	}
 	delete[] ip;
 }
+
+
 
 
 void network_main(Elevator* my_elevator, Network &my_network, Queue &my_queue){
@@ -205,5 +214,5 @@ void network_main(Elevator* my_elevator, Network &my_network, Queue &my_queue){
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}
-	}
 }
+	}

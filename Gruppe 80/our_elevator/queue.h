@@ -44,7 +44,7 @@ public:
 
 	std::vector<std::vector<Queue_element> >* get_order_matrix_ptr();
 
-	std::vector<std::vector<Queue_element> > assign_elevators_to_orders(std::vector<Elevator> &elevators);
+	static std::vector<std::vector<Queue_element> > assign_elevators_to_orders(std::vector<Elevator> &elevators);
 
 	void write_order_matrix_to_file();
 	
