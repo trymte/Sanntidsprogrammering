@@ -41,14 +41,62 @@ void set_all_lights(Queue &my_queue){
 		}
 	} 
 }
+
+void check_condition_timer(Elevator* my_elevator){
+	if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ 
+		std::cout << "Elevator is out of order" << std::endl;
+		my_elevator->set_elevator_out_of_order(1);
+		timer_stop();
+
+		my_queue.reset_orders(my_elevator->get_elevator_status());
+		switch(my_elevator->get_elevator_status().role){
+			case MASTER:
+				//sv_manage_incomplete_order(my_elevator);
+				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
+				break;
+			case SLAVE:
+				my_network.send_message_packet(SLAVE_ORDER_INCOMPLETE, my_elevator->get_elevator_ID());
+				break;
+		}
+	} 
+}
+
+void check_door_timer(Elevator* my_elevator, Queue &my_queue){
+	if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){ 
+		fsm_on_door_timeout(my_elevator,my_queue);
+	}
+}
  
- 
-void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_network){
-//////////////////////////////////////////////////////////////////////////////// 
-//Initializing
-////////////////////////////////////////////////////////////////////////////////     
+void check_order_to_be_executed(Elevator* my_elevator, Queue &my_queue){
+	Order next_order = my_queue.get_next_order(my_elevator->get_elevator_ID());
+		if (next_order.active_order == 1){ 
+			fsm_execute_order(my_elevator,my_queue,next_order);
+		}
+}
+
+void check_floor_arrival(Elevator* my_elevator){
+	int current_floor = elev_get_floor_sensor_signal();
+	my_elevator->set_elevator_floor(current_floor);
+	if (elev_get_floor_sensor_signal() != -1){
+		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
+			switch(my_elevator->get_elevator_role()){
+				case MASTER:
+					sv_manage_completed_order(my_elevator, my_elevator->get_elevator_ID());
+					break;
+				case SLAVE:
+					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID());
+					break;
+			}	
+		}
+	}
+ }
+
+void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_network){    
+	std::cout << "------------------------------------------------" << std::endl; 
 	std::cout << "Event manager initializing..." << std::endl; 
+	std::cout << "------------------------------------------------" << std::endl; 
 	elev_init();
+
 	int input_poll_rate_ms = 25;
 	while(elev_get_floor_sensor_signal() != 0){
 		elev_set_motor_direction(DIRN_DOWN);
@@ -65,103 +113,34 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 
 	while(1){ //Går an å ha en switch/case som tar for seg hele main-koden. Og ta alle bolkene med kode inn i hver sin funksjon. Ryddigere?
 		if (check_buttons(my_queue)){
-		
 			switch(my_elevator->get_elevator_status().role){
 			case MASTER:
 				std::cout << "Supervisor" << std::endl;
 				sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());
 				break;
-
 			case SLAVE:
 				std::cout << "Send_message_packet" << std::endl;
 				my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID());
 				break;
 			}
-	
 		}
+		check_condition_timer(my_elevator);
 
-		//Check condition timer
-		if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ //Går an å ha en event på dette. Blir kanskje litt mer ryddig?
-			std::cout << "Elevator is out of order" << std::endl;
-			my_elevator->set_elevator_out_of_order(1);
-			timer_stop();
-
-			my_queue.reset_orders(my_elevator->get_elevator_status());
-			switch(my_elevator->get_elevator_status().role){
-			case MASTER:
-				//sv_manage_incomplete_order(my_elevator);
-				break;
-
-			case SLAVE:
-				//Kall netverksfunksjon som sender elevator objekt til master.
-				my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID());
-				break;
-			}
-		} 
-
-		//Check door timer
-		if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){ 
-			fsm_on_door_timeout(my_elevator,my_queue);
-		}
-
-		//Check order to be executed
-		Order next_order = my_queue.get_next_order(my_elevator->get_elevator_ID());
-		if (next_order.active_order == 1){ 
-			fsm_execute_order(my_elevator,my_queue,next_order);
-		}
-
-		//Check floor arrival
-		int current_floor = elev_get_floor_sensor_signal();
-		my_elevator->set_elevator_floor(current_floor);
-		if (elev_get_floor_sensor_signal() != -1){
-			if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
-				switch(my_elevator->get_elevator_role()){
-					case MASTER:
-						sv_manage_completed_order(my_elevator, my_elevator->get_elevator_ID());
-						break;
-					case SLAVE:
-						my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID());
-						break;
-				}
-				
-			}
-		}
-
+		check_door_timer(my_elevator, my_queue);
 		
-
-	
+		check_order_to_be_executed(my_elevator, my_queue);
+		
+		check_floor_arrival(my_elevator);
 
 //		std::cout << my_elevator.get_elevator_status().current_state << std::endl;      
 		set_all_lights(my_queue);
+
 		my_queue.write_order_matrix_to_file();
 	 
 		usleep(input_poll_rate_ms*1000);   
 	}  
-  
-	   
- 
-  
 }
-/*
-  
-To do:
-- Read/write ordermatrix to file
-- Calculate cost
-- Out of order -> Slette jobber med sin elevator id, deretter send elevator til master.
 
-- Role --> Assign elevators to orders etc (inform_supervisor)
-- Supervisor funksjoner
-*/
-
-/*
-int my_network = 1;
-int *my_elevator = &my_network;	
-
-std::cout << "My_network = " << my_network << std::endl;
-*my_elevator = 2;
-std::cout << "My_elevator = " << *my_elevator << std::endl;
-std::cout << "My_network = " << my_network << std::endl;
-*/
 
 
 
