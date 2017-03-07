@@ -8,7 +8,7 @@
 class Queue{
 private:
 	std::vector<std::vector<Queue_element> > order_matrix;
-	std::vector<std::vector<Queue_element> > *order_matrix_ptr;
+
 
 	
 public:
@@ -40,9 +40,9 @@ public:
 
 	Order get_next_order(int elevator_ID);
 
-	std::vector<std::vector<Queue_element> > get_order_matrix();
+	std::vector<std::vector<Queue_element> > get_order_matrix(){return this->order_matrix;}
 
-	std::vector<std::vector<Queue_element> >* get_order_matrix_ptr();
+	std::vector<std::vector<Queue_element> >* get_order_matrix_ptr(){return &this->order_matrix;}
 
 	static std::vector<std::vector<Queue_element> > assign_elevators_to_orders(std::vector<Elevator> &elevators);
 

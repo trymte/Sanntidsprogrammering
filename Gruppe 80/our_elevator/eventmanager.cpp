@@ -68,13 +68,13 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 			switch(my_elevator->get_elevator_status().role){
 			case MASTER:
 				std::cout << "Supervisor" << std::endl;
-				//sv_manage_order_matrix(network.get_elevators());
+				sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());
 				break;
 
 			case SLAVE:
 				std::cout << "Send_message_packet" << std::endl;
-				//send_message_packet;
-					break;
+				my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID());
+				break;
 			}
 	
 		}
@@ -103,7 +103,7 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 		}
 
 		//Check order to be executed
-		Order next_order = my_queue.get_next_order(my_elevator->get_elevator_status().elevator_ID);
+		Order next_order = my_queue.get_next_order(my_elevator->get_elevator_ID());
 		if (next_order.active_order == 1){ 
 			fsm_execute_order(my_elevator,my_queue,next_order);
 		}
@@ -112,7 +112,17 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 		int current_floor = elev_get_floor_sensor_signal();
 		my_elevator->set_elevator_floor(current_floor);
 		if (elev_get_floor_sensor_signal() != -1){
-			fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
+			if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
+				switch(my_elevator->get_elevator_role()){
+					case MASTER:
+						sv_manage_completed_order(my_elevator, my_elevator->get_elevator_ID());
+						break;
+					case SLAVE:
+						my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID());
+						break;
+				}
+				
+			}
 		}
 
 		

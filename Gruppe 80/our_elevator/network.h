@@ -20,6 +20,8 @@ public:
 
 	std::vector<Elevator> get_elevators(){return elevators;}
 
+	std::vector<Elevator>* get_elevators_ptr(){return &elevators;}
+
 	Elevator* get_elevator_ptr(int elevator_ID){return &elevators[elevator_ID];}
 
 	void handle_message(Message message_ID, int foreign_elevator_ID, int this_elevator_ID);
@@ -34,3 +36,5 @@ public:
 
 
 void network_main(Elevator* my_elevator, Network &my_network, Queue &my_queue);
+
+

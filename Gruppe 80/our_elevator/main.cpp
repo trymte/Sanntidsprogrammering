@@ -55,12 +55,13 @@ int main(){
 	Queue my_queue;
 	Elevator * my_elevator;
 	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr());
-
+	
 
 	int this_elev_id;
 	std::cout << "Write in elevator id: " << std::endl;
 	std::cin >> this_elev_id; 
-    my_elevator = my_network.get_elevator_ptr(this_elev_id);
+	my_elevator = my_network.get_elevator_ptr(this_elev_id);
+    my_elevator->set_elevator_order_matrix_ptr(my_queue.get_order_matrix_ptr());
     usleep(5000000);
 
 

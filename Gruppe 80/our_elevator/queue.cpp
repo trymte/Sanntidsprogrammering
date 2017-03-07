@@ -8,10 +8,8 @@
 //Constructor and destructor
 //----------------------------------------------------------------------------------------------------
 Queue::Queue(){
-	this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >; //la til nokre linjer her for å fjerne segfault
 	std::vector<std::vector<Queue_element> > temp = twoD_vector_init();
 	this->order_matrix = temp;
-	this->order_matrix_ptr = &order_matrix;
 }
 
 Queue::~Queue(){
@@ -21,9 +19,6 @@ Queue::~Queue(){
 		row->erase(row->begin(),row->end());
 	}
 	this->order_matrix.erase(this->order_matrix.begin(),this->order_matrix.end());
-	if(this->order_matrix_ptr != NULL){
-		delete[] this->order_matrix_ptr;	//og her
-	}
 }
 
 
@@ -320,11 +315,4 @@ void Queue::read_order_matrix_from_file(){
 		std::cout << "Unable to open file at queue_read_order_matrix_from_file" << std::endl;
 }
 
-std::vector<std::vector<Queue_element> > Queue::get_order_matrix(){
-	return this->order_matrix;
-} 
-
-std::vector<std::vector<Queue_element> >* Queue::get_order_matrix_ptr(){
-	return this->order_matrix_ptr;
-}
 

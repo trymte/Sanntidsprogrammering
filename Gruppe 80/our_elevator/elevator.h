@@ -32,6 +32,8 @@ public:
 
 	void set_elevator_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
 
+	void set_elevator_order_matrix_ptr(std::vector<std::vector <Queue_element> > *order_matrix_ptr){this->order_matrix_ptr = order_matrix_ptr;}
+
 	void set_elevator_role(Role role){this->elevator_status.role = role;}
 
 	void set_elevator_dir(Dirn dir){this->elevator_status.dir = dir;}

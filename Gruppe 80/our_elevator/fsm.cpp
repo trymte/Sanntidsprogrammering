@@ -98,12 +98,14 @@ void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){ //
 }
 
 
-void fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_floor){
+bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_floor){
+	bool stopped;
 	elev_set_floor_indicator(current_floor);
 	my_elevator->set_elevator_floor(current_floor);
 	switch(my_elevator->get_elevator_status().current_state){
 	case MOVING:
-		if (requests_should_stop(my_elevator, my_queue)){			
+		if (requests_should_stop(my_elevator, my_queue)){
+			stopped = true;			
 			elev_set_motor_direction(DIRN_STOP);
 			if (get_timer_id() == TIMER_CONDITION_ID)
 				timer_stop();
@@ -121,12 +123,14 @@ void fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 	   			order_to_be_removed.floor = current_floor;
 	   			order_to_be_removed.btn = (Button)j;
 	   			my_queue.remove_order(order_to_be_removed);
+
 			}
 		}
 		break;
 	case IDLE:
 			for(int i=0;i<N_BUTTONS;i++){
 				if (my_queue.get_order_matrix()[current_floor][i].active_button == 1){
+					stopped = true;
 					if (get_timer_id() == TIMER_CONDITION_ID)
 						timer_stop();
 
@@ -148,6 +152,7 @@ void fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 	default:
 		break;
 	}
+	return stopped;
 }
 
 
