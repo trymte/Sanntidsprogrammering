@@ -60,12 +60,9 @@ int main(){
 	std::cin >> this_elev_id; 
 	Queue my_queue;
 	Elevator* my_elevator;
-	std::cout << "Hei 1 " << std::endl;
 	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr(), this_elev_id);
-	std::cout << "Hei 2 " << std::endl;
 	my_elevator = my_network.get_elevator_ptr(this_elev_id);
     my_elevator->set_elevator_order_matrix_ptr(my_queue.get_order_matrix_ptr());
-    std::cout << "Hei 3 " << std::endl;
     usleep(5000000);
     switch(init_status.role){
 		case MASTER:
@@ -76,7 +73,6 @@ int main(){
 			break;
 	}
     
-
 	std::thread event_manager_thread(event_manager_main,std::ref(my_elevator), std::ref(my_queue), std::ref(my_network));
 	std::thread network_thread(listen_on_network, std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
 

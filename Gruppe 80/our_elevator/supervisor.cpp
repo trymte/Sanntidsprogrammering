@@ -7,12 +7,15 @@ void sv_manage_order_matrix(std::vector<Elevator> *elevators){
 	std::cout << "Global order matrix: " << std::endl;
 	std::cout << "------------------------------------------------------------------------- " <<std::endl;
 	print_order_matrix(&temp);
-
+	(*elevators)[1].print_elevator();
 
 	for(unsigned int i = 0; i < N_ELEVATORS; i ++){
 		(*elevators)[i].set_elevator_order_matrix(&temp);
 	}
-//	(*elevators)[0].print_elevator();
+	std::cout << "------------------------------------------------------------------------"<< std::endl;
+	std::cout << "Elevators order matrix: " << std::endl;
+	std::cout << "------------------------------------------------------------------------- " <<std::endl;
+	
 }
 
 

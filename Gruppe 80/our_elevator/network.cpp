@@ -15,9 +15,7 @@ Network::Network(){
 Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix_ptr, int elevator_ID){
 	
 	Elevator elev_temp_this(elevator_status, order_matrix_ptr);
-	std::cout << "Network 1" << std::endl;
 	Elevator elev_temp_others(elevator_status);
-	std::cout << "Network 2" << std::endl;
 	if(elevator_status.role == MASTER){	
 		this->master_ip = elevator_status.ip;
 	}
