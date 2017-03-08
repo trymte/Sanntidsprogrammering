@@ -115,7 +115,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			break;
 		case HANDSHAKE:
 			send_message_packet(HANDSHAKE, this_elevator_ID);
-			}
+			
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			std::cout << "I recieved your message: SLAVE_REQUEST_ORDER_MATRIX, here is the elevator you sent me: " << std::endl;
 			elevators[foreign_elevator_ID]->print_elevator();
