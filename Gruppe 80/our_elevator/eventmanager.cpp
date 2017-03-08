@@ -43,7 +43,7 @@ void set_all_lights(Elevator *my_elevator, Queue &my_queue){
 				elev_set_button_lamp((elev_button_type_t)j,i,0);
 		}
 
-		//Set cab lights
+		//Set cab lights - Dette blir feil, fikse dette i morgen.
 		if (i == (int)B_Cab){
 			if((my_queue.get_order_matrix()[i][N_BUTTONS-1].active_button == 1) && (my_queue.get_order_matrix()[i][N_BUTTONS-1].elevator_ID == my_elevator->get_elevator_ID()))
 				elev_set_button_lamp((elev_button_type_t)(N_BUTTONS-1),i,1);
@@ -129,7 +129,7 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 			switch(my_elevator->get_elevator_status().role){
 			case MASTER:
 				std::cout << "Supervisor got new button pressed" << std::endl;
-				sv_manage_order_matrix(my_network.get_elevators());
+				sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
 				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
 				break;
 			case SLAVE:
