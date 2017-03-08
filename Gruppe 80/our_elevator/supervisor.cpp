@@ -1,8 +1,8 @@
 #include "supervisor.h"
 
 
-void sv_manage_order_matrix(std::vector<Elevator*> elevators){	
-	std::vector<std::vector<Queue_element> > temp = Queue::assign_elevators_to_orders(elevators);
+void sv_manage_order_matrix(std::vector<Elevator*> elevators, int elevator_ID){	
+	std::vector<std::vector<Queue_element> > temp = Queue::assign_elevators_to_orders(elevators,elevator_ID);
 	std::cout << "------------------------------------------------------------------------"<< std::endl;
 	std::cout << "Global order matrix: " << std::endl;
 	std::cout << "------------------------------------------------------------------------- " <<std::endl;
@@ -29,4 +29,3 @@ void sv_manage_completed_order(Elevator* elevator){
 	}
 	elevator_order_matrix_ptr = NULL;
 }
-	

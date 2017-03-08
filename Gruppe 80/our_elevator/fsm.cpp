@@ -118,13 +118,13 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
    			my_elevator->set_elevator_current_state(DOOR_OPEN);
    			my_elevator->set_elevator_out_of_order(0);
    			
+   			/*Blir utført i supervisorfunksjonen "sv_manage_order_matrix(), skal derfor ikke være nødvendig."
 			for (int j=0;j<N_BUTTONS;j++){
 				Order order_to_be_removed;
 	   			order_to_be_removed.floor = current_floor;
 	   			order_to_be_removed.btn = (Button)j;
 	   			my_queue.remove_order(order_to_be_removed);
-
-			}
+			}*/
 		}
 		break;
 	case IDLE:

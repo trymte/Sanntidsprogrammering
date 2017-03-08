@@ -63,7 +63,7 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 		my_queue.reset_orders(my_elevator->get_elevator_status());
 		switch(my_elevator->get_elevator_status().role){
 			case MASTER:
-				//sv_manage_order_matrix(my_network.get_elevators_ptr());  //my_elevator);
+				//sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());  //my_elevator);
 				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
 				break;
 			case SLAVE:
@@ -81,7 +81,7 @@ void check_door_timer(Elevator* my_elevator, Queue &my_queue){
  
 void check_order_to_be_executed(Elevator* my_elevator, Queue &my_queue){
 	Order next_order = my_queue.get_next_order(my_elevator->get_elevator_ID());
-		if (next_order.active_order == 1){ 
+		if (next_order.active_order){ 
 			fsm_execute_order(my_elevator,my_queue,next_order);
 		}
 }
@@ -98,7 +98,7 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 			switch(my_elevator->get_elevator_role()){
 				case MASTER:
 					sv_manage_completed_order(my_elevator);
-					sv_manage_order_matrix(my_network.get_elevators());
+					sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
 					break;
 				case SLAVE:
 					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID());
@@ -128,8 +128,9 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 		if (check_buttons(my_elevator, my_queue)){
 			switch(my_elevator->get_elevator_status().role){
 			case MASTER:
-				std::cout << "Supervisor" << std::endl;
+				std::cout << "Supervisor got new button pressed" << std::endl;
 				sv_manage_order_matrix(my_network.get_elevators());
+				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
 				break;
 			case SLAVE:
 				std::cout << "Send_message_packet" << std::endl;

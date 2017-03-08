@@ -121,7 +121,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			elevators[foreign_elevator_ID]->print_elevator();
 			std::cout << "Distributing order matrix:" << std::endl;
 			std::cout << "-------------------------------------------------------------------------------------------" << std::endl;
-			sv_manage_order_matrix(elevators);
+			sv_manage_order_matrix(elevators, foreign_elevator_ID);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_ORDER_COMPLETE:
@@ -129,7 +129,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
-			//sv_manage_incomplete_order(elevators[elevator_ID]);
+			//sv_manage_completed_order(elevators[elevator_ID]);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
@@ -137,13 +137,14 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			std::cout << ", here is the elevator you sent me: " << std::endl;
 			elevators[foreign_elevator_ID]->print_elevator();
 			std::cout << "---------------------------------------------------" << std::endl;
-			sv_manage_order_matrix(elevators);
+			sv_manage_order_matrix(elevators, foreign_elevator_ID);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX: //Slave receives
 			std::cout << "I recieved your message: MASTER_DISTRIBUTE_ORDER_MATRIX, thank you for the \
 			new elevator" << std::endl;
 			this->master_ip = elevators[foreign_elevator_ID]->get_elevator_ip();
+
 			break;
 		default:
 			std::cout << "Invalid message, but i will accept your elevator" << std::endl;
