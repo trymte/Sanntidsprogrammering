@@ -9,4 +9,4 @@
 
 
 
-void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_network);
+void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_queue);

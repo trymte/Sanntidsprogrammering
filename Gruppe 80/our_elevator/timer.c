@@ -21,7 +21,7 @@ void timer_start(double duration, unsigned int id){ //Duration in seconds
     //if(timer_id == 0){
     timerEndTime    = get_wall_time() + duration;
     timerActive     = 1;
-    *timer_id_ptr = id;
+    *timer_id_ptr = id; //kva er vitsen med denne iden?
     //} 
 }
 

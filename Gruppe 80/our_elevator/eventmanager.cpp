@@ -89,14 +89,16 @@ void check_order_to_be_executed(Elevator* my_elevator, Queue &my_queue){
 void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_network){
 	int current_floor = elev_get_floor_sensor_signal();
 	my_elevator->set_elevator_floor(current_floor);
+	std::cout << "------------------------------------------------------------------------"<< std::endl;
+	std::cout << "My elevator order matrix: " << std::endl;
+	std::cout << "------------------------------------------------------------------------- " <<std::endl;
+	my_elevator->print_elevator();
 	if (elev_get_floor_sensor_signal() != -1){
 		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
 			switch(my_elevator->get_elevator_role()){
 				case MASTER:
-					std::cout << "My elevator:" << std::endl;
-					my_elevator->print_elevator();
 					sv_manage_completed_order(my_elevator);
-					sv_manage_order_matrix(my_network.get_elevators_ptr());
+					sv_manage_order_matrix(my_network.get_elevators());
 					break;
 				case SLAVE:
 					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID());
@@ -107,13 +109,7 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
  }
 
 
-void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_network){    
-	std::cout << "------------------------------------------------" << std::endl; 
-
-//////////////////////////////////////////////////////////////////////////////// 
-//Initializing
-////////////////////////////////////////////////////////////////////////////////     
-
+void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_queue){    
 	std::cout << "Event manager initializing..." << std::endl; 
 	std::cout << "------------------------------------------------" << std::endl; 
 	elev_init();
@@ -126,14 +122,14 @@ void event_manager_main(Elevator *my_elevator, Queue &my_queue, Network &my_netw
 
 	std::cout << "Event manager initialized" << std::endl;
 /////////////////////////////////////////////////////////////////////////////////
- 
+ 	
 
 	while(1){ 
 		if (check_buttons(my_elevator, my_queue)){
 			switch(my_elevator->get_elevator_status().role){
 			case MASTER:
 				std::cout << "Supervisor" << std::endl;
-				sv_manage_order_matrix(my_network.get_elevators_ptr());
+				sv_manage_order_matrix(my_network.get_elevators());
 				break;
 			case SLAVE:
 				std::cout << "Send_message_packet" << std::endl;

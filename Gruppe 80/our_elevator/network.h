@@ -1,5 +1,5 @@
 #pragma once
-
+#include "timer.h"
 #include "supervisor.h"
 #include "queue.h"
 
@@ -7,7 +7,7 @@
 
 class Network{
 private:
-	std::vector<Elevator> elevators;
+	std::vector<Elevator*> elevators;
 
 	std::string master_ip;
 
@@ -20,17 +20,17 @@ public:
 
 	Network(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix_ptr, int elevator_ID);
 
-	std::vector<Elevator> get_elevators(){return elevators;}
+	std::vector<Elevator*> get_elevators(){return elevators;}
 
-	std::vector<Elevator>* get_elevators_ptr(){return &elevators;}
+	//std::vector<Elevator>* get_elevators_ptr(){return &elevators;}
 
-	Elevator* get_elevator_ptr(int elevator_ID){return &elevators[elevator_ID];}
+	Elevator* get_elevator_ptr(int elevator_ID){return elevators[elevator_ID];}
 
 	void handle_message(Message message_ID, int foreign_elevator_ID, int this_elevator_ID);
 
 	void recieve_message_packet(int this_elevator_ID);
 
-	void send_message_packet(Message message_ID, int elevator_ID);
+	void send_message_packet(Message message_ID, int elevator_ID, std::string foreign_elevator_ip);
 
 	static void send_message_packet(Message message_ID);
 
@@ -38,6 +38,7 @@ public:
 
 	std::string get_master_ip(){return master_ip;}
 
+	bool is_node_responding(int elevator_ID);
 };
 
 

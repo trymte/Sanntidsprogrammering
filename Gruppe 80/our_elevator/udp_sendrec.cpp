@@ -117,12 +117,12 @@ void udp_init(int localPort, int elevator_role){
     //
     laddr.sin_addr.s_addr = INADDR_ANY;
     //Bind to socket if role = master <=> elevator_role = 1
-    if(elevator_role == 1){
-        if( bind(lsocket, (struct sockaddr*)&laddr, sizeof(laddr) ) == -1)
-        {
+    //if(elevator_role == 1){
+    if( bind(lsocket, (struct sockaddr*)&laddr, sizeof(laddr) ) == -1)
+    {
         die("lbind");
-        }
     }
+    
 
     
     printf("Client successfully binded to localPort and broadcastport! \n" );
@@ -185,10 +185,16 @@ struct code_message udp_reciever()
     
       
     memset(&rbuff[0], 0, sizeof(rbuff)); 
-    //try to receive some data, this is a blocking call
-    if ((recv_len = recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *)&addr, &slen)) == -1)
+    struct timeval read_timeout;
+    read_timeout.tv_sec = 0.1;
+    read_timeout.tv_usec = 0;
+    if(setsockopt(socketfd, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
+        die("setsockopt");
+    }  
+    if((recv_len = recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen)) < 0)
     {
-        die("recvfrom()");
+        code.responding = false; //timeout reached
+        return code;
     }
     data.assign(rbuff);
     code.data = data;
@@ -209,14 +215,21 @@ struct code_message udp_recieve_broadcast(){
     char rbuff [BUFLEN];
     std::string data;
     std::string rip;
-    
+    code.responding = true;
 
-     memset((char *) &addr, 0, sizeof(addr));
+    memset((char *) &addr, 0, sizeof(addr));
 
-     memset(&rbuff[0], 0, sizeof(rbuff));
-    if((recv_len = recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen)) == -1)
+    memset(&rbuff[0], 0, sizeof(rbuff));
+    struct timeval read_timeout;
+    read_timeout.tv_sec = 0.01;
+    read_timeout.tv_usec = 0;
+    if(setsockopt(socketfd, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
+        die("setsockopt");
+    }    
+    if((recv_len = recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen)) < 0)
     {
-        die("recvfrombcast");
+        code.responding = false; //timeout reached
+        return code;
     }
     data.assign(rbuff);
     code.data = data;

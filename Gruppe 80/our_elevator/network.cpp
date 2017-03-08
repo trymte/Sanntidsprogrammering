@@ -2,20 +2,20 @@
 
 
 Network::Network(){
-	Elevator elev_temp;
+	Elevator* elev_temp = new Elevator;
 	std::vector<std::vector<Queue_element> > temp = twoD_vector_init();
-	elev_temp.set_elevator_order_matrix(&temp);
+	elev_temp->set_elevator_order_matrix(&temp);
 	for(unsigned int i = 0; i < N_ELEVATORS ; i++){
 		this->elevators.push_back(elev_temp);
-		elevators[i].set_elevator_ID(i);
+		elevators[i]->set_elevator_ID(i);
 	}
 	this->master_ip = "0";
 }
 
 Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix_ptr, int elevator_ID){
 	
-	Elevator elev_temp_this(elevator_status, order_matrix_ptr);
-	Elevator elev_temp_others(elevator_status);
+	Elevator* elev_temp_this = new Elevator(elevator_status, order_matrix_ptr);
+	Elevator* elev_temp_others = new Elevator(elevator_status);
 	if(elevator_status.role == MASTER){	
 		this->master_ip = elevator_status.ip;
 	}
@@ -26,7 +26,7 @@ Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> 
 	for(unsigned int i = 0; i < N_ELEVATORS ; i++){
 		if(i != elevator_ID){
 			this->elevators.push_back(elev_temp_others);
-			elevators[i].set_elevator_ID(i);
+			elevators[i]->set_elevator_ID(i);
 		} else{
 			this->elevators.push_back(elev_temp_this);
 		}
@@ -111,18 +111,21 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 void Network::handle_message(Message message, int foreign_elevator_ID, int this_elevator_ID){
 	switch(message){
 		case MASTER_IP_INIT:
-			this->master_ip = elevators[foreign_elevator_ID].get_elevator_ip();
+			this->master_ip = elevators[foreign_elevator_ID]->get_elevator_ip();
 			break;
+		case HANDSHAKE:
+			send_message_packet(HANDSHAKE, this_elevator_ID);
+			}
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			std::cout << "I recieved your message: SLAVE_REQUEST_ORDER_MATRIX, here is the elevator you sent me: " << std::endl;
-			elevators[foreign_elevator_ID].print_elevator();
+			elevators[foreign_elevator_ID]->print_elevator();
 			std::cout << "Distributing order matrix:" << std::endl;
 			std::cout << "-------------------------------------------------------------------------------------------" << std::endl;
-			sv_manage_order_matrix(&elevators);
+			sv_manage_order_matrix(elevators);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_ORDER_COMPLETE:
-			sv_manage_completed_order(&elevators[this_elevator_ID]);
+			sv_manage_completed_order(elevators[this_elevator_ID]);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
@@ -132,15 +135,15 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
 			std::cout << "I recieved your message: SLAVE_SEND_ELEVATOR_INFORMATION" << std::endl;
 			std::cout << ", here is the elevator you sent me: " << std::endl;
-			elevators[foreign_elevator_ID].print_elevator();
+			elevators[foreign_elevator_ID]->print_elevator();
 			std::cout << "---------------------------------------------------" << std::endl;
-			sv_manage_order_matrix(&elevators);
+			sv_manage_order_matrix(elevators);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX: //Slave receives
 			std::cout << "I recieved your message: MASTER_DISTRIBUTE_ORDER_MATRIX, thank you for the \
 			new elevator" << std::endl;
-			this->master_ip = elevators[foreign_elevator_ID].get_elevator_ip();
+			this->master_ip = elevators[foreign_elevator_ID]->get_elevator_ip();
 			break;
 		default:
 			std::cout << "Invalid message, but i will accept your elevator" << std::endl;
@@ -154,7 +157,7 @@ void Network::recieve_message_packet(int this_elevator_ID){
 	std::string datastring;
 	std::string messagestring;
 	struct code_message packet;
-	switch(elevators[this_elevator_ID].get_elevator_role()){
+	switch(elevators[this_elevator_ID]->get_elevator_role()){
 		case MASTER:
 			packet = udp_reciever();
 			break;
@@ -164,18 +167,17 @@ void Network::recieve_message_packet(int this_elevator_ID){
 	}
 	datastring.assign(packet.data);
 	message = message_id_string_to_enum(datastring.substr(0,1));
-	std::cout << "Message: " << datastring.substr(0,1) << std::endl;
 	messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 
 	Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 	Status temp_status = temp_elevator.get_elevator_status();
-	elevators[temp_status.elevator_ID].set_elevator_status(temp_status);
-	elevators[temp_status.elevator_ID].set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
+	elevators[temp_status.elevator_ID]->set_elevator_status(temp_status);
+	elevators[temp_status.elevator_ID]->set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
 	handle_message(message, temp_status.elevator_ID, this_elevator_ID);
 
 }
 
-void Network::send_message_packet(Message message, int elevator_ID){
+void Network::send_message_packet(Message message, int elevator_ID, std::string foreign_elevator_ip){
 	std::string message_string;
 	char * ip = new char[master_ip.size() + 1];
 	std::copy(master_ip.begin(), master_ip.end(), ip);
@@ -183,27 +185,32 @@ void Network::send_message_packet(Message message, int elevator_ID){
 	switch(message){
 		case MASTER_IP_INIT:
 			message_string = "0:";
-			udp_broadcaster(message_string + elevator_object_to_messagestring(elevators[elevator_ID]));
+			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]));
+			break;
+		case HANDSHAKE:
+			message_string = "1:";
+			//udp_sender()
+			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]));
 			break;
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			message_string = "1:";
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, ip);
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]), MASTERPORT, ip);
 			break;
 		case SLAVE_ORDER_COMPLETE:
 			message_string = "2:";
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, ip);
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]), MASTERPORT, ip);
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
 			message_string = "3:",
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]),MASTERPORT, ip);
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]),MASTERPORT, ip);
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
 			message_string = "4:";
-			udp_sender(message_string + elevator_object_to_messagestring(elevators[elevator_ID]), MASTERPORT, ip);
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]), MASTERPORT, ip);
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
 			message_string = "5:"; 
-			udp_broadcaster(message_string + elevator_object_to_messagestring(elevators[elevator_ID]));
+			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]));
 			break;	
 		default:
 			std::cout << "Not a valid message" << std::endl;
@@ -212,17 +219,36 @@ void Network::send_message_packet(Message message, int elevator_ID){
 }
 
 
-
+bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
+	struct code_message code;
+	switch(my_elevator->get_elevator_role()){
+			case MASTER:
+				send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_elevator_ip()); 
+				break;
+			case SLAVE:
+				send_message_packet(HANDSHAKE, this_elevator_ID, "")
+				break;
+		}
+	
+	code = udp_reciever();
+	return code.responding;
+}
 
 void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_queue){
 	while(1){
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				//usleep(250000);
+				my_network.is_node_responding(my_elevator->get_elevator_ID(), );
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
+
 				break;
 			case SLAVE:
 				//usleep(250000);
+				if(!my_network.is_node_responding(my_elevator->get_elevator_ID())){
+
+				}
+				
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}

@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <ifaddrs.h>
+#include <sys/time.h>
 #include <vector>
 #include <iostream>
 #include <string>
@@ -30,6 +31,7 @@ struct code_message{
 	int port;
 	std::string data;
 	int length;
+	bool responding;
 };
 
 void die(char *);

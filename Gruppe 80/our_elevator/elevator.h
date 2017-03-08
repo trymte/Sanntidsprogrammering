@@ -6,7 +6,7 @@
 
 class Elevator{
 private:
-	int count_ptr;
+	int order_matrix_ptr_count;
 	Status elevator_status;
 	std::vector<std::vector<Queue_element> > *order_matrix_ptr;
 	

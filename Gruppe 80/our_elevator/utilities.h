@@ -15,6 +15,7 @@ const unsigned int DOOR_TIME_S = 1;
 const unsigned int TIME_CONDITION_S = 10;
 const unsigned int TIMER_DOOR_ID = 1;
 const unsigned int TIMER_CONDITION_ID = 2;
+const unsigned int TIMER_NETWORK = 1;
 
 
 
@@ -38,11 +39,12 @@ typedef enum {
 typedef enum{
 	//SLAVE_INIT
     MASTER_IP_INIT = 0,
-    SLAVE_REQUEST_ORDER_MATRIX = 1,
-    SLAVE_ORDER_COMPLETE = 2,
-    SLAVE_ORDER_INCOMPLETE = 3,
-    SLAVE_SEND_ELEVATOR_INFORMATION = 4,
-    MASTER_DISTRIBUTE_ORDER_MATRIX = 5
+    HANDSHAKE = 1,
+    SLAVE_REQUEST_ORDER_MATRIX = 2,
+    SLAVE_ORDER_COMPLETE = 3,
+    SLAVE_ORDER_INCOMPLETE = 4,
+    SLAVE_SEND_ELEVATOR_INFORMATION = 5,
+    MASTER_DISTRIBUTE_ORDER_MATRIX = 6
 } Message;
 
 

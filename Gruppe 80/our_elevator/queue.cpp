@@ -180,7 +180,7 @@ void Queue::remove_order(std::vector <std::vector <Queue_element> > &order_matri
 }
 
 
-std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::vector<Elevator> &elevators){
+std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::vector<Elevator*> elevators){
 
 	if (elevators.size() == 0){
 		std::cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << std::endl;
@@ -190,11 +190,9 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 
 	//Create a status_vector based on the input.
 	std::vector<Status> status_vector;
-	std::vector<Elevator>::iterator elevator_it;
 	Status iteration_status;
-	for (elevator_it = elevators.begin();elevator_it != elevators.end();++elevator_it){		
-		iteration_status = elevator_it->get_elevator_status();
-		status_vector.push_back(iteration_status);
+	for (unsigned int i = 0; i < N_ELEVATORS; i++){		
+		status_vector.push_back(elevators[i]->get_elevator_status());
 	}
 
 	//Create an order_matrix that contains all the orders assigned to an elevator
@@ -202,11 +200,11 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 	std::vector <std::vector <Queue_element > > curr_order_matrix;
 	assigned_order_matrix = twoD_vector_init();
 	Order order_to_be_assigned;
-	int assigned_elevator = -1;
+	int assigned_elevator_ID = -1;
 
-	for(elevator_it = elevators.begin();elevator_it != elevators.end();++elevator_it){
-		curr_order_matrix = *elevator_it->get_order_matrix_ptr();
-		for (unsigned int i=0;i<N_FLOORS;i++){           //la til unsigned foran int pga uendelig mange warnings i kompilering - trym
+	for(unsigned int k = 0; k < N_ELEVATORS; k++){
+		curr_order_matrix = *elevators[k]->get_order_matrix_ptr();
+		for (unsigned int i=0;i<N_FLOORS;i++){           
 			for(unsigned int j=0;j<N_BUTTONS;j++){
 				
 				//If an order in an order_matrix in elevators is not found in assigned_order_matrix, add it.
@@ -221,8 +219,8 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 				if ((curr_order_matrix[i][j].active_button == 1) && (curr_order_matrix[i][j].elevator_ID == -1)){
 					order_to_be_assigned.floor = i;
 					order_to_be_assigned.btn = (Button)j;
-					assigned_elevator = Queue::get_lowest_cost_elevator(order_to_be_assigned,status_vector);
-					Queue::add_order(assigned_order_matrix, order_to_be_assigned,assigned_elevator);
+					assigned_elevator_ID = Queue::get_lowest_cost_elevator(order_to_be_assigned,status_vector);
+					Queue::add_order(assigned_order_matrix, order_to_be_assigned, assigned_elevator_ID);
 				}
 			}
 		}
