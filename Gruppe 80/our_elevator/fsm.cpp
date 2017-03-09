@@ -98,6 +98,9 @@ void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){ //
 
 
 bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_floor){
+//	std::cout << "---------------------- my_elevaot rfrom fsm" << std::endl;
+//	my_elevator->print_elevator();
+
 	bool stopped;
 	elev_set_floor_indicator(current_floor);
 	my_elevator->set_elevator_floor(current_floor);

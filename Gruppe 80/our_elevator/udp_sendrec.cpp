@@ -226,7 +226,8 @@ struct code_message udp_handshake_reciever()
     // zero out the structure
     memset((char *) &addr, 0, sizeof(addr));
     
-      
+    code.responding = true;
+
     memset(&rbuff[0], 0, sizeof(rbuff)); 
     struct timeval read_timeout;
     read_timeout.tv_sec = 2;
@@ -236,9 +237,13 @@ struct code_message udp_handshake_reciever()
     }  
     recv_len = recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen);
     if( recv_len < 0)
+
     {
         code.responding = false; //timeout reached
     }
+    /*else{
+        code.responding = true;
+    }*/
     data.assign(rbuff);
     code.data = data;
     rip.assign(inet_ntoa(addr.sin_addr));
