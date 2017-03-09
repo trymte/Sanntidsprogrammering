@@ -26,6 +26,8 @@ public:
 
 	Elevator* get_elevator_ptr(int elevator_ID){return elevators[elevator_ID];}
 
+	std::string get_master_ip(){return master_ip;}
+
 	void handle_message(Message message_ID, int foreign_elevator_ID, int this_elevator_ID);
 
 	void recieve_message_packet(int this_elevator_ID);
@@ -36,9 +38,7 @@ public:
 
 	void set_master_ip(std::string master_ip){this->master_ip = master_ip;}
 
-	std::string get_master_ip(){return master_ip;}
-
-	bool is_node_responding(int foreign_elevator_ID);
+	bool is_node_responding(int this_elevator_ID, int foreign_elevator_ID);
 };
 
 

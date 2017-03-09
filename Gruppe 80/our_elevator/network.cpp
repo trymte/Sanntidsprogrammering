@@ -115,7 +115,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			break;
 		case HANDSHAKE:
 			std::cout << "I recieved your HANDSHAKE" << std::endl;
-			send_message_packet(HANDSHAKE, this_elevator_ID);
+			send_message_packet(HANDSHAKE, this_elevator_ID,"");
 			break;
 			
 		case SLAVE_REQUEST_ORDER_MATRIX:
@@ -124,15 +124,15 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			std::cout << "Distributing order matrix:" << std::endl;
 			std::cout << "-------------------------------------------------------------------------------------------" << std::endl;
 			sv_manage_order_matrix(elevators, foreign_elevator_ID);
-			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
+			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_ORDER_COMPLETE:
 			sv_manage_completed_order(elevators[this_elevator_ID]);
-			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
+			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
 			//sv_manage_completed_order(elevators[elevator_ID]);
-			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
+			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
 			std::cout << "I recieved your message: SLAVE_SEND_ELEVATOR_INFORMATION" << std::endl;
@@ -140,7 +140,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			elevators[foreign_elevator_ID]->print_elevator();
 			std::cout << "---------------------------------------------------" << std::endl;
 			sv_manage_order_matrix(elevators, foreign_elevator_ID);
-			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID);
+			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX: //Slave receives
 			std::cout << "I recieved your message: MASTER_DISTRIBUTE_ORDER_MATRIX, thank you for the \
@@ -236,13 +236,14 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				//usleep(250000);
-				my_network.is_node_responding(my_elevator->get_elevator_ID(), );
+
+				my_network.is_node_responding(my_elevator->get_elevator_ID(), 1);
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 
 				break;
 			case SLAVE:
 				//usleep(250000);
-				if(!my_network.is_node_responding(my_elevator->get_elevator_ID())){
+				if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), 1)){
 
 				}
 				

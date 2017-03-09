@@ -83,6 +83,7 @@ void udp_init(int localPort, int elevator_role){
     {
         die("setsockopt");
     }
+
     #ifdef SO_REUSEPORT
     if (setsockopt(bsocket, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse)) == -1)
     {
@@ -108,7 +109,6 @@ void udp_init(int localPort, int elevator_role){
     // local send/rcv
     //---------------------------------------------------------------------------
      
-    #endif
     if ((lsocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
     {
         die("lsocket");
@@ -122,6 +122,7 @@ void udp_init(int localPort, int elevator_role){
     {
         die("setsockopt");
     }
+    #endif
     memset((char *) &laddr, 0, sizeof(laddr));
     laddr.sin_family = AF_INET;
     laddr.sin_port = htons(localPort);
@@ -197,10 +198,10 @@ struct code_message udp_reciever()
     struct timeval read_timeout;
     read_timeout.tv_sec = 0.1;
     read_timeout.tv_usec = 0;
-    if(setsockopt(socketfd, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
+    if(setsockopt(lsocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
         die("setsockopt");
     }  
-    if((recv_len = recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen)) < 0)
+    if((recv_len = recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen)) < 0)
     {
         code.responding = false; //timeout reached
         return code;

@@ -66,7 +66,7 @@ int main(){
     usleep(5000000);
     switch(init_status.role){
 		case MASTER:
-			my_network.send_message_packet(MASTER_IP_INIT, this_elev_id);
+			my_network.send_message_packet(MASTER_IP_INIT, this_elev_id, "");
 			break;
 		case SLAVE:
 			my_network.recieve_message_packet(my_elevator->get_elevator_ID());
