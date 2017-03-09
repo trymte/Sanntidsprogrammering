@@ -231,21 +231,25 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	return code.responding;
 }
 
+
+// ------------------------------------------------------------------------------------------------
+//                 NETWORK THREAD FOR PING AND LISTENING
+// ------------------------------------------------------------------------------------------------
 void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_queue){
 	while(1){
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				//usleep(250000);
 
-				my_network.is_node_responding(my_elevator->get_elevator_ID(), 1);
+				if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), 1)){
+					elevators[1]->set_elevator_out_of_order(true);
+				}
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 
 				break;
 			case SLAVE:
 				//usleep(250000);
-				if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), 1)){
-
-				}
+				
 				
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
