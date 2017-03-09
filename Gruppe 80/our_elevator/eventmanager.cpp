@@ -37,18 +37,13 @@ void set_all_lights(Elevator *my_elevator, Queue &my_queue){
 	for(int i =0;i<N_FLOORS;i++){
 		//Set external lights
 		for(int j=0;j<N_BUTTONS-1;j++){
-			if(my_queue.get_order_matrix()[i][j].active_button == 1)
+			if(my_queue.get_order_matrix()[i][j].active_button == 1){
 				elev_set_button_lamp((elev_button_type_t)j,i,1);
+				if(my_queue.get_order_matrix()[i][j].elevator_ID == my_elevator->get_elevator_ID())
+					elev_set_button_lamp((elev_button_type_t)j,i,1);
+			}
 			else
 				elev_set_button_lamp((elev_button_type_t)j,i,0);
-		}
-
-		//Set cab lights - Dette blir feil, fikse dette i morgen.
-		if (i == (int)B_Cab){
-			if((my_queue.get_order_matrix()[i][N_BUTTONS-1].active_button == 1) && (my_queue.get_order_matrix()[i][N_BUTTONS-1].elevator_ID == my_elevator->get_elevator_ID()))
-				elev_set_button_lamp((elev_button_type_t)(N_BUTTONS-1),i,1);
-			else
-				elev_set_button_lamp((elev_button_type_t)(N_BUTTONS-1),i,0);
 		}
 	} 
 }
@@ -89,12 +84,13 @@ void check_order_to_be_executed(Elevator* my_elevator, Queue &my_queue){
 void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_network){
 	int current_floor = elev_get_floor_sensor_signal();
 	my_elevator->set_elevator_floor(current_floor);
-	std::cout << "------------------------------------------------------------------------"<< std::endl;
-	std::cout << "My elevator order matrix: " << std::endl;
-	std::cout << "------------------------------------------------------------------------- " <<std::endl;
-	my_elevator->print_elevator();
 	if (elev_get_floor_sensor_signal() != -1){
 		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
+				std::cout << "------------------------------------------------------------------------"<< std::endl;
+				std::cout << "My elevator order matrix: " << std::endl;
+				std::cout << "------------------------------------------------------------------------- " <<std::endl;
+				my_elevator->print_elevator();
+
 			switch(my_elevator->get_elevator_role()){
 				case MASTER:
 					sv_manage_completed_order(my_elevator);
