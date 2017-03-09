@@ -33,7 +33,7 @@ int requests_should_stop(Elevator *my_elevator, Queue &my_queue){
 			((my_queue.get_order_matrix()[current_floor][(int)B_Cab].active_button) &&
 			 (my_queue.get_order_matrix()[current_floor][(int)B_Cab].elevator_ID ==  my_elevator->get_elevator_status().elevator_ID))      ||
 
-			!(requests_below(my_elevator, my_queue,current_floor));
+			!(requests_below(my_elevator, my_queue, current_floor));
 
 	case D_Up:
 		return
@@ -43,7 +43,7 @@ int requests_should_stop(Elevator *my_elevator, Queue &my_queue){
 			((my_queue.get_order_matrix()[current_floor][(int)B_Cab].active_button) &&
 			 (my_queue.get_order_matrix()[current_floor][(int)B_Cab].elevator_ID ==  my_elevator->get_elevator_status().elevator_ID))    ||
 
-			!(requests_above(my_elevator, my_queue,current_floor));
+			!(requests_above(my_elevator, my_queue, current_floor));
 
 	default:
 		return 0;

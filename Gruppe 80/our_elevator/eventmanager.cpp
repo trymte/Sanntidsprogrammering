@@ -88,16 +88,13 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 
 	
 	if (elev_get_floor_sensor_signal() != -1){
-<<<<<<< HEAD
-		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
 
-=======
 		bool test = fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
 		std::cout << "TEST" << test << std::endl;
 		if(test == 1){
 			std::cout << "----------------------------Order executed----------------------" << std::endl;
 			//std::cout << "------------------------------------------------------------------------"<< std::endl;
->>>>>>> morten
+
 			//std::cout << "My elevator order matrix: " << std::endl;
 			//std::cout << "------------------------------------------------------------------------- " <<std::endl;
 			//my_elevator->print_elevator();
