@@ -193,19 +193,24 @@ struct code_message udp_reciever()
     // zero out the structure
     memset((char *) &addr, 0, sizeof(addr));
     
-      
+    code.responding = true;
+
     memset(&rbuff[0], 0, sizeof(rbuff)); 
     struct timeval read_timeout;
-    read_timeout.tv_sec = 0.1;
+    read_timeout.tv_sec = 2;
     read_timeout.tv_usec = 0;
     if(setsockopt(lsocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
         die("setsockopt");
-    }  
-    if((recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen)) < 0)
+    }
+    recv_len = recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen);
+    std::cout << "recv_len = " <<recv_len << std::endl;
+    if(recv_len < 0)
     {
         code.responding = false; //timeout reached
-        return code;
     }
+    /*else{
+        code.responding = true;
+    }*/
     data.assign(rbuff);
     code.data = data;
     rip.assign(inet_ntoa(addr.sin_addr));

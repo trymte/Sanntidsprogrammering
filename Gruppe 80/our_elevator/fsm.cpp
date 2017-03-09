@@ -98,6 +98,9 @@ void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){ //
 
 
 bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_floor){
+//	std::cout << "---------------------- my_elevaot rfrom fsm" << std::endl;
+//	my_elevator->print_elevator();
+
 	bool stopped;
 	elev_set_floor_indicator(current_floor);
 	my_elevator->set_elevator_floor(current_floor);
@@ -128,25 +131,26 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 		}
 		break;
 	case IDLE:
-			for(int i=0;i<N_BUTTONS;i++){
-				if (my_queue.get_order_matrix()[current_floor][i].active_button == 1){
-					stopped = true;
-					if (get_timer_id() == TIMER_CONDITION_ID)
-						timer_stop();
+		for(int i=0;i<N_BUTTONS;i++){
+			if (my_queue.get_order_matrix()[current_floor][i].active_button == 1){
+				stopped = true;
+				if (get_timer_id() == TIMER_CONDITION_ID)
+					timer_stop();
 
-					if (get_timer_id() == 0)
-						open_door();
-					
-					my_elevator->set_elevator_dir(D_Stop);
-		   			my_elevator->set_elevator_current_state(DOOR_OPEN);
-		   			my_elevator->set_elevator_out_of_order(0);
+				if (get_timer_id() == 0)
+					open_door();
+				
+				my_elevator->set_elevator_dir(D_Stop);
+	   			my_elevator->set_elevator_current_state(DOOR_OPEN);
+	   			my_elevator->set_elevator_out_of_order(0);
 
-					Order order_to_be_removed;
-		   			order_to_be_removed.floor = current_floor;
-		   			order_to_be_removed.btn = (Button)i;
-		   			my_queue.remove_order(order_to_be_removed);
-				}
-			}	
+				Order order_to_be_removed;
+	   			order_to_be_removed.floor = current_floor;
+	   			order_to_be_removed.btn = (Button)i;
+	   			my_queue.remove_order(order_to_be_removed);
+			}
+		}
+//		std::cout << "Stopped from Idle: " << stopped << std::endl;	
 		break;
 
 	default:
