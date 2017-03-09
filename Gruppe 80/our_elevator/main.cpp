@@ -71,7 +71,6 @@ int main(){
 			break;
 		case SLAVE:
 			my_network.recieve_message_packet(my_elevator->get_elevator_ID());
-			std::cout << "Master ip: " << my_network.get_master_ip() << std::endl;
 			break;
 	}
     

@@ -88,7 +88,8 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 	
 	if (elev_get_floor_sensor_signal() != -1){
 		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
-			//std::cout << "------------------------------------------------------------------------"<< std::endl;
+
+			
 			//std::cout << "My elevator order matrix: " << std::endl;
 			//std::cout << "------------------------------------------------------------------------- " <<std::endl;
 			//my_elevator->print_elevator();
@@ -108,6 +109,7 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 
 
 void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_queue){    
+	std::mutex my_mutex;
 	std::cout << "Event manager initializing..." << std::endl; 
 	std::cout << "------------------------------------------------" << std::endl; 
 	elev_init();

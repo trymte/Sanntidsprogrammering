@@ -179,18 +179,15 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			break;
 	}
 	datastring.assign(packet.data);
-	message = message_id_string_to_enum(datastring.substr(0,1));
-	messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
-	std::cout << "Message string: " << messagestring << std::endl;
-
-	Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
-//	std::cout << "temp_elevator:" << std::endl;
-//	temp_elevator.print_elevator();
-	Status temp_status = temp_elevator.get_elevator_status();
-	elevators[temp_status.elevator_ID]->set_elevator_status(temp_status);
-	elevators[temp_status.elevator_ID]->set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
-	handle_message(message, temp_status.elevator_ID, this_elevator_ID);
-
+	if(datastring.length() !=0){
+		message = message_id_string_to_enum(datastring.substr(0,1));
+		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
+		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
+		Status temp_status = temp_elevator.get_elevator_status();
+		elevators[temp_status.elevator_ID]->set_elevator_status(temp_status);
+		elevators[temp_status.elevator_ID]->set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
+		handle_message(message, temp_status.elevator_ID, this_elevator_ID);
+	}
 }
 
 void Network::send_message_packet(Message message, int this_elevator_ID, std::string foreign_elevator_ip){
@@ -254,15 +251,29 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				usleep(25000);
+				/*
+				for(unsigned int i = 0; i < N_ELEVATORS; i++){
+					if(i != my_elevator->get_elevator_ID()){
+						if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), i)){
+						my_network.get_elevators()[1]->set_elevator_out_of_order(true);
 
-				if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), 1)){
-					my_network.get_elevators()[1]->set_elevator_out_of_order(true);
+						}
+					}	
 				}
+				*/
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
-
 				break;
 			case SLAVE:
 				usleep(25000);
+				/*
+				for(unsigned int i = 0; i < N_ELEVATORS; i++){
+					if(i != my_elevator->get_elevator_ID()){
+						if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), i)){
+						my_network.get_elevators()[1]->set_elevator_out_of_order(true);
+						}
+					}	
+				}
+				*/
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}

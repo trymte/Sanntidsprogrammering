@@ -198,7 +198,7 @@ struct code_message udp_reciever()
     memset(&rbuff[0], 0, sizeof(rbuff)); 
     
     
-    recv_len = recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) == -1)
+    recv_len = recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen);
     
     data.assign(rbuff);
     code.data = data;
