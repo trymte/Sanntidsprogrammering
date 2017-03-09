@@ -123,7 +123,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			break;
 		case HANDSHAKE:
 			std::cout << "I recieved your HANDSHAKE" << std::endl;
-			send_message_packet(HANDSHAKE, this_elevator_ID,"");
+			send_message_packet(HANDSHAKE, this_elevator_ID,master_ip);
 			break;
 			
 		case SLAVE_REQUEST_ORDER_MATRIX:
@@ -240,7 +240,7 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	std::cout << "Send HANDSHAKE, w8 for response: ";
 	send_message_packet(HANDSHAKE, this_elevator_ID,master_ip); // elevators[foreign_elevator_ID]->get_elevator_ip()); 
 	
-	code = udp_reciever();
+	code = udp_handshake_reciever();
 	std::cout << "Responding = " << code.responding << std::endl;
 	return code.responding;
 }
@@ -253,7 +253,7 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 	while(1){
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
-				//usleep(250000);
+				usleep(25000);
 
 				if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), 1)){
 					my_network.get_elevators()[1]->set_elevator_out_of_order(true);
@@ -262,9 +262,7 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 
 				break;
 			case SLAVE:
-				//usleep(250000);
-				
-				
+				usleep(25000);
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}

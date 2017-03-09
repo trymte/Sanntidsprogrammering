@@ -187,6 +187,39 @@ struct code_message udp_reciever()
     socklen_t slen = sizeof(addr); 
     char rbuff[BUFLEN];
     struct code_message code;
+    code.responding = true;
+    std::string data;
+    std::string rip;
+    
+    // zero out the structure
+    memset((char *) &addr, 0, sizeof(addr));
+    
+      
+    memset(&rbuff[0], 0, sizeof(rbuff)); 
+    
+    
+    recv_len = recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) == -1)
+    
+    data.assign(rbuff);
+    code.data = data;
+    rip.assign(inet_ntoa(addr.sin_addr));
+    code.rip = rip;
+    code.port = addr.sin_port;
+
+    //printf("Data received: %s \n" , rbuff);
+ 
+    return code;
+}
+
+
+struct code_message udp_handshake_reciever()
+{
+    struct sockaddr_in addr;
+    int recv_len;
+    socklen_t slen = sizeof(addr); 
+    char rbuff[BUFLEN];
+    struct code_message code;
+    code.responding = true;
     std::string data;
     std::string rip;
     
@@ -196,15 +229,15 @@ struct code_message udp_reciever()
       
     memset(&rbuff[0], 0, sizeof(rbuff)); 
     struct timeval read_timeout;
-    read_timeout.tv_sec = 0.1;
+    read_timeout.tv_sec = 2;
     read_timeout.tv_usec = 0;
     if(setsockopt(lsocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
         die("setsockopt");
     }  
-    if((recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen)) < 0)
+    recv_len = recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen);
+    if( recv_len < 0)
     {
         code.responding = false; //timeout reached
-        return code;
     }
     data.assign(rbuff);
     code.data = data;
