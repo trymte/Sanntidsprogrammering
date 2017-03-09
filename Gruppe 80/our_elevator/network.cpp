@@ -114,7 +114,9 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			this->master_ip = elevators[foreign_elevator_ID]->get_elevator_ip();
 			break;
 		case HANDSHAKE:
+			std::cout << "I recieved your HANDSHAKE" << std::endl;
 			send_message_packet(HANDSHAKE, this_elevator_ID);
+			break;
 			
 		case SLAVE_REQUEST_ORDER_MATRIX:
 			std::cout << "I recieved your message: SLAVE_REQUEST_ORDER_MATRIX, here is the elevator you sent me: " << std::endl;
@@ -178,40 +180,39 @@ void Network::recieve_message_packet(int this_elevator_ID){
 
 }
 
-void Network::send_message_packet(Message message, int elevator_ID, std::string foreign_elevator_ip){
+void Network::send_message_packet(Message message, int this_elevator_ID, std::string foreign_elevator_ip){
 	std::string message_string;
-	char * ip = new char[master_ip.size() + 1];
-	std::copy(master_ip.begin(), master_ip.end(), ip);
-	ip[master_ip.size()] = '\0'; // don't forget the terminating 0
+	char * ip = new char[foreign_elevator_ip.size() + 1];
+	std::copy(foreign_elevator_ip.begin(), foreign_elevator_ip.end(), ip);
+	ip[foreign_elevator_ip.size()] = '\0'; // don't forget the terminating 0
 	switch(message){
 		case MASTER_IP_INIT:
 			message_string = "0:";
-			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]));
+			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]));
 			break;
 		case HANDSHAKE:
 			message_string = "1:";
-			//udp_sender()
-			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]));
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), MASTERPORT, ip);
 			break;
 		case SLAVE_REQUEST_ORDER_MATRIX:
-			message_string = "1:";
-			udp_sender(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]), MASTERPORT, ip);
+			message_string = "2:";
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), MASTERPORT, ip);
 			break;
 		case SLAVE_ORDER_COMPLETE:
-			message_string = "2:";
-			udp_sender(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]), MASTERPORT, ip);
+			message_string = "3:";
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), MASTERPORT, ip);
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
-			message_string = "3:",
-			udp_sender(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]),MASTERPORT, ip);
+			message_string = "4:",
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]),MASTERPORT, ip);
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
-			message_string = "4:";
-			udp_sender(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]), MASTERPORT, ip);
+			message_string = "5:";
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), MASTERPORT, ip);
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
-			message_string = "5:"; 
-			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[elevator_ID]));
+			message_string = "6:"; 
+			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]));
 			break;	
 		default:
 			std::cout << "Not a valid message" << std::endl;
@@ -222,16 +223,11 @@ void Network::send_message_packet(Message message, int elevator_ID, std::string 
 
 bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	struct code_message code;
-	switch(my_elevator->get_elevator_role()){
-			case MASTER:
-				send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_elevator_ip()); 
-				break;
-			case SLAVE:
-				send_message_packet(HANDSHAKE, this_elevator_ID, "")
-				break;
-		}
+	std::cout << "Send HANDSHAKE, w8 for response: ";
+	send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_elevator_ip()); 
 	
 	code = udp_reciever();
+	std::cout << "Responding = " << code.responding << std::endl;
 	return code.responding;
 }
 

@@ -107,17 +107,26 @@ void udp_init(int localPort, int elevator_role){
     //_------------------------------------------------------------------------
     // local send/rcv
     //---------------------------------------------------------------------------
+     
+    #endif
     if ((lsocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
     {
         die("lsocket");
+    }
+    if (setsockopt(lsocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) == -1)
+    {
+        die("setsockopt");
+    }
+    #ifdef SO_REUSEPORT
+    if (setsockopt(lsocket, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse)) == -1)
+    {
+        die("setsockopt");
     }
     memset((char *) &laddr, 0, sizeof(laddr));
     laddr.sin_family = AF_INET;
     laddr.sin_port = htons(localPort);
     //
     laddr.sin_addr.s_addr = INADDR_ANY;
-    //Bind to socket if role = master <=> elevator_role = 1
-    //if(elevator_role == 1){
     if( bind(lsocket, (struct sockaddr*)&laddr, sizeof(laddr) ) == -1)
     {
         die("lbind");
@@ -220,16 +229,10 @@ struct code_message udp_recieve_broadcast(){
     memset((char *) &addr, 0, sizeof(addr));
 
     memset(&rbuff[0], 0, sizeof(rbuff));
-    struct timeval read_timeout;
-    read_timeout.tv_sec = 0.01;
-    read_timeout.tv_usec = 0;
-    if(setsockopt(socketfd, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
-        die("setsockopt");
-    }    
-    if((recv_len = recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen)) < 0)
+      
+    if((recv_len = recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen)) == -1)
     {
-        code.responding = false; //timeout reached
-        return code;
+        die("recvfrom");
     }
     data.assign(rbuff);
     code.data = data;

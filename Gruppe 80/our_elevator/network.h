@@ -38,7 +38,7 @@ public:
 
 	std::string get_master_ip(){return master_ip;}
 
-	bool is_node_responding(int elevator_ID);
+	bool is_node_responding(int foreign_elevator_ID);
 };
 
 
