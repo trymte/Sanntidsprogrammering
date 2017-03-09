@@ -38,7 +38,7 @@ void network_main(Elevator* my_elevator, Network &my_network, Queue &my_queue){
 
 
 int main(){
-	std::mutex my_mutex;
+	
 
 	Status init_status;
 	init_status.ip = get_my_ipaddress();
@@ -76,10 +76,10 @@ int main(){
 	}
     
 	std::thread event_manager_thread(event_manager_main,std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
-	std::thread network_thread(listen_on_network, std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
+//	std::thread network_thread(listen_on_network, std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
 
 	event_manager_thread.join();
-	network_thread.join();
+//	network_thread.join();
 
     return 0;
 }

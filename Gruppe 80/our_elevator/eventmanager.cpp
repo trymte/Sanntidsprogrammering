@@ -5,6 +5,7 @@
 #include <deque>
 #include <algorithm>
 
+
 #include "eventmanager.h"
 #include "timer.h"
 
@@ -87,8 +88,10 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 
 	
 	if (elev_get_floor_sensor_signal() != -1){
-		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
-			std::cout << "Order executed" << std::endl;
+		bool test = fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
+		std::cout << "TEST" << test << std::endl;
+		if(test == 1){
+			std::cout << "----------------------------Order executed----------------------" << std::endl;
 			//std::cout << "------------------------------------------------------------------------"<< std::endl;
 			//std::cout << "My elevator order matrix: " << std::endl;
 			//std::cout << "------------------------------------------------------------------------- " <<std::endl;
@@ -108,7 +111,10 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
  }
 
 
-void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_queue){    
+void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_queue){ 
+	std::mutex my_mutex; 
+	 
+
 	std::cout << "Event manager initializing..." << std::endl; 
 	std::cout << "------------------------------------------------" << std::endl; 
 	elev_init();
@@ -143,7 +149,11 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 		
 		check_order_to_be_executed(my_elevator, my_queue);
 		
+
+		my_mutex.lock();
 		check_floor_arrival(my_elevator, my_queue, my_network);
+		my_mutex.unlock();
+
 
 //		std::cout << my_elevator.get_elevator_status().current_state << std::endl;      
 

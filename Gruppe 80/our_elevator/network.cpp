@@ -136,6 +136,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			break;
 		case SLAVE_ORDER_COMPLETE:
 			sv_manage_completed_order(elevators[this_elevator_ID]);
+			std::cout << "Handle message 1" << std::endl;
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
@@ -179,18 +180,23 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			break;
 	}
 	datastring.assign(packet.data);
-	message = message_id_string_to_enum(datastring.substr(0,1));
-	messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
-	std::cout << "Data string" << datastring << std::endl;
-	std::cout << "Message string: " << messagestring << std::endl;
+//	std::cout << "receive_message_packet1" << std::endl;
+	if (datastring.length() != 0){
+//		std::cout << "receive_message_packet2" << std::endl;
+		message = message_id_string_to_enum(datastring.substr(0,1));
+		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 
-	Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
-//	std::cout << "temp_elevator:" << std::endl;
-//	temp_elevator.print_elevator();
-	Status temp_status = temp_elevator.get_elevator_status();
-	elevators[temp_status.elevator_ID]->set_elevator_status(temp_status);
-	elevators[temp_status.elevator_ID]->set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
-	handle_message(message, temp_status.elevator_ID, this_elevator_ID);
+		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
+	//	std::cout << "temp_elevator:" << std::endl;
+	//	temp_elevator.print_elevator();
+//		std::cout << "receive_message_packet 3" << std::endl;
+		Status temp_status = temp_elevator.get_elevator_status();
+		elevators[temp_status.elevator_ID]->set_elevator_status(temp_status);
+		elevators[temp_status.elevator_ID]->set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
+		handle_message(message, temp_status.elevator_ID, this_elevator_ID);
+	}
+
+	
 
 }
 
@@ -256,12 +262,12 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 			case MASTER:
 				usleep(25000);
 
-				if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), 1)){
-					my_network.get_elevators()[1]->set_elevator_out_of_order(true);
-				}
-				std::cout << "Halla1" << std::endl;
+//				if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), 1)){
+//					my_network.get_elevators()[1]->set_elevator_out_of_order(true);
+//				}
+//				std::cout << "Halla1" << std::endl;
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
-				std::cout << "Halla2" << std::endl;
+//				std::cout << "Halla2" << std::endl;
 				break;
 			case SLAVE:
 				usleep(25000);
