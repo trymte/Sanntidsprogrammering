@@ -26,10 +26,10 @@ Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> 
 	for(unsigned int i = 0; i < N_ELEVATORS ; i++){
 		if(i != elevator_ID){
 			this->elevators.push_back(elev_temp_others);
-			elevators[i]->set_elevator_ID(i);
 		} else{
 			this->elevators.push_back(elev_temp_this);
 		}
+		elevators[i]->set_elevator_ID(i);
 	}
 
 }
@@ -179,8 +179,11 @@ void Network::recieve_message_packet(int this_elevator_ID){
 	datastring.assign(packet.data);
 	message = message_id_string_to_enum(datastring.substr(0,1));
 	messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
+	std::cout << "Message string: " << messagestring << std::endl;
 
 	Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
+//	std::cout << "temp_elevator:" << std::endl;
+//	temp_elevator.print_elevator();
 	Status temp_status = temp_elevator.get_elevator_status();
 	elevators[temp_status.elevator_ID]->set_elevator_status(temp_status);
 	elevators[temp_status.elevator_ID]->set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
@@ -221,6 +224,7 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
 			message_string = "6:"; 
 			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]));
+			std::cout << "Master distributed order matrix" << std::endl;
 			break;	
 		default:
 			std::cout << "Not a valid message" << std::endl;
@@ -232,7 +236,7 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	struct code_message code;
 	std::cout << "Send HANDSHAKE, w8 for response: ";
-	send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_elevator_ip()); 
+	send_message_packet(HANDSHAKE, this_elevator_ID,master_ip); // elevators[foreign_elevator_ID]->get_elevator_ip()); 
 	
 	code = udp_reciever();
 	std::cout << "Responding = " << code.responding << std::endl;
