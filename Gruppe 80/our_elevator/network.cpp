@@ -26,10 +26,10 @@ Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> 
 	for(unsigned int i = 0; i < N_ELEVATORS ; i++){
 		if(i != elevator_ID){
 			this->elevators.push_back(elev_temp_others);
-			elevators[i]->set_elevator_ID(i);
 		} else{
 			this->elevators.push_back(elev_temp_this);
 		}
+		elevators[i]->set_elevator_ID(i);
 	}
 
 }
@@ -146,15 +146,17 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			std::cout << "I recieved your message: SLAVE_SEND_ELEVATOR_INFORMATION" << std::endl;
 			std::cout << ", here is the elevator you sent me: " << std::endl;
 			elevators[foreign_elevator_ID]->print_elevator();
-			std::cout << "---------------------------------------------------" << std::endl;
 			sv_manage_order_matrix(elevators, foreign_elevator_ID);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX: //Slave receives
-			std::cout << "I recieved your message: MASTER_DISTRIBUTE_ORDER_MATRIX, thank you for the \
-			new elevator" << std::endl;
-			this->master_ip = elevators[foreign_elevator_ID]->get_elevator_ip();
-
+			for(unsigned int i= 0; i < N_ELEVATORS; i++){
+				elevators[i]->set_elevator_order_matrix(elevators[foreign_elevator_ID]->get_order_matrix_ptr());
+			}
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
+			std::cout << "Slave receive: My elevator order matrix: " << std::endl;
+			std::cout << "------------------------------------------------------------------------- " <<std::endl;
+			elevators[this_elevator_ID]->print_elevator();
 			break;
 		default:
 			std::cout << "Invalid message, but i will accept your elevator" << std::endl;

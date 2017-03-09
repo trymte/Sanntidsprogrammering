@@ -88,14 +88,15 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 	
 	if (elev_get_floor_sensor_signal() != -1){
 		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
-			std::cout << "My elevator order matrix: " << std::endl;
-			std::cout << "------------------------------------------------------------------------- " <<std::endl;
-			my_elevator->print_elevator();
+			//std::cout << "------------------------------------------------------------------------"<< std::endl;
+			//std::cout << "My elevator order matrix: " << std::endl;
+			//std::cout << "------------------------------------------------------------------------- " <<std::endl;
+			//my_elevator->print_elevator();
 			switch(my_elevator->get_elevator_role()){
 				case MASTER:
 					sv_manage_completed_order(my_elevator);
 					sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
+					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
 					break;
 				case SLAVE:
 					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID(), my_network.get_master_ip());
