@@ -40,11 +40,13 @@ void set_all_lights(Elevator *my_elevator, Queue &my_queue){
 		for(int j=0;j<N_BUTTONS-1;j++){
 			if(my_queue.get_order_matrix()[i][j].active_button == 1){
 				elev_set_button_lamp((elev_button_type_t)j,i,1);
-				if(my_queue.get_order_matrix()[i][j].elevator_ID == my_elevator->get_elevator_ID())
-					elev_set_button_lamp((elev_button_type_t)j,i,1);
 			}
 			else
 				elev_set_button_lamp((elev_button_type_t)j,i,0);
+		}
+		//Set internal lights
+		if ((my_queue.get_order_matrix()[i][(int)B_Cab].active_button == 1) && (my_queue.get_order_matrix()[i][(int)B_Cab].elevator_ID == my_elevator->get_elevator_ID())){
+			elev_set_button_lamp(BUTTON_COMMAND,i,1);
 		}
 	} 
 }
@@ -88,11 +90,8 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 
 	
 	if (elev_get_floor_sensor_signal() != -1){
-
-		bool test = fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
-		std::cout << "TEST" << test << std::endl;
-		if(test == 1){
-			std::cout << "----------------------------Order executed----------------------" << std::endl;
+		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
+			std::cout << "----------------------------fsm_on_floor_arrival let me in, check_floor_arrival!----------------------" << std::endl;
 			//std::cout << "------------------------------------------------------------------------"<< std::endl;
 
 			//std::cout << "My elevator order matrix: " << std::endl;
@@ -113,42 +112,33 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
  }
 
 
-<<<<<<< HEAD
-void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_queue){    
-	std::mutex my_mutex;
-=======
-void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_queue){ 
-	std::mutex my_mutex; 
-	 
 
->>>>>>> morten
+void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_queue){    
 	std::cout << "Event manager initializing..." << std::endl; 
 	std::cout << "------------------------------------------------" << std::endl; 
 	elev_init();
-
+	std::mutex my_mutex;
 	int input_poll_rate_ms = 25;
 	while(elev_get_floor_sensor_signal() != 0)
 		elev_set_motor_direction(DIRN_DOWN);
 	elev_set_motor_direction(DIRN_STOP); 
 	elev_set_floor_indicator(0);
-
 	std::cout << "Event manager initialized" << std::endl;
 /////////////////////////////////////////////////////////////////////////////////
  	
-
 	while(1){ 
 		if (check_buttons(my_elevator, my_queue)){
 			switch(my_elevator->get_elevator_status().role){
-			case MASTER:
-				std::cout << "Supervisor got new button pressed" << std::endl;
-				sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
-				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
-				break;
-			case SLAVE:
-				std::cout << "Send_message_packet" << std::endl;
-				my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID(), my_network.get_master_ip());
-				break;
-			}
+				case MASTER:
+					std::cout << "Supervisor got new button pressed" << std::endl;
+					sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
+					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
+					break;
+				case SLAVE:
+					std::cout << "Send_message_packet" << std::endl;
+					my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID(), my_network.get_master_ip());
+					break;
+				}
 		}
 		check_condition_timer(my_elevator, my_network, my_queue);
 
@@ -160,9 +150,7 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 		my_mutex.lock();
 		check_floor_arrival(my_elevator, my_queue, my_network);
 		my_mutex.unlock();
-
-
-//		std::cout << my_elevator.get_elevator_status().current_state << std::endl;      
+     
 
 		set_all_lights(my_elevator,my_queue);
 
