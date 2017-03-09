@@ -24,11 +24,13 @@ void sv_manage_completed_order(Elevator* elevator){
 
 	//Removes all orders on current floor with correct elevator_ID
 	for(int i=0;i<N_BUTTONS;i++){
-		if(elevator_status.floor != -1){
+//		std::cout << "Is this true?" << (*elevator_order_matrix_ptr)[elevator_status.floor][i].elevator_ID << "== " elevator_status.floor << std::endl;
+		if (elevator_status.floor != -1){
 			if (elevator_order_matrix[elevator_status.floor][i].elevator_ID == elevator_status.elevator_ID){
-			elevator_order_matrix[elevator_status.floor][i].active_button = 0;
-			elevator_order_matrix[elevator_status.floor][i].elevator_ID = -1;
-			std::cout << "Deleted" << std::endl;
+				elevator_order_matrix[elevator_status.floor][i].active_button = 0;
+				elevator_order_matrix[elevator_status.floor][i].elevator_ID = -1;
+				std::cout << "Deleted" << std::endl;
+
 			}
 		}
 	}

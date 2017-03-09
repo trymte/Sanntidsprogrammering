@@ -136,6 +136,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			break;
 		case SLAVE_ORDER_COMPLETE:
 			sv_manage_completed_order(elevators[this_elevator_ID]);
+			std::cout << "Handle message 1" << std::endl;
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
@@ -179,7 +180,7 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			break;
 	}
 	datastring.assign(packet.data);
-<<<<<<< HEAD
+
 	if(datastring.length() !=0){
 		message = message_id_string_to_enum(datastring.substr(0,1));
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
@@ -189,21 +190,6 @@ void Network::recieve_message_packet(int this_elevator_ID){
 		elevators[temp_status.elevator_ID]->set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
 		handle_message(message, temp_status.elevator_ID, this_elevator_ID);
 	}
-=======
-	message = message_id_string_to_enum(datastring.substr(0,1));
-	messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
-	std::cout << "Data string" << datastring << std::endl;
-	std::cout << "Message string: " << messagestring << std::endl;
-
-	Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
-//	std::cout << "temp_elevator:" << std::endl;
-//	temp_elevator.print_elevator();
-	Status temp_status = temp_elevator.get_elevator_status();
-	elevators[temp_status.elevator_ID]->set_elevator_status(temp_status);
-	elevators[temp_status.elevator_ID]->set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
-	handle_message(message, temp_status.elevator_ID, this_elevator_ID);
-
->>>>>>> da982422e570bec9a7c25950c2baf2ea46c244d3
 }
 
 void Network::send_message_packet(Message message, int this_elevator_ID, std::string foreign_elevator_ip){
@@ -278,6 +264,7 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 				}
 				*/
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
+
 				break;
 			case SLAVE:
 				usleep(25000);
