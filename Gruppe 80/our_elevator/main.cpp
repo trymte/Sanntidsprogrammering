@@ -13,7 +13,7 @@ int main(){
 	std::cout << "My ip address: " << init_status.ip << std::endl;
 	init_status.out_of_order = false;
 	init_status.floor = 0;
-	init_status.floor = 0;
+	init_status.last_floor = 0;
 	init_status.dir = D_Stop;
 	init_status.current_state = IDLE;
 	std::cout << "Write in your role: " << std::endl;

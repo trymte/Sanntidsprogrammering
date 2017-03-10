@@ -76,7 +76,10 @@ unsigned int Queue::get_lowest_cost_elevator(Order order, std::vector<Status>& s
 	for(std::vector<Status>::iterator it = status_vector.begin(); it != status_vector.end();++it){
 		status_it = *it;
 		if (status_it.out_of_order != 1){ 
+
 			temp_cost = calculate_cost(order,status_it);
+			std::cout << "temp cost: " << temp_cost << std::endl;
+			std::cout << "status it elev id: " << status_it.elevator_ID << " floor: " << status_it.floor << " last_floor " << status_it.last_floor << " state: " << status_it.current_state <<std::endl;
 			if (temp_cost < lowest_cost){
 				lowest_cost = temp_cost;
 				elevator_ID = status_it.elevator_ID;
