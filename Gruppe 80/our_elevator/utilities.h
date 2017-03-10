@@ -10,7 +10,7 @@
 
 const unsigned int N_FLOORS = 4;
 const unsigned int N_BUTTONS = 3;
-const unsigned int N_ELEVATORS = 2;
+const unsigned int N_ELEVATORS = 3;
 const unsigned int DOOR_TIME_S = 1;
 const unsigned int TIME_CONDITION_S = 10;
 const unsigned int TIMER_DOOR_ID = 1;
@@ -40,11 +40,10 @@ typedef enum{
 	//SLAVE_INIT
     MASTER_IP_INIT = 0,
     HANDSHAKE = 1,
-    SLAVE_REQUEST_ORDER_MATRIX = 2,
-    SLAVE_ORDER_COMPLETE = 3,
-    SLAVE_ORDER_INCOMPLETE = 4,
-    SLAVE_SEND_ELEVATOR_INFORMATION = 5,
-    MASTER_DISTRIBUTE_ORDER_MATRIX = 6
+    SLAVE_ORDER_COMPLETE = 2,
+    SLAVE_ORDER_INCOMPLETE = 3,
+    SLAVE_SEND_ELEVATOR_INFORMATION = 4,
+    MASTER_DISTRIBUTE_ORDER_MATRIX = 5
 } Message;
 
 
@@ -77,7 +76,6 @@ struct Status{
     Role role;
 };
 
-
 std::vector<std::vector<Queue_element> > twoD_vector_init(); 
 
 std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string &order_matrix_string);
@@ -87,9 +85,3 @@ std::string order_matrix_to_string(std::vector<std::vector <Queue_element> > *or
 Message message_id_string_to_enum(std::string str);
 
 void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
-
-
-
-/*void print_status(Status status){
-    std::cout <<"Dir: " << status.dir << "\nFloor: " << status.floor << "\nID: " << status.elevator_ID << "\nOut of order: " << status.out_of_order << std::endl;
-}*/

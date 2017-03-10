@@ -71,18 +71,15 @@ Message message_id_string_to_enum(std::string str){
 			message = HANDSHAKE;
 			break;
 		case 2:
-			message = SLAVE_REQUEST_ORDER_MATRIX;
-			break;
-		case 3:
 			message = SLAVE_ORDER_COMPLETE;
 			break;
-		case 4: 
+		case 3: 
 			message = SLAVE_ORDER_INCOMPLETE;
 			break;
-		case 5: 
+		case 4: 
 			message = SLAVE_SEND_ELEVATOR_INFORMATION;
 			break;
-		case 6: 
+		case 5: 
 			message = MASTER_DISTRIBUTE_ORDER_MATRIX;
 			break;
 		default:

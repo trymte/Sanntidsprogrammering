@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <thread>
 #include <unistd.h>
@@ -11,6 +10,9 @@ int main(){
 	init_status.ip = get_my_ipaddress();
 	std::cout << "My ip address: " << init_status.ip << std::endl;
 	init_status.out_of_order = false;
+	init_status.floor = 0;
+	init_status.dir = D_Stop;
+	init_status.current_state = IDLE;
 	std::cout << "Write in your role: " << std::endl;
 	int role;
 	std::cin >> role;
@@ -18,7 +20,6 @@ int main(){
 
 	udp_init(MASTERPORT, static_cast<int>(init_status.role));
 	
-
 	int this_elev_id;
 	std::cout << "Write in your elevator id: " << std::endl;
 	std::cin >> this_elev_id; 
@@ -30,10 +31,11 @@ int main(){
     usleep(5000000);
     switch(init_status.role){
 		case MASTER:
-			my_network.send_message_packet(MASTER_IP_INIT, this_elev_id);
+			my_network.send_message_packet(MASTER_IP_INIT, this_elev_id, "");
 			break;
 		case SLAVE:
 			my_network.recieve_message_packet(my_elevator->get_elevator_ID());
+			std::cout << "Master ip: " << my_network.get_master_ip() << std::endl;
 			break;
 	}
     

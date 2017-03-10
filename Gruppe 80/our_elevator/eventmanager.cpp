@@ -65,10 +65,10 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 		switch(my_elevator->get_elevator_status().role){
 			case MASTER:
 				//sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());  //my_elevator);
-				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
+				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
 				break;
 			case SLAVE:
-				my_network.send_message_packet(SLAVE_ORDER_INCOMPLETE, my_elevator->get_elevator_ID());
+				my_network.send_message_packet(SLAVE_ORDER_INCOMPLETE, my_elevator->get_elevator_ID(), my_network.get_master_ip());
 				break;
 		}
 	} 
@@ -104,10 +104,10 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 				case MASTER:
 					sv_manage_completed_order(my_elevator);
 					sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
-					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
+					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
 					break;
 				case SLAVE:
-					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID());
+					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID(), my_network.get_master_ip());
 					break;
 			}	
 		}
@@ -135,11 +135,11 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 				case MASTER:
 					std::cout << "Supervisor got new button pressed" << std::endl;
 					sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
-					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
+					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
 					break;
 				case SLAVE:
 					std::cout << "Send_message_packet" << std::endl;
-					my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID());
+					my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID(), my_network.get_master_ip());
 					break;
 				}
 		}

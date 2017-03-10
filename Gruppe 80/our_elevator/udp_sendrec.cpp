@@ -193,6 +193,7 @@ int udp_sender(std::string message, int localPort, char * reciever_ip) //master_
     {
         die("sendto");
     }
+    std::cout <<"hello, what do you send: " << sbuff << std::endl;
     return 0;
 }
 
