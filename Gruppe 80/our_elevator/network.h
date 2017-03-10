@@ -34,9 +34,7 @@ public:
 
 	void recieve_message_packet(int this_elevator_ID);
 
-	void send_message_packet(Message message_ID, int elevator_ID, std::string foreign_elevator_ip);
-
-	static void send_message_packet(Message message_ID);
+	void send_message_packet(Message message_ID, int this_elevator_ID);
 
 	void set_master_ip(std::string master_ip){this->master_ip = master_ip;}
 
