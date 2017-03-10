@@ -196,8 +196,8 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 	}
 
 	//Create an order_matrix that contains all the orders assigned to an elevator
-	std::vector <std::vector <Queue_element> > assigned_order_matrix;
-	std::vector <std::vector <Queue_element > > curr_order_matrix;
+	std::vector <std::vector <Queue_element> > assigned_order_matrix = twoD_vector_init();
+	std::vector <std::vector <Queue_element > > curr_order_matrix = twoD_vector_init();
 	assigned_order_matrix = *elevators[elevator_ID]->get_order_matrix_ptr(); //Tar utgangspunkt i elevator_ID's heis.
 	Order order_to_be_assigned;
 	int assigned_elevator_ID = -1;

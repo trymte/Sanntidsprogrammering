@@ -122,21 +122,32 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			this->master_ip = elevators[foreign_elevator_ID]->get_elevator_ip();
 			break;
 		case HANDSHAKE:
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			std::cout << "I recieved your HANDSHAKE, acknowledging:" << std::endl;
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_elevator_ip());
 			break;
 		case SLAVE_ORDER_COMPLETE:
-			sv_manage_completed_order(elevators[this_elevator_ID]);
-			std::cout << "Handle message 1" << std::endl;
+			elevators[foreign_elevator_ID]->print_elevator();
+			sv_manage_completed_order(elevators[foreign_elevator_ID]);
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
+			std::cout << "Slave order complete: " << std::endl;
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
+			sv_manage_order_matrix(elevators, foreign_elevator_ID);
+			//eventmanager ødelegger
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
+			std::cout << "Slave order incomplete: " << std::endl;
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			//sv_manage_completed_order(elevators[elevator_ID]);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
-			std::cout << "I recieved your message: SLAVE_SEND_ELEVATOR_INFORMATION" << std::endl;
-			std::cout << ", here is the elevator you sent me: " << std::endl;
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
+			std::cout << "I recieved your message: SLAVE_SEND_ELEVATOR_INFORMATION: " << std::endl;
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			elevators[foreign_elevator_ID]->print_elevator();
 			sv_manage_order_matrix(elevators, foreign_elevator_ID);
 			//send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
@@ -171,7 +182,6 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			break;
 	}
 	datastring.assign(packet.data);
-	std::cout << "Datastring: " << datastring << std::endl;
 	if(datastring.length() !=0){
 		message = message_id_string_to_enum(datastring.substr(0,1));
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
@@ -211,10 +221,7 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
 			message_string = "5:"; 
-			std::cout << "-------------------------Send_message_packet:-----------------------------------" << std::endl;
-			elevators[this_elevator_ID]->print_elevator();
 			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]));
-			std::cout << "Master distributed order matrix" << std::endl;
 			break;	
 		default:
 			std::cout << "Not a valid message" << std::endl;
@@ -241,6 +248,7 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 	while(1){
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
+				std::cout << "hello from network" << std::endl;
 				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_elevator_ID(), my_network.get_master_ip());
 				/*
 				for(unsigned int i = 0; i < N_ELEVATORS; i++){

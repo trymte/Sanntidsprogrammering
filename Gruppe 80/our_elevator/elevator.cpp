@@ -62,21 +62,25 @@ void Elevator::print_elevator(){
 }
 
 void Elevator::set_elevator_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr){
+
 	if(this->order_matrix_ptr == NULL){
 		this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
-	}
-	std::vector<std::vector <Queue_element> > temp;
-	for(unsigned int i = 0; i < N_FLOORS;i++){
-		for(unsigned int j = 0; j < N_BUTTONS; j++){
+		*this->order_matrix_ptr = *order_matrix_ptr;
+	} else{
+		std::vector<std::vector <Queue_element> > temp = twoD_vector_init();
+		for(unsigned int i = 0; i < N_FLOORS;i++){
+			for(unsigned int j = 0; j < N_BUTTONS; j++){
 
-			if(j == 2){
-				temp[i][j] = (*this->order_matrix_ptr)[i][j];
-			} else{
-				temp[i][j] = (*order_matrix_ptr)[i][j];
+				if(j == 2){
+					temp[i][j] = (*this->order_matrix_ptr)[i][j];
+				} else{
+					temp[i][j] = (*order_matrix_ptr)[i][j];
+				}
 			}
 		}
+		*this->order_matrix_ptr = temp;
 	}
-	*this->order_matrix_ptr = temp;
+	
 }
 
 Elevator& Elevator::operator=(const Elevator &rhs){

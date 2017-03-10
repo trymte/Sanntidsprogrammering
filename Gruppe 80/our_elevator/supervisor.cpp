@@ -11,6 +11,8 @@ void sv_manage_order_matrix(std::vector<Elevator*> elevators, int elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i ++){
 		elevators[i]->set_elevator_order_matrix(&temp);
 	}
+	std::cout << "After overwrite:" << std::endl;
+	print_order_matrix(elevators[0]->get_order_matrix_ptr());
 }
 
 

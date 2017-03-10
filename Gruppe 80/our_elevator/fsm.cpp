@@ -63,12 +63,12 @@ void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){ //
 	State current_state = my_elevator->get_elevator_status().current_state;
 
 	switch(current_state){
-		case MOVING:
+		/*case MOVING:
 			if(current_floor == order.floor){
 				fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
 			}
 			break;
-
+		*/
    		case IDLE:
    			/*if(current_floor == order.floor){
    				fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
