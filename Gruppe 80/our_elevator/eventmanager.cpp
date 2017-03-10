@@ -78,7 +78,6 @@ void check_door_timer(Elevator* my_elevator, Network &my_network, Queue &my_queu
 	if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){
 		std::cout << "Check door timer" << std::endl;
 		fsm_on_door_timeout(my_elevator,my_queue);
-		// Bør ha denne, da master ikke blir oppdatert om endring i status etter døra har lukket seg.
 		switch(my_elevator->get_elevator_status().role){
 			case MASTER:
 				//sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());  //my_elevator);
