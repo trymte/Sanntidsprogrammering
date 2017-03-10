@@ -1,6 +1,6 @@
 #include "udp_sendrec.h"
 
-int bsocket, lsocket, msocket;
+int bsocket, lsocket, psocket;
 
 void die(char * s)
 {
@@ -20,18 +20,16 @@ void get_my_ipaddress(std::string &ip){
         if (!ifa->ifa_addr) {
             continue;
         }
-        if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
+        if (ifa->ifa_addr->sa_family == AF_INET) { // check if it is IP4
             // is a valid IP4 Address
             tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
             char addressBuffer[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-            //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
+            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN); 
             std::string temp(addressBuffer);
             ip = temp;
         }
     }
     if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
-    
 }
 
 std::string get_my_ipaddress(){
@@ -51,7 +49,6 @@ std::string get_my_ipaddress(){
             tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
             char addressBuffer[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-            //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
             std::string temp(addressBuffer);
             ip = temp;
         }
@@ -61,14 +58,13 @@ std::string get_my_ipaddress(){
     return ip;
 }
 
-//sendPort = MASTERPORT
-//recvPort = SLAVEPORT
+
 void udp_init(int localPort, int elevator_role){
-    struct sockaddr_in laddr, baddr;
+    struct sockaddr_in laddr, baddr, paddr;
     
-     //_------------------------------------------------------------------------
-    // broadcast
-     //_------------------------------------------------------------------------
+    //_------------------------------------------------------------------------
+    // Broadcast connection
+    //_------------------------------------------------------------------------
     int broadcastEnable=1;
     if ((bsocket = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
     {
@@ -96,17 +92,15 @@ void udp_init(int localPort, int elevator_role){
     baddr.sin_port = htons(BROADCASTPORT);
     baddr.sin_addr.s_addr = inet_addr(BROADCASTIP);
     
-    //Bind to broadcast socket if role is slave
-    if(elevator_role == 0){ //role = 0 ----> slave
-        if( bind(bsocket, (struct sockaddr*)&baddr, sizeof(baddr)) == -1)
-        {
+ 
+    if( bind(bsocket, (struct sockaddr*)&baddr, sizeof(baddr)) == -1)
+    {
             die("bbind");
-        }
     }
     
 
     //_------------------------------------------------------------------------
-    // local send/rcv
+    // Local send/rcv connection
     //---------------------------------------------------------------------------
      
     if ((lsocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
@@ -132,8 +126,34 @@ void udp_init(int localPort, int elevator_role){
     {
         die("lbind");
     }
-    
 
+    //_------------------------------------------------------------------------
+    //Local ping/handshake connection
+    //_------------------------------------------------------------------------
+
+    if ((psocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+    {
+        die("psocket");
+    }
+    if (setsockopt(psocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) == -1)
+    {
+        die("setsockopt");
+    }
+    #ifdef SO_REUSEPORT
+    if (setsockopt(psocket, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse)) == -1)
+    {
+        die("setsockopt");
+    }
+    #endif
+    memset((char *) &paddr, 0, sizeof(paddr));
+    paddr.sin_family = AF_INET;
+    paddr.sin_port = htons(localPort);
+    //
+    paddr.sin_addr.s_addr = INADDR_ANY;
+    if( bind(psocket, (struct sockaddr*)&paddr, sizeof(paddr) ) == -1)
+    {
+        die("pbind");
+    }
     
     printf("Client successfully binded to localPort and broadcastport! \n" );
 }
@@ -154,8 +174,6 @@ int udp_broadcaster(std::string message){
     {
         die("bcast");
     }
-        //printf("Data from sender: %s\n" , sbuff);
-
     return 0;
 
 }
@@ -175,8 +193,24 @@ int udp_sender(std::string message, int localPort, char * reciever_ip) //master_
     {
         die("sendto");
     }
-        //printf("Data from sender: %s\n" , sbuff);    
- 
+    return 0;
+}
+
+int udp_handshake_sender(std::string message, int localPort, char * reciever_ip) //master_ip = reciever_ip
+{
+    struct sockaddr_in addr;
+    char sbuff[BUFLEN];
+    memset(&sbuff[0], 0, sizeof(sbuff));
+    strcat(sbuff, message.c_str());
+
+    memset((char *) &addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(localPort);
+    addr.sin_addr.s_addr = inet_addr(reciever_ip);
+    if (sendto(psocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr)) == -1)
+    {
+        die("sendto");
+    }
     return 0;
 }
 
@@ -187,7 +221,7 @@ struct code_message udp_reciever()
     socklen_t slen = sizeof(addr); 
     char rbuff[BUFLEN];
     struct code_message code;
-    code.responding = true;
+
     std::string data;
     std::string rip;
     
@@ -196,18 +230,15 @@ struct code_message udp_reciever()
     
       
     memset(&rbuff[0], 0, sizeof(rbuff)); 
-    
-    
-    recv_len = recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen);
-    
+
+    if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) == -1){
+    	die("recvfrom");
+    }
     data.assign(rbuff);
     code.data = data;
     rip.assign(inet_ntoa(addr.sin_addr));
     code.rip = rip;
     code.port = addr.sin_port;
-
-    //printf("Data received: %s \n" , rbuff);
- 
     return code;
 }
 
@@ -223,7 +254,6 @@ struct code_message udp_handshake_reciever()
     std::string data;
     std::string rip;
     
-    // zero out the structure
     memset((char *) &addr, 0, sizeof(addr));
     
     code.responding = true;
@@ -232,26 +262,23 @@ struct code_message udp_handshake_reciever()
     struct timeval read_timeout;
     read_timeout.tv_sec = 2;
     read_timeout.tv_usec = 0;
-    if(setsockopt(lsocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
+    if(setsockopt(psocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
         die("setsockopt");
     }  
-    recv_len = recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen);
-    if( recv_len < 0)
-
+    if(recvfrom(psocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0)
     {
-        code.responding = false; //timeout reached
+    	std::cout << "Timeout on handshake, elevator not responding!" << std::endl;
+        code.responding = false; 
     }
-    /*else{
+    else{
         code.responding = true;
-    }*/
+    }
     data.assign(rbuff);
     code.data = data;
     rip.assign(inet_ntoa(addr.sin_addr));
     code.rip = rip;
     code.port = addr.sin_port;
 
-    //printf("Data received: %s \n" , rbuff);
- 
     return code;
 }
 
@@ -263,27 +290,19 @@ struct code_message udp_recieve_broadcast(){
     char rbuff [BUFLEN];
     std::string data;
     std::string rip;
-    code.responding = true;
 
     memset((char *) &addr, 0, sizeof(addr));
-
     memset(&rbuff[0], 0, sizeof(rbuff));
       
-    if((recv_len = recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen)) == -1)
+    if(recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) == -1)
     {
-        die("recvfrom");
+        die("brecvfrom");
     }
     data.assign(rbuff);
     code.data = data;
     rip.assign(inet_ntoa(addr.sin_addr));
     code.rip = rip;
     code.port = addr.sin_port;
-
-    //code.data = (char *) malloc(sizeof(char)*recv_len);
-    //memcpy(code.data, rbuff, sizeof(rbuff));
-    //code.rip= inet_ntoa(addr.sin_addr);
-
-    //printf("Data received: %s\n" , rbuff);
     return code; 
 }
 
@@ -295,5 +314,6 @@ int bytes(){
 void udp_close(){
     close(bsocket);
     close(lsocket);
+    close(psocket);
 }
 

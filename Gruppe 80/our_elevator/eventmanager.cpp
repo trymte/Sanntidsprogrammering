@@ -62,10 +62,10 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 		switch(my_elevator->get_elevator_status().role){
 			case MASTER:
 				//sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());  //my_elevator);
-				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(), "");
+				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
 				break;
 			case SLAVE:
-				my_network.send_message_packet(SLAVE_ORDER_INCOMPLETE, my_elevator->get_elevator_ID(), my_network.get_master_ip());
+				my_network.send_message_packet(SLAVE_ORDER_INCOMPLETE, my_elevator->get_elevator_ID());
 				break;
 		}
 	} 
@@ -92,19 +92,19 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 	if (elev_get_floor_sensor_signal() != -1){
 		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
 			std::cout << "----------------------------fsm_on_floor_arrival let me in, check_floor_arrival!----------------------" << std::endl;
-			//std::cout << "------------------------------------------------------------------------"<< std::endl;
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
 
-			//std::cout << "My elevator order matrix: " << std::endl;
-			//std::cout << "------------------------------------------------------------------------- " <<std::endl;
-			//my_elevator->print_elevator();
+			std::cout << "My elevator order matrix: " << std::endl;
+			std::cout << "------------------------------------------------------------------------- " <<std::endl;
+			my_elevator->print_elevator();
 			switch(my_elevator->get_elevator_role()){
 				case MASTER:
 					sv_manage_completed_order(my_elevator);
 					sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
-					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
+					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
 					break;
 				case SLAVE:
-					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID(), my_network.get_master_ip());
+					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID());
 					break;
 			}	
 		}
@@ -132,11 +132,11 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 				case MASTER:
 					std::cout << "Supervisor got new button pressed" << std::endl;
 					sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
-					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
+					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID());
 					break;
 				case SLAVE:
 					std::cout << "Send_message_packet" << std::endl;
-					my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID(), my_network.get_master_ip());
+					my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID());
 					break;
 				}
 		}
@@ -146,11 +146,7 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 		
 		check_order_to_be_executed(my_elevator, my_queue);
 		
-
-		my_mutex.lock();
 		check_floor_arrival(my_elevator, my_queue, my_network);
-		my_mutex.unlock();
-     
 
 		set_all_lights(my_elevator,my_queue);
 

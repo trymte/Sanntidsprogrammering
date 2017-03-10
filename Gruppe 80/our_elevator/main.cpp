@@ -1,4 +1,3 @@
-//MORTEN MAIN - har lagt inn litt diverse, bruke denne som hovedmain? -trym
 
 #include <iostream>
 #include <thread>
@@ -8,14 +7,9 @@
 
 
 int main(){
-	
-
 	Status init_status;
 	init_status.ip = get_my_ipaddress();
 	std::cout << "My ip address: " << init_status.ip << std::endl;
-	init_status.dir = D_Up;
-	init_status.floor = 3;
-	init_status.current_state = IDLE;
 	init_status.out_of_order = false;
 	std::cout << "Write in your role: " << std::endl;
 	int role;
@@ -36,7 +30,7 @@ int main(){
     usleep(5000000);
     switch(init_status.role){
 		case MASTER:
-			my_network.send_message_packet(MASTER_IP_INIT, this_elev_id, "");
+			my_network.send_message_packet(MASTER_IP_INIT, this_elev_id);
 			break;
 		case SLAVE:
 			my_network.recieve_message_packet(my_elevator->get_elevator_ID());
