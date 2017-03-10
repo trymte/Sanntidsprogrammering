@@ -108,6 +108,7 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
 					break;
 				case SLAVE:
+					
 					my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID(), my_network.get_master_ip());
 					break;
 			}	
