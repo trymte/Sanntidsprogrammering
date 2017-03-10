@@ -91,9 +91,8 @@ void check_order_to_be_executed(Elevator* my_elevator, Queue &my_queue){
 void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_network){
 	int current_floor = elev_get_floor_sensor_signal();
 	my_elevator->set_elevator_floor(current_floor);
-
-	
-	if (elev_get_floor_sensor_signal() != -1){
+	if (current_floor != -1){
+		my_elevator->set_elevator_last_floor(current_floor);
 		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
 			std::cout << "----------------------------fsm_on_floor_arrival let me in, check_floor_arrival!----------------------" << std::endl;
 			std::cout << "My elevator order matrix: " << std::endl;
@@ -132,6 +131,7 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 		if (check_buttons(my_elevator, my_queue)){
 			switch(my_elevator->get_elevator_status().role){
 				case MASTER:
+
 					std::cout << "Supervisor got new button pressed" << std::endl;
 					sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
 					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");

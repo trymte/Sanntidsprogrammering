@@ -41,10 +41,10 @@ unsigned int Queue::calculate_cost(Order order, Status status){
 		case MOVING:
 
 			if((order.floor-status.floor >= 0) && (status.dir == D_Up))
-				cost += abs(order.floor - status.floor)*10;
+				cost += abs(order.floor - status.last_floor)*10;
 
 			else if((order.floor-status.floor < 0) && (status.dir == D_Down))
-				cost += abs(order.floor - status.floor)*10;
+				cost += abs(order.floor - status.last_floor)*10;
 
 			else
 				cost += 50;
@@ -86,49 +86,6 @@ unsigned int Queue::get_lowest_cost_elevator(Order order, std::vector<Status>& s
 	}
 	return elevator_ID;
 }
-
-
-std::vector<std::vector<Queue_element> > Queue::merge_order_matrices(std::vector <std::vector <Queue_element> > &order_matrix_1,std::vector <std::vector <Queue_element> > &order_matrix_2){
-	if ((order_matrix_1.size() != order_matrix_2.size())||(order_matrix_1[0].size() != order_matrix_2[0].size())){
-		std::cout << "Dimensions disagree in queue_to_be_merged" << std::endl;
-		return order_matrix_1;
-	}
-
-	int rows = order_matrix_1.size();
-	int cols = order_matrix_1[0].size();
-
-	for (int i = 0;i<rows;i++){
-		for (int j=0;j<cols;j++){
-			if ((order_matrix_1[i][j].elevator_ID == -1) && (order_matrix_2[i][j].elevator_ID != -1)){
-				order_matrix_1[i][j].active_button = order_matrix_2[i][j].active_button;
-				order_matrix_1[i][j].elevator_ID = order_matrix_2[i][j].elevator_ID;
-			}
-		}
-	}
-	return order_matrix_1;
-}
-
-
-void Queue::merge_order_matrices(Queue &queue_to_be_merged){
-	if ((this->order_matrix.size() != queue_to_be_merged.order_matrix.size())||(this->order_matrix[0].size() != queue_to_be_merged.order_matrix[0].size())){
-		std::cout << "Dimensions disagree in queue_to_be_merged" << std::endl;
-		return;
-	}
-
-	int rows = this->order_matrix.size();
-	int cols = this->order_matrix[0].size();
-
-	for (int i = 0;i<rows;i++){
-		for (int j=0;j<cols;j++){
-			if ((this->order_matrix[i][j].elevator_ID == -1) && (queue_to_be_merged.order_matrix[i][j].elevator_ID != -1)){
-				this->order_matrix[i][j].active_button = queue_to_be_merged.order_matrix[i][j].active_button;
-				this->order_matrix[i][j].elevator_ID = queue_to_be_merged.order_matrix[i][j].elevator_ID;
-			}
-		}
-	}
-}
-
-
 
 
 void Queue::add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID){

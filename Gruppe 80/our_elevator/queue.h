@@ -22,10 +22,6 @@ public:
 
 	static unsigned int get_lowest_cost_elevator(Order order, std::vector<Status>& status_vector);
 
-	static std::vector<std::vector<Queue_element> > merge_order_matrices(std::vector <std::vector <Queue_element> > &order_matrix_1, std::vector <std::vector <Queue_element> > &order_matrix_2);
-
-	void merge_order_matrices(Queue &queue_with_new_order_matrix); 
-
 	static void add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID);
 
 	void add_order(Order new_order, int elevator_ID);

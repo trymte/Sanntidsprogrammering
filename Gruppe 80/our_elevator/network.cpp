@@ -77,13 +77,14 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 			break;
 	}
 	temp_elevator.set_elevator_floor(atoi(result[4].c_str()));
-	if(result[5] == "0"){
+	temp_elevator.set_elevator_last_floor(atoi(result[5].c_str()));
+	if(result[6] == "0"){
 		temp_elevator.set_elevator_out_of_order(false);
 
 	} else{
 		temp_elevator.set_elevator_out_of_order(true);
 	}
-	switch(atoi(result[6].c_str())){
+	switch(atoi(result[7].c_str())){
 		case 0:
 			temp_elevator.set_elevator_current_state(MOVING);
 			break;
@@ -94,7 +95,7 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 			temp_elevator.set_elevator_current_state(DOOR_OPEN);
 			break;
 	}
-	order_matrix_string = result[7];
+	order_matrix_string = result[8];
 	std::vector<std::vector <Queue_element> > order_matrix_temp = string_to_order_matrix(order_matrix_string);
 	temp_elevator.set_elevator_order_matrix(&order_matrix_temp);
 	
@@ -105,7 +106,7 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 	std::stringstream ss;
 	Status elev_status = elevator.get_elevator_status();
 	std::string order_matrix_string = order_matrix_to_string(elevator.get_order_matrix_ptr());
-	ss << elev_status.ip << ":" << elev_status.role << ":" << elev_status.elevator_ID << ":" << elev_status.dir << ":" << elev_status.floor << ":" << elev_status.out_of_order << ":" << elev_status.current_state << ":" << order_matrix_string;
+	ss << elev_status.ip << ":" << elev_status.role << ":" << elev_status.elevator_ID << ":" << elev_status.dir << ":" << elev_status.floor << ":" << elev_status.last_floor << ":" << elev_status.out_of_order << ":" << elev_status.current_state << ":" << order_matrix_string;
 	return ss.str();
 }
 

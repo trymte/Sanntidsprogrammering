@@ -27,6 +27,8 @@ public:
 
 	int get_elevator_ID(){return this->elevator_status.elevator_ID;}
 
+	int get_elevator_last_floor(){return this->elevator_status.last_floor;}
+
 	std::string get_elevator_ip(){return this->elevator_status.ip;}
 
 	std::vector<std::vector <Queue_element> >* get_order_matrix_ptr(){return this->order_matrix_ptr;}
@@ -41,7 +43,9 @@ public:
 
 	void set_elevator_dir(Dirn dir){this->elevator_status.dir = dir;}
 
-	void set_elevator_floor(unsigned int floor){this->elevator_status.floor = floor;}
+	void set_elevator_floor(int floor){this->elevator_status.floor = floor;}
+
+	void set_elevator_last_floor(int last_floor){this->elevator_status.last_floor = last_floor;}
 
 	void set_elevator_current_state(State current_state){this->elevator_status.current_state = current_state;}
 
