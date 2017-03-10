@@ -37,7 +37,6 @@ typedef enum {
 } Role;
 
 typedef enum{
-	//SLAVE_INIT
     MASTER_IP_INIT = 0,
     HANDSHAKE = 1,
     SLAVE_ORDER_COMPLETE = 2,

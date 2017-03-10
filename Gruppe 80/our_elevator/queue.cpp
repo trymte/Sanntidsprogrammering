@@ -205,16 +205,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 	for(unsigned int k = 0; k < N_ELEVATORS; k++){
 		curr_order_matrix = *elevators[k]->get_order_matrix_ptr();
 		for (unsigned int i=0;i<N_FLOORS;i++){           
-			for(unsigned int j=0;j<N_BUTTONS;j++){
-				
-				/* Skal slettes, kommenterer bort foreløpig.
-				//If an order in an order_matrix in elevators is not found in assigned_order_matrix, add it.
-				if ((assigned_order_matrix[i][i].active_button == 0)&&(curr_order_matrix[i][j].active_button == 1)){
-					order_to_be_assigned.floor = i;
-					order_to_be_assigned.btn = (Button)j;
-					Queue::add_order(assigned_order_matrix,order_to_be_assigned,curr_order_matrix[i][j].elevator_ID);
-				}*/
-
+			for(unsigned int j=0;j<N_BUTTONS-1;j++){
 
 				//Find elevator with lowest cost and add order to assigned_order_matrix
 				if ((curr_order_matrix[i][j].active_button == 1) && (curr_order_matrix[i][j].elevator_ID == -1)){
@@ -226,7 +217,6 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 			}
 		}
 	}
-
 	return assigned_order_matrix;
 }
 
