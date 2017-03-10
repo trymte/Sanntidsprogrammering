@@ -40,19 +40,27 @@ unsigned int Queue::calculate_cost(Order order, Status status){
 	switch(status.current_state){
 		case MOVING:
 
-			if((order.floor-status.floor >= 0) && (status.dir == D_Up))
-				cost += abs(order.floor - status.last_floor)*10;
+			if((order.floor-status.last_floor >= 0)){
+				if(status.dir == D_Up)
+					cost += abs(order.floor - (status.last_floor+1))*10+7;
+				else if(status.dir == D_Down)
+					cost += abs(order.floor - (status.last_floor-1))*30;
 
-			else if((order.floor-status.floor < 0) && (status.dir == D_Down))
-				cost += abs(order.floor - status.last_floor)*10;
+			}
 
+			else if(order.floor-status.last_floor < 0){
+				if(status.dir == D_Up)
+					cost += abs(order.floor - (status.last_floor+1))*30;
+				else if(status.dir == D_Down)
+					cost += abs(order.floor - (status.last_floor-1))*10 + 7;
+			}
 			else
 				cost += 50;
 
 			break;
 
 		case IDLE:
-			cost += abs(order.floor-status.floor)*15;
+			cost += abs(order.floor-status.floor)*15 + 1;
 			break;
 
 		case DOOR_OPEN:
