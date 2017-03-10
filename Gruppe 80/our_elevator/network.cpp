@@ -253,30 +253,29 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				usleep(25000);
-				/*
+				
 				for(unsigned int i = 0; i < N_ELEVATORS; i++){
 					if(i != my_elevator->get_elevator_ID()){
 						if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), i)){
-						my_network.get_elevators()[1]->set_elevator_out_of_order(true);
-
+							my_network.get_elevators()[1]->set_elevator_out_of_order(true);
 						}
 					}	
 				}
-				*/
+				
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 
 				break;
 			case SLAVE:
 				usleep(25000);
-				/*
+				
 				for(unsigned int i = 0; i < N_ELEVATORS; i++){
 					if(i != my_elevator->get_elevator_ID()){
 						if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), i)){
-						my_network.get_elevators()[1]->set_elevator_out_of_order(true);
+							my_network.get_elevators()[1]->set_elevator_out_of_order(true);
 						}
 					}	
 				}
-				*/
+				
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}

@@ -48,6 +48,9 @@ void set_all_lights(Elevator *my_elevator, Queue &my_queue){
 		if ((my_queue.get_order_matrix()[i][(int)B_Cab].active_button == 1) && (my_queue.get_order_matrix()[i][(int)B_Cab].elevator_ID == my_elevator->get_elevator_ID())){
 			elev_set_button_lamp(BUTTON_COMMAND,i,1);
 		}
+		else{
+			elev_set_button_lamp(BUTTON_COMMAND,i,0);
+		}
 	} 
 }
 
@@ -94,9 +97,9 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 			std::cout << "----------------------------fsm_on_floor_arrival let me in, check_floor_arrival!----------------------" << std::endl;
 			//std::cout << "------------------------------------------------------------------------"<< std::endl;
 
-			//std::cout << "My elevator order matrix: " << std::endl;
-			//std::cout << "------------------------------------------------------------------------- " <<std::endl;
-			//my_elevator->print_elevator();
+			std::cout << "My elevator order matrix: " << std::endl;
+			std::cout << "------------------------------------------------------------------------- " <<std::endl;
+			my_elevator->print_elevator();
 			switch(my_elevator->get_elevator_role()){
 				case MASTER:
 					sv_manage_completed_order(my_elevator);

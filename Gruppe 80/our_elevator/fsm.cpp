@@ -70,11 +70,12 @@ void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){ //
 			break;
 
    		case IDLE:
-   			if(current_floor == order.floor){
+   			/*if(current_floor == order.floor){
    				fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
-   			}
+   				std::cout << "fsm_execute_order" << std::endl;
+   			}*/
 
-   			else if(current_floor > order.floor){
+   			if(current_floor > order.floor){
    				timer_start(TIME_CONDITION_S,TIMER_CONDITION_ID);
    				elev_set_motor_direction(DIRN_DOWN);
    				my_elevator->set_elevator_dir(D_Down);
@@ -101,10 +102,10 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 //	std::cout << "---------------------- my_elevaot rfrom fsm" << std::endl;
 //	my_elevator->print_elevator();
 
-	bool stopped;
+	bool stopped = false;
 	elev_set_floor_indicator(current_floor);
 	my_elevator->set_elevator_floor(current_floor);
-	std::cout << "on floor arrival started" << std::endl;
+//	std::cout << "on floor arrival started" << std::endl;
 	switch(my_elevator->get_elevator_status().current_state){
 		case MOVING:
 			if (requests_should_stop(my_elevator, my_queue)){
@@ -120,12 +121,13 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 				my_elevator->set_elevator_dir(D_Stop);
 	   			my_elevator->set_elevator_current_state(DOOR_OPEN);
 	   			my_elevator->set_elevator_out_of_order(0);
+	   			std::cout << "fsm_on_floor_arrival moving returnes: " << stopped << std::endl;
 			}
 			break;
 			
 		case IDLE:
 			for(int i=0;i<N_BUTTONS;i++){
-				if (my_queue.get_order_matrix()[current_floor][i].active_button == 1){
+				if ((my_queue.get_order_matrix()[current_floor][i].active_button == 1) && (my_queue.get_order_matrix()[current_floor][i].elevator_ID == my_elevator->get_elevator_ID())){
 					stopped = true;
 					
 					if (get_timer_id() == TIMER_CONDITION_ID){
@@ -139,11 +141,12 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 					my_elevator->set_elevator_dir(D_Stop);
 		   			my_elevator->set_elevator_current_state(DOOR_OPEN);
 		   			my_elevator->set_elevator_out_of_order(0);
+		   			std::cout << "fsm_on_floor_arrival idle returnes: " << stopped << std::endl;
 				}
 			}
 			break;
 	}
-	std::cout << "fsm_on_floor_arrival returnes: " << stopped << std::endl;
+
 	return stopped;
 }
 
