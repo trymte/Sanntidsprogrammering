@@ -142,6 +142,14 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 					my_elevator->set_elevator_dir(D_Stop);
 		   			my_elevator->set_elevator_current_state(DOOR_OPEN);
 		   			my_elevator->set_elevator_out_of_order(0);
+
+		   			if ((my_queue.get_order_matrix()[current_floor][(int)B_Cab].active_button) && (my_queue.get_order_matrix()[current_floor][(int)B_Cab].elevator_ID == my_elevator->get_elevator_ID())){
+		   				Order cab_order_rmv;
+		   				cab_order_rmv.active_order = 1;
+		   				cab_order_rmv.floor = current_floor;
+		   				cab_order_rmv.btn = Button(B_Cab);
+		   				my_queue.remove_order(cab_order_rmv);
+		   			}
 		   			std::cout << "fsm_on_floor_arrival idle returnes: " << stopped << std::endl;
 				}
 			}
