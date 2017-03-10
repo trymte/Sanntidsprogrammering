@@ -126,7 +126,7 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 			break;
 			
 		case IDLE:
-			std::cout << "fsm_on_floor_arrival IDLE" << std::endl;
+			//std::cout << "fsm_on_floor_arrival IDLE" << std::endl;
 			for(int i=0;i<N_BUTTONS;i++){
 				if ((my_queue.get_order_matrix()[current_floor][i].active_button == 1) && (my_queue.get_order_matrix()[current_floor][i].elevator_ID == my_elevator->get_elevator_ID())){
 					stopped = true;
@@ -150,7 +150,7 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 		   				cab_order_rmv.btn = Button(B_Cab);
 		   				my_queue.remove_order(cab_order_rmv);
 		   			}
-		   			std::cout << "fsm_on_floor_arrival idle returnes: " << stopped << std::endl;
+		   			//std::cout << "fsm_on_floor_arrival idle returnes: " << stopped << std::endl;
 				}
 			}
 			break;
