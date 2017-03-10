@@ -40,7 +40,7 @@ unsigned int Queue::calculate_cost(Order order, Status status){
 	switch(status.current_state){
 		case MOVING:
 
-			if((order.floor-status.last_floor >= 0)){
+			if((order.floor-status.last_floor > 0)){
 				if(status.dir == D_Up)
 					cost += abs(order.floor - (status.last_floor+1))*10+7;
 				else if(status.dir == D_Down)
@@ -54,9 +54,9 @@ unsigned int Queue::calculate_cost(Order order, Status status){
 				else if(status.dir == D_Down)
 					cost += abs(order.floor - (status.last_floor-1))*10 + 7;
 			}
-			else
-				cost += 50;
-
+			else{
+				cost += abs(order.floor - (status.last_floor+1))*20;
+			}
 			break;
 
 		case IDLE:

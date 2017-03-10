@@ -64,7 +64,7 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 		my_queue.reset_orders(my_elevator->get_elevator_status());
 		switch(my_elevator->get_elevator_status().role){
 			case MASTER:
-				//sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());  //my_elevator);
+				sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());  //my_elevator);
 				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
 				break;
 			case SLAVE:
@@ -74,21 +74,20 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 	} 
 }
 
-void check_door_timer(Elevator* my_elevator, Queue &my_queue){
+void check_door_timer(Elevator* my_elevator, Network &my_network, Queue &my_queue){
 	if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){
 		std::cout << "Check door timer" << std::endl;
 		fsm_on_door_timeout(my_elevator,my_queue);
-		/* Bør ha denne, da master ikke blir oppdatert om endring i status etter døra har lukket seg.
+		// Bør ha denne, da master ikke blir oppdatert om endring i status etter døra har lukket seg.
 		switch(my_elevator->get_elevator_status().role){
 			case MASTER:
 				//sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());  //my_elevator);
 				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
 				break;
 			case SLAVE:
-				my_network.send_message_packet(SLAVE_ORDER_INCOMPLETE, my_elevator->get_elevator_ID(), my_network.get_master_ip());
+				my_network.send_message_packet(SLAVE_ORDER_COMPLETE, my_elevator->get_elevator_ID(), my_network.get_master_ip());
 				break;
 		}
-		*/
 	}
 }
  
@@ -155,7 +154,7 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 		}
 		check_condition_timer(my_elevator, my_network, my_queue);
 
-		check_door_timer(my_elevator, my_queue);
+		check_door_timer(my_elevator, my_network, my_queue);
 		
 		check_order_to_be_executed(my_elevator, my_queue);
 		
