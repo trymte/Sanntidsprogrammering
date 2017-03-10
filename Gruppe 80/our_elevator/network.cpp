@@ -79,7 +79,7 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 	temp_elevator.set_elevator_floor(atoi(result[4].c_str()));
 	temp_elevator.set_elevator_last_floor(atoi(result[5].c_str()));
 	temp_elevator.set_elevator_out_of_order((bool)result[6].compare("0"));
-	temp_elevator.set_elevator_online(!(bool)result[7].compare("0")); //Skal være 7?
+//	temp_elevator.set_elevator_online(!(bool)result[7].compare("0")); 
 
 	switch(atoi(result[8].c_str())){
 		case 0:

@@ -79,11 +79,14 @@ unsigned int Queue::get_lowest_cost_elevator(Order order, std::vector<Status>& s
 	unsigned int lowest_cost = 10000;
 	int elevator_ID = -1;
 	Status status_it;
+	std::cout << "Size of status_vector" << status_vector.size() << std::endl;
 
 	for(std::vector<Status>::iterator it = status_vector.begin(); it != status_vector.end();++it){
 		status_it = *it;
+		std::cout << "get_lowest_cost" << std::endl;
+		std::cout << "Out of order: " << status_it.out_of_order << "\tOnline: " << status_it.online << std::endl;
 		if (((status_it.out_of_order) || !(status_it.online)) != 1){ 
-
+			std::cout << "Got in lowest cost" << std::endl;
 			temp_cost = calculate_cost(order,status_it);
 			std::cout << "temp cost: " << temp_cost << std::endl;
 			std::cout << "status it elev id: " << status_it.elevator_ID << " floor: " << status_it.floor << " last_floor " << status_it.last_floor << " state: " << status_it.current_state <<std::endl;
