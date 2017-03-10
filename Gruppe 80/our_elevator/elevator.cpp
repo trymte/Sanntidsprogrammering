@@ -8,6 +8,7 @@ Elevator::Elevator(): order_matrix_ptr(NULL), order_matrix_ptr_count(0)
 	get_my_ipaddress(elevator_status.ip);
 	elevator_status.dir = D_Stop;
 	elevator_status.floor = -1;
+	elevator_status.last_floor = -1;
 	elevator_status.elevator_ID = -1;
 	elevator_status.out_of_order = 1;
 }
@@ -63,7 +64,6 @@ void Elevator::print_elevator(){
 }
 
 void Elevator::set_elevator_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr){
-
 	if(this->order_matrix_ptr == NULL){
 		this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
 		*this->order_matrix_ptr = *order_matrix_ptr;
