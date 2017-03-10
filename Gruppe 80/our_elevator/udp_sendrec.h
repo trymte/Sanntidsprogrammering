@@ -31,7 +31,7 @@ struct code_message{
 
 void die(char *);
 
-void udp_init(int localport, int elevator_role);
+void udp_init(int localport);
 int udp_broadcaster(std::string message);
 int udp_sender(std::string message, int localport, char* reciever_ip);
 int udp_handshake_sender(std::string message, int localPort, char * reciever_ip);
