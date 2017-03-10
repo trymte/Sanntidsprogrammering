@@ -16,6 +16,7 @@ int main(){
 	init_status.last_floor = 0;
 	init_status.dir = D_Stop;
 	init_status.current_state = IDLE;
+	init_status.online = 1;
 	std::cout << "Write in your role: " << std::endl;
 	int role;
 	std::cin >> role;
