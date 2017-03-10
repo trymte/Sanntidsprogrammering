@@ -120,7 +120,6 @@ void udp_init(int localPort){
     memset((char *) &laddr, 0, sizeof(laddr));
     laddr.sin_family = AF_INET;
     laddr.sin_port = htons(localPort);
-    //
     laddr.sin_addr.s_addr = INADDR_ANY;
     if( bind(lsocket, (struct sockaddr*)&laddr, sizeof(laddr) ) == -1)
     {
@@ -155,7 +154,7 @@ void udp_init(int localPort){
         die("pbind");
     }
     
-    printf("Client successfully binded to localPort and broadcastport! \n" );
+    printf("Client successfully binded to localPort, pingport and broadcastport! \n" );
 }
 
 
@@ -193,7 +192,6 @@ int udp_sender(std::string message, int localPort, char * reciever_ip) //master_
     {
         die("sendto");
     }
-    std::cout <<"hello, what do you send: " << sbuff << std::endl;
     return 0;
 }
 
