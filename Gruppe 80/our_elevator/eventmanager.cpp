@@ -64,7 +64,7 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 		my_queue.reset_orders(my_elevator->get_elevator_status());
 		switch(my_elevator->get_elevator_status().role){
 			case MASTER:
-				sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID());  //my_elevator);
+				sv_manage_order_matrix(my_network.get_elevators(), my_elevator->get_elevator_ID());  //my_elevator);
 				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
 				break;
 			case SLAVE:

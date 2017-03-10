@@ -78,13 +78,10 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 	}
 	temp_elevator.set_elevator_floor(atoi(result[4].c_str()));
 	temp_elevator.set_elevator_last_floor(atoi(result[5].c_str()));
-	if(result[6] == "0"){
-		temp_elevator.set_elevator_out_of_order(false);
+	temp_elevator.set_elevator_out_of_order((bool)result[6].compare("0"));
+	temp_elevator.set_elevator_online(!(bool)result[7].compare("0")); //Skal være 7?
 
-	} else{
-		temp_elevator.set_elevator_out_of_order(true);
-	}
-	switch(atoi(result[7].c_str())){
+	switch(atoi(result[8].c_str())){
 		case 0:
 			temp_elevator.set_elevator_current_state(MOVING);
 			break;
@@ -95,7 +92,7 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 			temp_elevator.set_elevator_current_state(DOOR_OPEN);
 			break;
 	}
-	order_matrix_string = result[8];
+	order_matrix_string = result[9];
 	std::vector<std::vector <Queue_element> > order_matrix_temp = string_to_order_matrix(order_matrix_string);
 	temp_elevator.set_elevator_order_matrix(&order_matrix_temp);
 	
@@ -106,7 +103,8 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 	std::stringstream ss;
 	Status elev_status = elevator.get_elevator_status();
 	std::string order_matrix_string = order_matrix_to_string(elevator.get_order_matrix_ptr());
-	ss << elev_status.ip << ":" << elev_status.role << ":" << elev_status.elevator_ID << ":" << elev_status.dir << ":" << elev_status.floor << ":" << elev_status.last_floor << ":" << elev_status.out_of_order << ":" << elev_status.current_state << ":" << order_matrix_string;
+	ss << elev_status.ip << ":" << elev_status.role << ":" << elev_status.elevator_ID << ":" << elev_status.dir << ":" << elev_status.floor << ":" << 
+		elev_status.last_floor << ":" << elev_status.out_of_order  << ":" << elev_status.online << ":" << elev_status.current_state << ":" << order_matrix_string;
 	return ss.str();
 }
 
@@ -242,41 +240,50 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 }
 
 
+void Network::check_responding_elevators(int this_elevator_ID){
+	for(unsigned int i = 0; i < N_ELEVATORS; i++){
+		if(i != this_elevator_ID){
+			if(!is_node_responding(this_elevator_ID, i)){
+				elevators[i]->set_elevator_out_of_order(true);
+
+			}
+		}	
+	}
+}
+
+void Network::check_my_role(int this_elevator_ID){
+	int master_ID;
+	for(unsigned int i = 0; i <N_ELEVATORS; i++){
+		if(!(this->elevators[i]->get_elevator_status().out_of_order)){
+			master_ID = this->elevators[i]->get_elevator_ID();
+			break;
+		}
+	}
+	if(this_elevator_ID == master_ID){
+		this->elevators[this_elevator_ID]->set_elevator_role(MASTER);
+	}
+	else{
+		this->elevators[this_elevator_ID]->set_elevator_role(SLAVE);
+	}
+}
+
 // ------------------------------------------------------------------------------------------------
 //                 NETWORK THREAD FOR PING AND LISTENING
 // ------------------------------------------------------------------------------------------------
+
 void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_queue){
 	while(1){
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				std::cout << "hello from network" << std::endl;
 				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_elevator_ID(), my_network.get_master_ip());
-				/*
-				for(unsigned int i = 0; i < N_ELEVATORS; i++){
-					if(i != my_elevator->get_elevator_ID()){
-						if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), i)){
-							my_network.get_elevators()[1]->set_elevator_out_of_order(true);
-
-						}
-					}	
-				}
-				*/
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
-
 				break;
 			case SLAVE:
-				/*
-				for(unsigned int i = 0; i < N_ELEVATORS; i++){
-					if(i != my_elevator->get_elevator_ID()){
-						if(!my_network.is_node_responding(my_elevator->get_elevator_ID(), i)){
-							my_network.get_elevators()[1]->set_elevator_out_of_order(true);
-						}
-					}	
-				}
-				*/
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
-
 				break;
 		}
 	}
+	my_network.check_responding_elevators(my_elevator->get_elevator_ID());
+	my_network.check_my_role(my_elevator->get_elevator_ID());
 }

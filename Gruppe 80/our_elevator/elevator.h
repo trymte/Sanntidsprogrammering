@@ -31,6 +31,8 @@ public:
 
 	std::string get_elevator_ip(){return this->elevator_status.ip;}
 
+	bool get_elevator_condition(){return (this->elevator_status.online && !this->elevator_status.out_of_order);}
+
 	std::vector<std::vector <Queue_element> >* get_order_matrix_ptr(){return this->order_matrix_ptr;}
 
 	void set_elevator_ip(std::string ip){this->elevator_status.ip = ip;}
@@ -52,6 +54,8 @@ public:
 	void set_elevator_ID(int elevator_ID){this->elevator_status.elevator_ID = elevator_ID;}
 
 	void set_elevator_out_of_order(bool out_of_order){this->elevator_status.out_of_order = out_of_order;}
+
+	void set_elevator_online(bool online){this->elevator_status.online = online;}
 
 	void set_elevator_status(Status &status){this->elevator_status = status;}
 

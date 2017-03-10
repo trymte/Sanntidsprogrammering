@@ -73,6 +73,7 @@ struct Status{
     State current_state;
 	int elevator_ID;
 	bool out_of_order;
+	bool online;
     Role role;
 };
 

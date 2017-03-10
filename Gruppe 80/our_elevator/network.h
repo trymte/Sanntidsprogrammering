@@ -39,6 +39,12 @@ public:
 	void set_master_ip(std::string master_ip){this->master_ip = master_ip;}
 
 	bool is_node_responding(int this_elevator_ID, int foreign_elevator_ID);
+
+	void check_responding_elevators(int this_elevator_ID);
+
+	void check_my_role(int this_elevator_ID);
+
+
 };
 
 

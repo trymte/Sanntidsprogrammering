@@ -70,7 +70,6 @@ unsigned int Queue::calculate_cost(Order order, Status status){
 		default:
 			cost += 200;
 		}
-
 	return cost;
 }
 
@@ -83,7 +82,7 @@ unsigned int Queue::get_lowest_cost_elevator(Order order, std::vector<Status>& s
 
 	for(std::vector<Status>::iterator it = status_vector.begin(); it != status_vector.end();++it){
 		status_it = *it;
-		if (status_it.out_of_order != 1){ 
+		if (((status_it.out_of_order) || !(status_it.online)) != 1){ 
 
 			temp_cost = calculate_cost(order,status_it);
 			std::cout << "temp cost: " << temp_cost << std::endl;

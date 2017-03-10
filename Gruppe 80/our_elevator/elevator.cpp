@@ -60,6 +60,7 @@ void Elevator::print_elevator(){
 	std::cout << "Elevator last floor : " << elevator_status.last_floor << std::endl;
 	std::cout << "Elevator direction : " << elevator_status.dir << std::endl;
 	std::cout << "Elevator out_of_order : " << elevator_status.out_of_order << std::endl;
+	std::cout << "Elevator online : " << elevator_status.online << std::endl;
 	print_order_matrix(order_matrix_ptr);
 }
 
