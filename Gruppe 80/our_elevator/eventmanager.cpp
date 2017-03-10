@@ -75,7 +75,8 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 }
 
 void check_door_timer(Elevator* my_elevator, Queue &my_queue){
-	if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){ 
+	if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){
+		std::cout << "Check door timer" << std::endl;
 		fsm_on_door_timeout(my_elevator,my_queue);
 	}
 }

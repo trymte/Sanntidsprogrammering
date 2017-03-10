@@ -6,6 +6,8 @@
 
 
 int main(){
+	udp_init(MASTERPORT);
+
 	Status init_status;
 	init_status.ip = get_my_ipaddress();
 	std::cout << "My ip address: " << init_status.ip << std::endl;
@@ -18,7 +20,7 @@ int main(){
 	std::cin >> role;
 	init_status.role = static_cast<Role>(role);
 
-	udp_init(MASTERPORT, static_cast<int>(init_status.role));
+	
 	
 	int this_elev_id;
 	std::cout << "Write in your elevator id: " << std::endl;

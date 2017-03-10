@@ -59,7 +59,7 @@ std::string get_my_ipaddress(){
 }
 
 
-void udp_init(int localPort, int elevator_role){
+void udp_init(int localPort){
     struct sockaddr_in laddr, baddr, paddr;
     
     //_------------------------------------------------------------------------
@@ -147,7 +147,7 @@ void udp_init(int localPort, int elevator_role){
     #endif
     memset((char *) &paddr, 0, sizeof(paddr));
     paddr.sin_family = AF_INET;
-    paddr.sin_port = htons(localPort);
+    paddr.sin_port = htons(PINGPORT);
     //
     paddr.sin_addr.s_addr = INADDR_ANY;
     if( bind(psocket, (struct sockaddr*)&paddr, sizeof(paddr) ) == -1)
@@ -206,7 +206,7 @@ int udp_handshake_sender(std::string message, int localPort, char * reciever_ip)
 
     memset((char *) &addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(localPort);
+    addr.sin_port = htons(PINGPORT);
     addr.sin_addr.s_addr = inet_addr(reciever_ip);
     if (sendto(psocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr)) == -1)
     {
@@ -229,7 +229,6 @@ struct code_message udp_reciever()
     // zero out the structure
     memset((char *) &addr, 0, sizeof(addr));
     
-      
     memset(&rbuff[0], 0, sizeof(rbuff)); 
 
     if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) == -1){

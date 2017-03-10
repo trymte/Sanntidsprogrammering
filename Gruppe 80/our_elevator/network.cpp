@@ -139,7 +139,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			std::cout << ", here is the elevator you sent me: " << std::endl;
 			elevators[foreign_elevator_ID]->print_elevator();
 			sv_manage_order_matrix(elevators, foreign_elevator_ID);
-			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
+			//send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX: //Slave receives
 			for(unsigned int i= 0; i < N_ELEVATORS; i++){
@@ -211,6 +211,8 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
 			message_string = "5:"; 
+			std::cout << "-------------------------Send_message_packet:-----------------------------------" << std::endl;
+			elevators[this_elevator_ID]->print_elevator();
 			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]));
 			std::cout << "Master distributed order matrix" << std::endl;
 			break;	
