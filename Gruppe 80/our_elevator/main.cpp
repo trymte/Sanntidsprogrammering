@@ -43,10 +43,12 @@ int main(){
     
 	std::thread event_manager_thread(event_manager_main,std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
 	std::thread network_communication_thread(network_communication, std::ref(my_elevator), std::ref(my_network));
-	std::thread ping_network(ping_elevators_on_network, std::ref(my_elevator), std::ref(my_network));
+	std::thread network_ping_thread(network_ping, std::ref(my_elevator), std::ref(my_network));
 
 	event_manager_thread.join();
-	network_thread.join();
+	network_communication_thread.join();
+	network_ping_thread.join();
+
 
     return 0;
 }

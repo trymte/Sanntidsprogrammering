@@ -48,6 +48,8 @@ public:
 };
 
 
-void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_queue);
+void network_communication(Elevator* my_elevator, Network &my_network);
+
+void network_ping(Elevator* my_elevator, Network &my_network);
 
 
