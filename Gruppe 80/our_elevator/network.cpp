@@ -321,9 +321,13 @@ void Network::check_my_role(int this_elevator_ID){
 	}
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		if(i == master_ID){
+			if(this->elevators[i]->get_elevator_role() == SLAVE)
+				std::cout << "Role changed from slave to master" << std::endl;
 			this->elevators[i]->set_elevator_role(MASTER);
 		}
 		else{
+			if(this->elevators[i]->get_elevator_role() == SLAVE)
+				std::cout << "Role changed from master to slave" << std::endl;
 			this->elevators[i]->set_elevator_role(SLAVE);
 		}
 	}
