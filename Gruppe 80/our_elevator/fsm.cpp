@@ -58,12 +58,23 @@ void open_door(){
 
 
 
-void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){ 
+void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){ //Status &status,Order &order) 
 	int current_floor = my_elevator->get_elevator_status().floor;
 	State current_state = my_elevator->get_elevator_status().current_state;
 
 	switch(current_state){
+		/*case MOVING:
+			if(current_floor == order.floor){
+				fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
+			}
+			break;
+		*/
    		case IDLE:
+   			/*if(current_floor == order.floor){
+   				fsm_on_floor_arrival(my_elevator,my_queue,current_floor);
+   				std::cout << "fsm_execute_order" << std::endl;
+   			}*/
+
    			if(current_floor > order.floor){
    				timer_start(TIME_CONDITION_S,TIMER_CONDITION_ID);
    				elev_set_motor_direction(DIRN_DOWN);
@@ -88,9 +99,13 @@ void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){
 
 
 bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_floor){
+//	std::cout << "---------------------- my_elevaot rfrom fsm" << std::endl;
+//	my_elevator->print_elevator();
+
 	bool stopped = false;
 	elev_set_floor_indicator(current_floor);
 	my_elevator->set_elevator_floor(current_floor);
+//	std::cout << "on floor arrival started" << std::endl;
 	switch(my_elevator->get_elevator_status().current_state){
 		case MOVING:
 			if (requests_should_stop(my_elevator, my_queue)){
@@ -110,6 +125,7 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 			break;
 			
 		case IDLE:
+			//std::cout << "fsm_on_floor_arrival IDLE" << std::endl;
 			for(int i=0;i<N_BUTTONS;i++){
 				if ((my_queue.get_order_matrix()[current_floor][i].active_button == 1) && (my_queue.get_order_matrix()[current_floor][i].elevator_ID == my_elevator->get_elevator_ID())){
 					stopped = true;
@@ -133,6 +149,7 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 		   				cab_order_rmv.btn = Button(B_Cab);
 		   				my_queue.remove_order(cab_order_rmv);
 		   			}
+		   			//std::cout << "fsm_on_floor_arrival idle returnes: " << stopped << std::endl;
 				}
 			}
 			break;
