@@ -181,7 +181,7 @@ void Network::recieve_message_packet(int this_elevator_ID){
 
 	datastring.assign(packet.data);
 	std::cout << "datastring: " << datastring << std::endl;
-	bool b = (datastring.length() !=0) && (!datastring[1] == ':');
+	bool b = (datastring.length() !=0) && (datastring[1] == ':');
 	std::cout << "b: " << b << std::endl;
 	if(b){
 		message = message_id_string_to_enum(datastring.substr(0,1));
