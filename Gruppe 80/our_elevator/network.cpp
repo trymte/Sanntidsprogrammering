@@ -251,6 +251,8 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		if(i != this_elevator_ID){
+			std::cout << "this elev id: " << this_elevator_ID << std::endl;
+			std::cout << "foreign_elevator_ID: " << i << std::endl;
 			if(!is_node_responding(this_elevator_ID, i)){
 				elevators[i]->set_elevator_online(false);
 			}
@@ -265,7 +267,6 @@ void Network::check_my_role(int this_elevator_ID){
 	int master_ID = 0;
 	std::cout << "Role: " << this->elevators[this_elevator_ID]->get_elevator_status().role << "\t Master ip: " << this->master_ip << "My ip: " << this->elevators[this_elevator_ID]->get_elevator_ip() << std::endl;
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
-
 		if(this->elevators[i]->get_elevator_status().online){
 			master_ID = this->elevators[i]->get_elevator_ID();
 			std::cout << i << " Master id: " << master_ID << " <-> online: " << this->elevators[i]->get_elevator_status().online << std::endl;
@@ -298,7 +299,6 @@ void network_communication(Elevator* my_elevator, Network &my_network){
 				break;
 		}
 	}
-	
 }
 
 void network_ping(Elevator* my_elevator, Network &my_network){
