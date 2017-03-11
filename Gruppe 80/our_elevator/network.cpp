@@ -243,6 +243,7 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_elevator_ip()); // elevators[foreign_elevator_ID]->get_elevator_ip()); 
 	
 	code = udp_handshake_reciever();
+	std::cout << "code.data_ " << code.data << std::endl;
 	std::cout << "Responding = " << code.responding << std::endl;
 	return code.responding;
 }
