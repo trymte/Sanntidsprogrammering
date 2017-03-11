@@ -5,7 +5,6 @@ int bsocket, lsocket, psocket;
 void die(char * s)
 {
     perror(s);
-    udp_close();
     exit(1);
 }
 
@@ -234,8 +233,8 @@ struct code_message udp_reciever()
     if(setsockopt(lsocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
         die("setsockopt");
     }  
-    if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) == -1){
-    	die("recvfrom");
+    if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0){
+    	std::cout << "no pending message" << std::endl;
     }
 
     data.assign(rbuff);
