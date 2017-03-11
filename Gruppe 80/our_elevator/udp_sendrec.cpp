@@ -228,14 +228,14 @@ struct code_message udp_reciever()
     memset((char *) &addr, 0, sizeof(addr));
     
     memset(&rbuff[0], 0, sizeof(rbuff)); 
-
     if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) == -1){
     	die("recvfrom");
     }
+
     data.assign(rbuff);
     code.data = data;
     rip.assign(inet_ntoa(addr.sin_addr));
-    code.rip = rip;
+    code.rip = rip;   
     code.port = addr.sin_port;
     return code;
 }

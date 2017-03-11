@@ -95,7 +95,6 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 	order_matrix_string = result[9];
 	std::vector<std::vector <Queue_element> > order_matrix_temp = string_to_order_matrix(order_matrix_string);
 	temp_elevator.set_elevator_order_matrix(&order_matrix_temp);
-	temp_elevator.print_elevator();
 	return temp_elevator;
 }
 
@@ -181,9 +180,11 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			packet = udp_recieve_broadcast();
 			break;
 	}
+	std::cout << "udp receive" << std::endl;
+	std::cout << packet.data << std::endl;
 	datastring.assign(packet.data);
 	std::cout << datastring << std::endl;
-	if(datastring.length() !=0){
+	if((datastring.length() !=0) && (!datastring[1] == ':')){
 		message = message_id_string_to_enum(datastring.substr(0,1));
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
@@ -282,11 +283,8 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 	while(1){
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
-				std::cout << "hello from network" << std::endl;
 				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_elevator_ID(), my_network.get_master_ip());
-				std::cout << "hello from network1" << std::endl;
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
-				std::cout << "hello from network2" << std::endl;
 				break;
 			case SLAVE:
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());

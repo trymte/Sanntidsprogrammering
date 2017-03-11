@@ -18,7 +18,7 @@
 #define BUFLEN 512  //Max length of buffer
 #define BROADCASTPORT 29999   //The Broadcastport
 #define BROADCASTIP "129.241.187.255"
-#define MASTERPORT 20014 //The localport
+#define MASTERPORT 22356 //The localport
 #define PINGPORT 25000
 
 struct code_message{
