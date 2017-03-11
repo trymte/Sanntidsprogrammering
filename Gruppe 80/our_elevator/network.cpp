@@ -336,7 +336,7 @@ void Network::check_my_role(int this_elevator_ID){
 
 void network_communication(Elevator* my_elevator, Network &my_network){
 	while(1){
-		usleep(25000);
+		usleep(100000);
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_elevator_ID(),"");
@@ -353,7 +353,7 @@ void network_communication(Elevator* my_elevator, Network &my_network){
 
 void network_ping(Elevator* my_elevator, Network &my_network){
 	while(1){
-		usleep(25000);
+		usleep(100000);
 		my_network.check_responding_elevators(my_elevator->get_elevator_ID());
 		my_network.check_my_role(my_elevator->get_elevator_ID());
 		my_network.recieve_handshake_message(my_elevator->get_elevator_ID());
