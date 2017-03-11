@@ -236,7 +236,6 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 	ip[reciever_ip.size()] = '\0'; // don't forget the terminating 0
 	switch(message){
 		case MASTER_IP_INIT:
-			std::cout << "Send message packet Master ip init" << std::endl;
 			message_string = "0:";
 			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]));
 			break;
