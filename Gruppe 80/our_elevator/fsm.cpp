@@ -121,7 +121,6 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 				my_elevator->set_elevator_dir(D_Stop);
 	   			my_elevator->set_elevator_current_state(DOOR_OPEN);
 	   			my_elevator->set_elevator_out_of_order(0);
-	   			std::cout << "fsm_on_floor_arrival moving returnes: " << stopped << std::endl;
 			}
 			break;
 			

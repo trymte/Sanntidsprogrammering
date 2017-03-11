@@ -19,7 +19,7 @@ bool check_buttons(Elevator *my_elevator, Queue &my_queue){
 	for(int i=0; i<N_FLOORS;i++){
 		for(int j=0;j<N_BUTTONS;j++){
 			if (elev_get_button_signal((elev_button_type_t)j,i) && (my_queue.get_order_matrix()[i][j].active_button == 0)){
-				std::cout << "Button pressed" << std::endl;
+	//			std::cout << "Button pressed" << std::endl;
 				new_order.floor = i;
 				new_order.btn = (Button)j;
 				new_button_press = 1;
@@ -137,12 +137,12 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 			switch(my_elevator->get_elevator_status().role){
 				case MASTER:
 
-					std::cout << "Supervisor got new button pressed" << std::endl;
+//					std::cout << "Supervisor got new button pressed" << std::endl;
 					sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_elevator_ID());
 					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
 					break;
 				case SLAVE:
-					std::cout << "Send_message_packet" << std::endl;
+//					std::cout << "Send_message_packet" << std::endl;
 					my_network.send_message_packet(SLAVE_SEND_ELEVATOR_INFORMATION, my_elevator->get_elevator_ID(), my_network.get_master_ip());
 					break;
 				}
