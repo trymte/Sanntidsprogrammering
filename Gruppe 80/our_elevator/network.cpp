@@ -154,9 +154,14 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 				elevators[i]->set_elevator_order_matrix(elevators[foreign_elevator_ID]->get_order_matrix_ptr());
 			}
 			std::cout << "------------------------------------------------------------------------"<< std::endl;
+			std::cout << "Slave receive: Master elevator order matrix: " << std::endl;
+			std::cout << "------------------------------------------------------------------------- " <<std::endl;
+			elevators[foreign_elevator_ID]->print_elevator();
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			std::cout << "Slave receive: My elevator order matrix: " << std::endl;
 			std::cout << "------------------------------------------------------------------------- " <<std::endl;
 			elevators[this_elevator_ID]->print_elevator();
+
 			break;
 		default:
 			std::cout << "Invalid message, but i will accept your elevator" << std::endl;
@@ -278,7 +283,7 @@ void Network::check_my_role(int this_elevator_ID){
 //                 NETWORK THREAD FOR PING AND LISTENING
 // ------------------------------------------------------------------------------------------------
 
-void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_queue){
+void network_communication(Elevator* my_elevator, Network &my_network){
 	while(1){
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
@@ -289,8 +294,14 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}
+	}
+	
+}
+
+void ping_elevators_on_network(Elevator* my_elevator, Network &my_network){
+	while(1){
+		usleep(500000);
 		my_network.check_responding_elevators(my_elevator->get_elevator_ID());
 		my_network.check_my_role(my_elevator->get_elevator_ID());
 	}
-	
 }
