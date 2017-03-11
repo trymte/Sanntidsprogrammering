@@ -68,18 +68,21 @@ Message message_id_string_to_enum(std::string str){
 			message = MASTER_IP_INIT;
 			break;
 		case 1:
-			message = HANDSHAKE;
+			message = SLAVE_IP_INIT;
 			break;
 		case 2:
+			message = HANDSHAKE;
+			break;
+		case 3:
 			message = SLAVE_ORDER_COMPLETE;
 			break;
-		case 3: 
+		case 4: 
 			message = SLAVE_ORDER_INCOMPLETE;
 			break;
-		case 4: 
+		case 5: 
 			message = SLAVE_SEND_ELEVATOR_INFORMATION;
 			break;
-		case 5: 
+		case 6: 
 			message = MASTER_DISTRIBUTE_ORDER_MATRIX;
 			break;
 		default:

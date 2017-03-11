@@ -253,8 +253,6 @@ struct code_message udp_handshake_reciever()
     std::string rip;
     
     memset((char *) &addr, 0, sizeof(addr));
-    
-    code.responding = true;
 
     memset(&rbuff[0], 0, sizeof(rbuff)); 
     struct timeval read_timeout;
