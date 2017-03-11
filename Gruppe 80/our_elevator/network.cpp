@@ -21,6 +21,7 @@ Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> 
 	}
 	else{
 		this->master_ip = "0";
+		elev_temp_others->set_elevator_role(SLAVE);
 	}
 	
 	for(unsigned int i = 0; i < N_ELEVATORS ; i++){
@@ -363,6 +364,7 @@ void network_recieve(Elevator* my_elevator, Network &my_network){
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}
+		my_network.check_my_role(my_elevator->get_elevator_ID());
 	}
 }
 
@@ -370,7 +372,7 @@ void network_ping(Elevator* my_elevator, Network &my_network){
 	while(1){
 		usleep(100000);
 		my_network.check_responding_elevators(my_elevator->get_elevator_ID());
-		my_network.check_my_role(my_elevator->get_elevator_ID());
+		
 		my_network.recieve_handshake_message(my_elevator->get_elevator_ID());
 	}
 }
