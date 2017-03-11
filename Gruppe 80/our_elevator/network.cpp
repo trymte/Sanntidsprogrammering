@@ -336,6 +336,7 @@ void Network::check_my_role(int this_elevator_ID){
 
 void network_communication(Elevator* my_elevator, Network &my_network){
 	while(1){
+		usleep(25000);
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				

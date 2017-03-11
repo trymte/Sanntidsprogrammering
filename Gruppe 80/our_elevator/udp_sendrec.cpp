@@ -234,7 +234,6 @@ struct code_message udp_reciever()
         die("setsockopt");
     }  
     if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0){
-    	std::cout << "no pending message" << std::endl;
     }
 
     data.assign(rbuff);
@@ -268,7 +267,6 @@ struct code_message udp_handshake_reciever()
     }  
     if(recvfrom(psocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0)
     {
-    //	std::cout << "Timeout on handshake, elevator not responding!" << std::endl;
         code.responding = false; 
     }
     else{
