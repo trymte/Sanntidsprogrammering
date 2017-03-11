@@ -182,7 +182,7 @@ void Network::recieve_message_packet(int this_elevator_ID){
 	}
 
 	datastring.assign(packet.data);
-//	std::cout << datastring << std::endl;
+	std::cout << "datastring: " << datastring << std::endl;
 	if((datastring.length() !=0) && (!datastring[1] == ':')){
 		message = message_id_string_to_enum(datastring.substr(0,1));
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
