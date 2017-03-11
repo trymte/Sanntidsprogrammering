@@ -123,7 +123,6 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 	std::cout << "Event manager initializing..." << std::endl; 
 	std::cout << "------------------------------------------------" << std::endl; 
 	elev_init();
-	std::mutex my_mutex;
 	int input_poll_rate_ms = 25;
 	while(elev_get_floor_sensor_signal() != 0)
 		elev_set_motor_direction(DIRN_DOWN);

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <mutex>
 
 #include "elev.h"
 #include "network.h"
