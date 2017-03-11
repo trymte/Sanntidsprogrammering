@@ -130,32 +130,32 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			break;
 		//Master and slave can receive
 		case HANDSHAKE:
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
-			std::cout << "I recieved your HANDSHAKE, acknowledging:" << std::endl;
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "I recieved your HANDSHAKE, acknowledging:" << std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_elevator_ip());
 			break;
 		//Master receive
 		case SLAVE_ORDER_COMPLETE:
 			elevators[foreign_elevator_ID]->print_elevator();
 			sv_manage_completed_order(elevators[foreign_elevator_ID]);
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
-			std::cout << "Slave order complete: " << std::endl;
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "Slave order complete: " << std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			sv_manage_order_matrix(elevators, foreign_elevator_ID);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
-			std::cout << "Slave order incomplete: " << std::endl;
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "Slave order incomplete: " << std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			//sv_manage_completed_order(elevators[elevator_ID]);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
-			std::cout << "I recieved your message: SLAVE_SEND_ELEVATOR_INFORMATION: " << std::endl;
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "I recieved your message: SLAVE_SEND_ELEVATOR_INFORMATION: " << std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			elevators[foreign_elevator_ID]->print_elevator();
 			sv_manage_order_matrix(elevators, foreign_elevator_ID);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
@@ -166,6 +166,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			for(unsigned int i= 0; i < N_ELEVATORS; i++){
 				elevators[i]->set_elevator_order_matrix(elevators[foreign_elevator_ID]->get_order_matrix_ptr());
 			}
+			/*
 			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			std::cout << "Slave receive: Master elevator order matrix: " << std::endl;
 			std::cout << "------------------------------------------------------------------------- " <<std::endl;
@@ -174,7 +175,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			std::cout << "Slave receive: My elevator order matrix: " << std::endl;
 			std::cout << "------------------------------------------------------------------------- " <<std::endl;
 			elevators[this_elevator_ID]->print_elevator();
-
+			*/
 			break;
 		default:
 			std::cout << "Invalid message, but i will accept your elevator" << std::endl;
@@ -296,7 +297,7 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		if(i != this_elevator_ID){
-			std::cout << "this elev id: " << this_elevator_ID << std::endl;
+//			std::cout << "this elev id: " << this_elevator_ID << std::endl;
 
 			if(!is_node_responding(this_elevator_ID, i)){
 				elevators[i]->set_elevator_online(false);
