@@ -197,9 +197,9 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			break;
 	}
 	datastring.assign(packet.data);
-	std::cout << "datastring: " << datastring << std::endl;
+//	std::cout << "datastring: " << datastring << std::endl;
 	bool b = (datastring.length() !=0) && (datastring[1] == ':');
-	std::cout << "b: " << b << std::endl;
+//	std::cout << "b: " << b << std::endl;
 	if(b){
 		message = message_id_string_to_enum(datastring.substr(0,1));
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
@@ -218,7 +218,7 @@ void Network::recieve_handshake_message(int this_elevator_ID){
 	packet = udp_handshake_reciever();
 	datastring.assign(packet.data);
 	bool b = (datastring.length() !=0) && (datastring[1] == ':');
-	std::cout << "b: " << b << std::endl;
+//	std::cout << "b: " << b << std::endl;
 	if(b){
 		Message message = message_id_string_to_enum(datastring.substr(0,1));
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
