@@ -34,6 +34,8 @@ public:
 
 	void recieve_message_packet(int this_elevator_ID);
 
+	void recieve_handshake_message(int this_elevator_ID);
+
 	void send_message_packet(Message message_ID, int this_elevator_ID, std::string reciever_ip);
 
 	void set_master_ip(std::string master_ip){this->master_ip = master_ip;}

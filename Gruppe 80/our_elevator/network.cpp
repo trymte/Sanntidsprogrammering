@@ -183,10 +183,8 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			packet = udp_recieve_broadcast();
 			break;
 	}
-
 	datastring.assign(packet.data);
 	std::cout << "datastring: " << datastring << std::endl;
-	std::cout << (datastring.length() !=0) << " : " << (datastring[1] == ':') << std::endl;
 	bool b = (datastring.length() !=0) && (datastring[1] == ':');
 	std::cout << "b: " << b << std::endl;
 	if(b){
@@ -198,6 +196,24 @@ void Network::recieve_message_packet(int this_elevator_ID){
 		elevators[temp_status.elevator_ID]->set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
 		handle_message(message, temp_status.elevator_ID, this_elevator_ID);
 	}
+}
+
+void Network::recieve_handshake_message(int this_elevator_ID){
+	std::string datastring;
+	std::string messagestring;
+	struct code_message packet;
+	packet = udp_handshake_reciever();
+	datastring.assign(packet.data);
+	bool b = (datastring.length() !=0) && (datastring[1] == ':');
+	std::cout << "b: " << b << std::endl;
+	if(b){
+		Message message = message_id_string_to_enum(datastring.substr(0,1));
+		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
+		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
+		Status temp_status = temp_elevator.get_elevator_status();
+		handle_message(message, temp_status.elevator_ID, this_elevator_ID);
+	}	
+
 }
 
 void Network::send_message_packet(Message message, int this_elevator_ID, std::string reciever_ip){
@@ -308,5 +324,6 @@ void network_ping(Elevator* my_elevator, Network &my_network){
 		usleep(500000);
 		my_network.check_responding_elevators(my_elevator->get_elevator_ID());
 		my_network.check_my_role(my_elevator->get_elevator_ID());
+		my_network.recieve_handshake_message(my_elevator->get_elevator_ID());
 	}
 }
