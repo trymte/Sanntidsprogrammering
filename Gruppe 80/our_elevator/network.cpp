@@ -137,7 +137,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			break;
 		//Master receive
 		case SLAVE_ORDER_COMPLETE:
-			elevators[foreign_elevator_ID]->print_elevator();
+			//elevators[foreign_elevator_ID]->print_elevator();
 			sv_manage_completed_order(elevators[foreign_elevator_ID]);
 //			std::cout << "------------------------------------------------------------------------"<< std::endl;
 //			std::cout << "Slave order complete: " << std::endl;
@@ -156,7 +156,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 //			std::cout << "------------------------------------------------------------------------"<< std::endl;
 //			std::cout << "I recieved your message: SLAVE_SEND_ELEVATOR_INFORMATION: " << std::endl;
 //			std::cout << "------------------------------------------------------------------------"<< std::endl;
-			elevators[foreign_elevator_ID]->print_elevator();
+			//elevators[foreign_elevator_ID]->print_elevator();
 			sv_manage_order_matrix(elevators, foreign_elevator_ID);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
