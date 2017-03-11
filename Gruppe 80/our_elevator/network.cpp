@@ -255,13 +255,23 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 
 bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	struct code_message code;
+
+	std::cout << "------------------------------------------------------------------------"<< std::endl;
+
 	std::cout << "Send HANDSHAKE, w8 for response: ";
-	std::cout << "Foreign elev ip: " << elevators[foreign_elevator_ID]->get_elevator_ip() << std::endl;
-	send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_elevator_ip()); // elevators[foreign_elevator_ID]->get_elevator_ip()); 
+	std::cout << "------------------------------------------------------------------------"<< std::endl;
+
+	std::cout << "my ip:  " << this->elevators[this_elevator_ID]->get_elevator_ip() << std::endl;
+	std::cout << "------------------------------------------------------------------------"<< std::endl;
+	std::cout << "Foreign elev ip: " << this->elevators[foreign_elevator_ID]->get_elevator_ip() << std::endl;
+	std::cout << "------------------------------------------------------------------------"<< std::endl;	
+	send_message_packet(HANDSHAKE, this_elevator_ID, this->elevators[foreign_elevator_ID]->get_elevator_ip()); // elevators[foreign_elevator_ID]->get_elevator_ip()); 
 	
 	code = udp_handshake_reciever();
 	std::cout << "code.data_ " << code.data << std::endl;
+	std::cout << "------------------------------------------------------------------------"<< std::endl;
 	std::cout << "Responding = " << code.responding << std::endl;
+	std::cout << "------------------------------------------------------------------------"<< std::endl;
 	return code.responding;
 }
 
@@ -270,7 +280,7 @@ void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		if(i != this_elevator_ID){
 			std::cout << "this elev id: " << this_elevator_ID << std::endl;
-			std::cout << "foreign_elevator_ID: " << i << std::endl;
+
 			if(!is_node_responding(this_elevator_ID, i)){
 				elevators[i]->set_elevator_online(false);
 			}
