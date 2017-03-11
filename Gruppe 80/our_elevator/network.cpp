@@ -320,11 +320,13 @@ void Network::check_my_role(int this_elevator_ID){
 		}
 		
 	}
-	if(this_elevator_ID == master_ID){
-		this->elevators[this_elevator_ID]->set_elevator_role(MASTER);
-	}
-	else{
-		this->elevators[this_elevator_ID]->set_elevator_role(SLAVE);
+	for(unsigned int i = 0; i < N_ELEVATORS; i++){
+		if(i == master_ID){
+			this->elevators[i]->set_elevator_role(MASTER);
+		}
+		else{
+			this->elevators[i]->set_elevator_role(SLAVE);
+		}
 	}
 	this->master_ip = this->elevators[master_ID]->get_elevator_ip();
 }
