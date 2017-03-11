@@ -256,7 +256,7 @@ void Network::check_responding_elevators(int this_elevator_ID){
 }
 
 void Network::check_my_role(int this_elevator_ID){
-	int master_ID;
+	int master_ID = 0;
 	for(unsigned int i = 0; i <N_ELEVATORS; i++){
 
 		if(!(this->elevators[i]->get_elevator_status().online)){
