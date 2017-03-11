@@ -339,7 +339,8 @@ void Network::check_my_role(int this_elevator_ID){
 //                 NETWORK THREAD FOR PING AND LISTENING
 // ------------------------------------------------------------------------------------------------
 
-std::mutex my_mutex;
+std::mutex my_mutex1;
+std::mutex my_mutex2;
 
 void network_send(Elevator* my_elevator, Network &my_network){
 	while(1){
@@ -358,6 +359,7 @@ void network_send(Elevator* my_elevator, Network &my_network){
 void network_recieve(Elevator* my_elevator, Network &my_network){
 	while(1){
 		usleep(25000);
+		my_mutex1.lock();
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
@@ -366,7 +368,7 @@ void network_recieve(Elevator* my_elevator, Network &my_network){
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}
-		
+		my_mutex1.unlock();
 	}
 }
 
@@ -374,9 +376,9 @@ void network_ping(Elevator* my_elevator, Network &my_network){
 	while(1){
 		usleep(100000);
 		my_network.check_responding_elevators(my_elevator->get_elevator_ID());
-		my_mutex.lock();
+		my_mutex2.lock();
 		my_network.check_my_role(my_elevator->get_elevator_ID());
-		my_mutex.unlock();
+		my_mutex2.unlock();
 		my_network.recieve_handshake_message(my_elevator->get_elevator_ID());
 	}
 }
