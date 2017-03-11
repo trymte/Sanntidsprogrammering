@@ -332,7 +332,7 @@ void Network::check_my_role(int this_elevator_ID){
 		}
 	}
 	this->master_ip = this->elevators[master_ID]->get_elevator_ip();
-}
+} 
 
 // ------------------------------------------------------------------------------------------------
 //                 NETWORK THREAD FOR PING AND LISTENING
