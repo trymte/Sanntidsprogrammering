@@ -315,11 +315,12 @@ void Network::check_my_role(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		if(this->elevators[i]->get_elevator_status().online){
 			master_ID = this->elevators[i]->get_elevator_ID();
-//			std::cout << i << " Master id: " << master_ID << " <-> online: " << this->elevators[i]->get_elevator_status().online << std::endl;
+			std::cout << " Master id: " << master_ID << " <-> online: " << this->elevators[i]->get_elevator_status().online << std::endl;
 			break;
 		}
 		
 	}
+
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		if(i == master_ID){
 			if(this->elevators[i]->get_elevator_role() == SLAVE)
