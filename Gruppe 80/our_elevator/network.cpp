@@ -95,7 +95,7 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 	order_matrix_string = result[9];
 	std::vector<std::vector <Queue_element> > order_matrix_temp = string_to_order_matrix(order_matrix_string);
 	temp_elevator.set_elevator_order_matrix(&order_matrix_temp);
-	
+	temp_elevator.print_elevator();
 	return temp_elevator;
 }
 
