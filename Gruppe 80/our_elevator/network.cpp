@@ -278,6 +278,8 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	std::cout << "my ip:  " << this->elevators[this_elevator_ID]->get_elevator_ip() << std::endl;
 	std::cout << "Foreign elev ip: " << this->elevators[foreign_elevator_ID]->get_elevator_ip() << std::endl;	
 	send_message_packet(HANDSHAKE, this_elevator_ID, this->elevators[foreign_elevator_ID]->get_elevator_ip()); // elevators[foreign_elevator_ID]->get_elevator_ip()); 
+	
+
 	code = udp_handshake_reciever();
 	std::cout << "code.data_ " << code.data << std::endl;
 	std::cout << "Responding = " << code.responding << std::endl;
@@ -342,6 +344,7 @@ void network_communication(Elevator* my_elevator, Network &my_network){
 
 void network_ping(Elevator* my_elevator, Network &my_network){
 	while(1){
+		usleep(25000);
 		my_network.check_responding_elevators(my_elevator->get_elevator_ID());
 		//my_network.check_my_role(my_elevator->get_elevator_ID());
 		my_network.recieve_handshake_message(my_elevator->get_elevator_ID());
