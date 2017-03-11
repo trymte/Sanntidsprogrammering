@@ -272,23 +272,23 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 
 bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	struct code_message code;
-	std::cout << std::endl;
-	std::cout << "------------------------------------------------------------------------"<< std::endl;
-	std::cout << "Send HANDSHAKE, w8 for response: ";
-	std::cout << "my ip:  " << this->elevators[this_elevator_ID]->get_elevator_ip() << std::endl;
-	std::cout << "Foreign elev ip: " << this->elevators[foreign_elevator_ID]->get_elevator_ip() << std::endl;
-	std::cout << "Elevator " << this_elevator_ID << " online : " << elevators[this_elevator_ID]->get_elevator_status().online << std::endl;
-	std::cout << "Elevator " << foreign_elevator_ID << " online: " << elevators[foreign_elevator_ID]->get_elevator_status().online << std::endl;
-	std::cout << "Elevator " << this_elevator_ID << " role : " << elevators[this_elevator_ID]->get_elevator_status().role << std::endl;
-	std::cout << "Elevator " << foreign_elevator_ID << " role: " << elevators[foreign_elevator_ID]->get_elevator_status().role << std::endl;
+//	std::cout << std::endl;
+//	std::cout << "------------------------------------------------------------------------"<< std::endl;
+//	std::cout << "Send HANDSHAKE, w8 for response: ";
+//	std::cout << "my ip:  " << this->elevators[this_elevator_ID]->get_elevator_ip() << std::endl;
+//	std::cout << "Foreign elev ip: " << this->elevators[foreign_elevator_ID]->get_elevator_ip() << std::endl;
+//	std::cout << "Elevator " << this_elevator_ID << " online : " << elevators[this_elevator_ID]->get_elevator_status().online << std::endl;
+//	std::cout << "Elevator " << foreign_elevator_ID << " online: " << elevators[foreign_elevator_ID]->get_elevator_status().online << std::endl;
+//	std::cout << "Elevator " << this_elevator_ID << " role : " << elevators[this_elevator_ID]->get_elevator_status().role << std::endl;
+//	std::cout << "Elevator " << foreign_elevator_ID << " role: " << elevators[foreign_elevator_ID]->get_elevator_status().role << std::endl;
 
 	send_message_packet(HANDSHAKE, this_elevator_ID, this->elevators[foreign_elevator_ID]->get_elevator_ip()); // elevators[foreign_elevator_ID]->get_elevator_ip()); 
 	
 
 	code = udp_handshake_reciever();
-	std::cout << "code.data_ " << code.data << std::endl;
-	std::cout << "Responding = " << code.responding << std::endl;
-	std::cout << "------------------------------------------------------------------------"<< std::endl;
+//	std::cout << "code.data_ " << code.data << std::endl;
+//	std::cout << "Responding = " << code.responding << std::endl;
+//	std::cout << "------------------------------------------------------------------------"<< std::endl;
 	return code.responding;
 }
 
@@ -310,11 +310,11 @@ void Network::check_responding_elevators(int this_elevator_ID){
 
 void Network::check_my_role(int this_elevator_ID){
 	int master_ID = 0;
-	std::cout << "Role: " << this->elevators[this_elevator_ID]->get_elevator_status().role << "\t Master ip: " << this->master_ip << "My ip: " << this->elevators[this_elevator_ID]->get_elevator_ip() << std::endl;
+//	std::cout << "Role: " << this->elevators[this_elevator_ID]->get_elevator_status().role << "\t Master ip: " << this->master_ip << "My ip: " << this->elevators[this_elevator_ID]->get_elevator_ip() << std::endl;
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		if(this->elevators[i]->get_elevator_status().online){
 			master_ID = this->elevators[i]->get_elevator_ID();
-			std::cout << i << " Master id: " << master_ID << " <-> online: " << this->elevators[i]->get_elevator_status().online << std::endl;
+//			std::cout << i << " Master id: " << master_ID << " <-> online: " << this->elevators[i]->get_elevator_status().online << std::endl;
 			break;
 		}
 		
@@ -353,7 +353,7 @@ void network_communication(Elevator* my_elevator, Network &my_network){
 
 void network_ping(Elevator* my_elevator, Network &my_network){
 	while(1){
-		usleep(500000);
+		usleep(25000);
 		my_network.check_responding_elevators(my_elevator->get_elevator_ID());
 		my_network.check_my_role(my_elevator->get_elevator_ID());
 		my_network.recieve_handshake_message(my_elevator->get_elevator_ID());
