@@ -335,6 +335,7 @@ void Network::check_my_role(int this_elevator_ID){
 
 void network_communication(Elevator* my_elevator, Network &my_network){
 	while(1){
+		std::cout << "network_communication while " << my_elevator->get_elevator_role() << std::endl;
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				std::cout << "network_communication case Master: " << my_elevator->get_elevator_role() << std::endl;
