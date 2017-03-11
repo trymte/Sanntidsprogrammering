@@ -50,7 +50,11 @@ public:
 };
 
 
-void network_communication(Elevator* my_elevator, Network &my_network);
+void network_send(Elevator* my_elevator, Network &my_network);
+
+
+void network_recieve(Elevator* my_elevator, Network &my_network);
+
 
 void network_ping(Elevator* my_elevator, Network &my_network);
 

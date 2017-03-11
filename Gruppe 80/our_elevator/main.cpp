@@ -31,7 +31,7 @@ int main(){
 	my_elevator = my_network.get_elevator_ptr(this_elev_id);
     my_elevator->set_elevator_order_matrix_ptr(my_queue.get_order_matrix_ptr());
     usleep(5000000);
-  /*  switch(init_status.role){
+    switch(init_status.role){
 		case MASTER:
 			my_network.send_message_packet(MASTER_IP_INIT, this_elev_id, "");
 			break;
@@ -41,13 +41,15 @@ int main(){
 			std::cout << "Master ip: " << my_network.get_master_ip() << std::endl;
 			break;
 	}
-  */
+  
 	std::thread event_manager_thread(event_manager_main,std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
-	std::thread network_communication_thread(network_communication, std::ref(my_elevator), std::ref(my_network));
+	std::thread network_send_thread(network_send, std::ref(my_elevator), std::ref(my_network));
+	std::thread network_recieve_thread(network_recieve, std::ref(my_elevator), std::ref(my_network));
 	std::thread network_ping_thread(network_ping, std::ref(my_elevator), std::ref(my_network));
 
 	event_manager_thread.join();
-	network_communication_thread.join();
+	network_send_thread.join();
+	network_recieve_thread.join();
 	network_ping_thread.join();
 
 

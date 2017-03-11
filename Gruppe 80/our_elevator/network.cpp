@@ -334,17 +334,28 @@ void Network::check_my_role(int this_elevator_ID){
 //                 NETWORK THREAD FOR PING AND LISTENING
 // ------------------------------------------------------------------------------------------------
 
-void network_communication(Elevator* my_elevator, Network &my_network){
+void network_send(Elevator* my_elevator, Network &my_network){
 	while(1){
-		usleep(100000);
+		usleep(25000);
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_elevator_ID(),"");
+				break;
+			case SLAVE:
+				my_network.send_message_packet(SLAVE_IP_INIT, my_elevator->get_elevator_ID(), my_network.get_master_ip());
+				break;
+		}
+	}
+}
+
+void network_recieve(Elevator* my_elevator, Network &my_network){
+	while(1){
+		usleep(25000);
+		switch(my_elevator->get_elevator_role()){
+			case MASTER:
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 			case SLAVE:
-
-				my_network.send_message_packet(SLAVE_IP_INIT, my_elevator->get_elevator_ID(), my_network.get_master_ip());
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}
