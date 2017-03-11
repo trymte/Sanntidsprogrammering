@@ -339,7 +339,6 @@ void network_communication(Elevator* my_elevator, Network &my_network){
 		usleep(25000);
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
-				
 				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_elevator_ID(),"");
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
@@ -358,5 +357,10 @@ void network_ping(Elevator* my_elevator, Network &my_network){
 		my_network.check_responding_elevators(my_elevator->get_elevator_ID());
 		my_network.check_my_role(my_elevator->get_elevator_ID());
 		my_network.recieve_handshake_message(my_elevator->get_elevator_ID());
+		switch(my_elevator->get_elevator_role()){
+			case MASTER:
+				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_elevator_ID(),"");
+				break;
+		}
 	}
 }
