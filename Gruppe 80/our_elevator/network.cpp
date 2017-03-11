@@ -99,14 +99,12 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 }
 
 std::string Network::elevator_object_to_messagestring(Elevator &elevator){
-	elevator.print_elevator();
 	std::stringstream ss;
 	Status elev_status = elevator.get_elevator_status();
 	std::string order_matrix_string = order_matrix_to_string(elevator.get_order_matrix_ptr());
 	ss << elev_status.ip << ":" << elev_status.role << ":" << elev_status.elevator_ID << ":" << elev_status.dir << ":" << elev_status.floor << ":" << 
 		elev_status.last_floor << ":" << elev_status.out_of_order  << ":" << elev_status.online << ":" << elev_status.current_state << ":" << order_matrix_string;
 
-	std::cout << ss.str() << std::endl;
 	return ss.str();
 }
 
@@ -183,7 +181,9 @@ void Network::recieve_message_packet(int this_elevator_ID){
 
 	datastring.assign(packet.data);
 	std::cout << "datastring: " << datastring << std::endl;
-	if((datastring.length() !=0) && (!datastring[1] == ':')){
+	bool b = (datastring.length() !=0) && (!datastring[1] == ':');
+	std::cout << "b: " << b << std::endl;
+	if(b){
 		message = message_id_string_to_enum(datastring.substr(0,1));
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
@@ -288,7 +288,8 @@ void listen_on_network(Elevator* my_elevator, Network &my_network, Queue &my_que
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 		}
+		my_network.check_responding_elevators(my_elevator->get_elevator_ID());
+		my_network.check_my_role(my_elevator->get_elevator_ID());
 	}
-	my_network.check_responding_elevators(my_elevator->get_elevator_ID());
-	my_network.check_my_role(my_elevator->get_elevator_ID());
+	
 }
