@@ -263,7 +263,7 @@ struct code_message udp_handshake_reciever()
     }  
     if(recvfrom(psocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0)
     {
-    	std::cout << "Timeout on handshake, elevator not responding!" << std::endl;
+    //	std::cout << "Timeout on handshake, elevator not responding!" << std::endl;
         code.responding = false; 
     }
     else{

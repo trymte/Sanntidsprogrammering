@@ -276,7 +276,9 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	std::cout << "------------------------------------------------------------------------"<< std::endl;
 	std::cout << "Send HANDSHAKE, w8 for response: ";
 	std::cout << "my ip:  " << this->elevators[this_elevator_ID]->get_elevator_ip() << std::endl;
-	std::cout << "Foreign elev ip: " << this->elevators[foreign_elevator_ID]->get_elevator_ip() << std::endl;	
+	std::cout << "Foreign elev ip: " << this->elevators[foreign_elevator_ID]->get_elevator_ip() << std::endl;
+	std::cout << "Elevator " << this_elevator_ID << " online : " << elevators[this_elevator_ID]->get_elevator_status().online << std::endl;
+	std::cout << "Elevator " << foreign_elevator_ID << " online: " << elevators[foreign_elevator_ID]->get_elevator_status().online << std::endl;	
 	send_message_packet(HANDSHAKE, this_elevator_ID, this->elevators[foreign_elevator_ID]->get_elevator_ip()); // elevators[foreign_elevator_ID]->get_elevator_ip()); 
 	
 
