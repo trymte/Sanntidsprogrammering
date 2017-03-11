@@ -256,7 +256,7 @@ struct code_message udp_handshake_reciever()
     memset(&rbuff[0], 0, sizeof(rbuff)); 
     struct timeval read_timeout;
     read_timeout.tv_sec = 0;
-    read_timeout.tv_usec = 20000;
+    read_timeout.tv_usec = 25000;
     if(setsockopt(psocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
         die("setsockopt");
     }  
