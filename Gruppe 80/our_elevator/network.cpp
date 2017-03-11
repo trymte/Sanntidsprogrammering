@@ -263,7 +263,7 @@ void Network::check_responding_elevators(int this_elevator_ID){
 
 void Network::check_my_role(int this_elevator_ID){
 	int master_ID = 0;
-	std::cout << "Role: " << this->elevators[this_elevator_ID]->get_elevator_status().role << "\t Master ip: " << this->master_ip << std::endl;
+	std::cout << "Role: " << this->elevators[this_elevator_ID]->get_elevator_status().role << "\t Master ip: " << this->master_ip << "My ip: " << this->elevators[this_elevator_ID]->get_elevator_ip() << std::endl;
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 
 		if(this->elevators[i]->get_elevator_status().online){
@@ -279,6 +279,7 @@ void Network::check_my_role(int this_elevator_ID){
 	else{
 		this->elevators[this_elevator_ID]->set_elevator_role(SLAVE);
 	}
+	this->master_ip = this->elevators[master_ID]->get_elevator_ip();
 }
 
 // ------------------------------------------------------------------------------------------------
