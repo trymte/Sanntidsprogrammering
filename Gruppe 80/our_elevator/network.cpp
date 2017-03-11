@@ -341,16 +341,12 @@ void network_communication(Elevator* my_elevator, Network &my_network){
 			case MASTER:
 				
 				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_elevator_ID(),"");
-				std::cout << "network_communication case Master1: " << my_elevator->get_elevator_role() << std::endl;
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
-				std::cout << "network_communication case Master2: " << my_elevator->get_elevator_role() << std::endl;
 				break;
 			case SLAVE:
 
 				my_network.send_message_packet(SLAVE_IP_INIT, my_elevator->get_elevator_ID(), my_network.get_master_ip());
-				std::cout << "network_communication case Slave1: " << my_elevator->get_elevator_role() << std::endl;
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
-				std::cout << "network_communication case Slave2: " << my_elevator->get_elevator_role() << std::endl;
 				break;
 		}
 	}
