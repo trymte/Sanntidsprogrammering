@@ -240,6 +240,7 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	struct code_message code;
 	std::cout << "Send HANDSHAKE, w8 for response: ";
+	std::cout << "Foreign elev ip: " << elevators[foreign_elevator_ID]->get_elevator_ip() << std::endl;
 	send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_elevator_ip()); // elevators[foreign_elevator_ID]->get_elevator_ip()); 
 	
 	code = udp_handshake_reciever();
