@@ -117,16 +117,16 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 	switch(message){
 		//Slave receives
 		case MASTER_IP_INIT:
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
-			std::cout << "Initializing MASTER IP of elevator:" << foreign_elevator_ID << std::endl;
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "Initializing MASTER IP of elevator:" << foreign_elevator_ID << std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			this->master_ip = elevators[foreign_elevator_ID]->get_elevator_ip();
 			break;
 		//Master receives
 		case SLAVE_IP_INIT:
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
-			std::cout << "Initializing SLAVE IP of elevator:" << foreign_elevator_ID << std::endl;
-			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
+//			std::cout << "Initializing SLAVE IP of elevator:" << foreign_elevator_ID << std::endl;
+//			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			break;
 		//Master and slave can receive
 		case HANDSHAKE:
