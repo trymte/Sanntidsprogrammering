@@ -263,13 +263,15 @@ void Network::check_responding_elevators(int this_elevator_ID){
 
 void Network::check_my_role(int this_elevator_ID){
 	int master_ID = 0;
-	for(unsigned int i = 0; i <N_ELEVATORS; i++){
+	std::cout << "Check my role" << std::endl;
+	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 
 		if(!(this->elevators[i]->get_elevator_status().online)){
 			master_ID = this->elevators[i]->get_elevator_ID();
+			std::cout << i << " Master id: " << master_ID << " <-> online: " << this->elevators[i]->get_elevator_status().online << std::endl;
 			break;
 		}
-		std::cout << i << " Master id: " << master_ID << " <-> online: " << this->elevators[i]->get_elevator_status().online << std::endl;
+		
 	}
 	if(this_elevator_ID == master_ID){
 		this->elevators[this_elevator_ID]->set_elevator_role(MASTER);
@@ -287,7 +289,7 @@ void network_communication(Elevator* my_elevator, Network &my_network){
 	while(1){
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
-				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_elevator_ID(), my_network.get_master_ip());
+				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_elevator_ID(),"");
 				my_network.recieve_message_packet(my_elevator->get_elevator_ID());
 				break;
 			case SLAVE:
