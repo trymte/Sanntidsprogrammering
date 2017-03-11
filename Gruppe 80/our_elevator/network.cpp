@@ -79,7 +79,7 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 	temp_elevator.set_elevator_floor(atoi(result[4].c_str()));
 	temp_elevator.set_elevator_last_floor(atoi(result[5].c_str()));
 	temp_elevator.set_elevator_out_of_order((bool)result[6].compare("0"));
-//	temp_elevator.set_elevator_online(!(bool)result[7].compare("0")); Heis får online=0
+	temp_elevator.set_elevator_online((bool)result[7].compare("0")); 
 
 	switch(atoi(result[8].c_str())){
 		case 0:
@@ -111,8 +111,6 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 //----------------------------------------------------------------------------------------------------
 //Public functions
 //----------------------------------------------------------------------------------------------------
-
-
 
 
 void Network::handle_message(Message message, int foreign_elevator_ID, int this_elevator_ID){
@@ -244,8 +242,10 @@ void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		if(i != this_elevator_ID){
 			if(!is_node_responding(this_elevator_ID, i)){
-				elevators[i]->set_elevator_out_of_order(true);
-
+				elevators[i]->set_elevator_online(false);
+			}
+			else{
+				elevators[i]->set_elevator_online(true);
 			}
 		}	
 	}
@@ -254,10 +254,12 @@ void Network::check_responding_elevators(int this_elevator_ID){
 void Network::check_my_role(int this_elevator_ID){
 	int master_ID;
 	for(unsigned int i = 0; i <N_ELEVATORS; i++){
-		if(!(this->elevators[i]->get_elevator_status().out_of_order)){
+
+		if(!(this->elevators[i]->get_elevator_status().online)){
 			master_ID = this->elevators[i]->get_elevator_ID();
 			break;
 		}
+		std::cout << i << " Master id: " << master_ID << " <-> online: " << this->elevators[i]->get_elevator_status().online << std::endl;
 	}
 	if(this_elevator_ID == master_ID){
 		this->elevators[this_elevator_ID]->set_elevator_role(MASTER);

@@ -6,11 +6,13 @@ Elevator::Elevator(): order_matrix_ptr(NULL), order_matrix_ptr_count(0)
 {
 
 	get_my_ipaddress(elevator_status.ip);
+	elevator_status.role = SLAVE;
 	elevator_status.dir = D_Stop;
 	elevator_status.floor = -1;
 	elevator_status.last_floor = -1;
 	elevator_status.elevator_ID = -1;
 	elevator_status.out_of_order = 1;
+	elevator_status.online = 0;
 }
 
 Elevator::Elevator(Status elevator_status): elevator_status(elevator_status), order_matrix_ptr_count(0)
