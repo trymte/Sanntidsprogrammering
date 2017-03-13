@@ -233,9 +233,7 @@ struct code_message udp_reciever()
         die("setsockopt");
     }
     memset(&rbuff[0], 0, sizeof(rbuff));
-    if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0){
-    	die("recvfrom");
-    }
+    if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0);
     std::cout << "udp_receiver_2" << std::endl;
 
     data.assign(rbuff);
