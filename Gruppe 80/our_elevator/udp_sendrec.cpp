@@ -170,7 +170,7 @@ int udp_broadcaster(std::string message){
 
     if (sendto(bsocket, sbuff, BUFLEN, 0, (struct sockaddr*) &baddr, sizeof(baddr)) == -1)
     {
-        die("bcast");
+        //die("bcast");
     }
     return 0;
 
@@ -189,7 +189,7 @@ int udp_sender(std::string message, int localPort, char * reciever_ip) //master_
     addr.sin_addr.s_addr = inet_addr(reciever_ip);
     if (sendto(lsocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr)) == -1)
     {
-        die("sendto");
+        //die("sendto");
     }
     return 0;
 }
@@ -207,7 +207,7 @@ int udp_handshake_sender(std::string message, int localPort, char * reciever_ip)
     addr.sin_addr.s_addr = inet_addr(reciever_ip);
     if (sendto(psocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr)) == -1)
     {
-        die("sendto");
+        //die("sendto");
     }
     return 0;
 }
@@ -293,7 +293,7 @@ struct code_message udp_recieve_broadcast(){
       
     if(recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) == -1)
     {
-        die("brecvfrom");
+        //die("brecvfrom");
     }
     data.assign(rbuff);
     code.data = data;
