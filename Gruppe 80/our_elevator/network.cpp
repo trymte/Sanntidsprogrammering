@@ -36,11 +36,12 @@ Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> 
 }
 
 Network::~Network(){
-	if (elevators.size() != 0)
+	if (elevators.size() != 0){
 		for(unsigned int i = 0; i < N_ELEVATORS; i++){
 			delete elevators[i];
 		}
 		this->elevators.erase(this->elevators.begin(),this->elevators.end());
+	}
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -216,8 +217,7 @@ void Network::recieve_handshake_message(int this_elevator_ID){
 	struct code_message packet;
 	packet = udp_handshake_reciever();
 	datastring.assign(packet.data);
-	bool b = (datastring.length() !=0) && (datastring[1] == ':');
-	if(b){
+	if((datastring.length() !=0) && (datastring[1] == ':')){
 		Message message = message_id_string_to_enum(datastring.substr(0,1));
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
@@ -231,7 +231,7 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 	std::string message_string;
 	char * ip = new char[reciever_ip.size() + 1];
 	std::copy(reciever_ip.begin(), reciever_ip.end(), ip);
-	ip[reciever_ip.size()] = '\0'; // don't forget the terminating 0
+	ip[reciever_ip.size()] = '\0'; 
 	switch(message){
 		case MASTER_IP_INIT:
 			message_string = "0:";
@@ -340,12 +340,10 @@ void Network::check_my_role(int this_elevator_ID){
 //                 NETWORK THREAD FOR PING AND LISTENING
 // ------------------------------------------------------------------------------------------------
 
-std::mutex my_mutex1;
-std::mutex my_mutex2;
 
 void network_send(Elevator* my_elevator, Network &my_network){
 	while(1){
-		usleep(25000);
+		usleep(100000);
 		switch(my_elevator->get_elevator_role()){
 			case MASTER:
 				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_elevator_ID(),"");
@@ -358,6 +356,7 @@ void network_send(Elevator* my_elevator, Network &my_network){
 }
 
 void network_recieve(Elevator* my_elevator, Network &my_network){
+	std::mutex my_mutex1;
 	while(1){
 		usleep(25000);
 		my_mutex1.lock();
@@ -374,6 +373,7 @@ void network_recieve(Elevator* my_elevator, Network &my_network){
 }
 
 void network_ping(Elevator* my_elevator, Network &my_network){
+	std::mutex my_mutex2;
 	while(1){
 		usleep(100000);
 		my_mutex2.lock();

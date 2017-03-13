@@ -1,9 +1,5 @@
 #include "queue.h"
 
-
-
-
-
 //--------------------------------------------------------------------------------------------------
 //Constructor and destructor
 //----------------------------------------------------------------------------------------------------
@@ -216,8 +212,6 @@ Order Queue::get_next_order(int elevator_ID){
 	next_order.floor = 0;
 	next_order.btn = B_HallDown;
 	next_order.active_order = 0;
-
-
 	for (unsigned int floors = 0; floors<N_FLOORS;floors++){
 		for (unsigned int btn = 0;btn<N_BUTTONS;btn++){
 			if ((this->order_matrix[floors][btn].active_button == 1)&&(this->order_matrix[floors][btn].elevator_ID == elevator_ID)){
@@ -235,7 +229,6 @@ Order Queue::get_next_order(int elevator_ID){
 void Queue::write_order_matrix_to_file(){
 	std::ofstream file;
 	file.open("backup_file.txt");
-	
 	if (file.is_open()){
 
 		for (unsigned int i=0;i<N_FLOORS;i++){ 
@@ -245,10 +238,10 @@ void Queue::write_order_matrix_to_file(){
 		}
 		file.close();
 	}
-	else
-		std::cout << "Unable to open file at queue_write_order_matrix_to_file" << std::endl; //la til _to_file her for økt lesbarhet :) -trym, tilsvarande i funksjonen under her 
+	else{
+		std::cout << "Unable to open backup file for write" << std::endl;
+	}
 }
-
 
 void Queue::read_order_matrix_from_file(){
 	std::string line;
@@ -263,7 +256,5 @@ void Queue::read_order_matrix_from_file(){
 			this->order_matrix = string_to_order_matrix(result); 
 	}
 	else
-		std::cout << "Unable to open file at queue_read_order_matrix_from_file" << std::endl;
+		std::cout << "Unable to open backup file for read" << std::endl;
 }
-
-
