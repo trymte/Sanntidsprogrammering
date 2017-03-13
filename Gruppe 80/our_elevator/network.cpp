@@ -2,6 +2,7 @@
 
 
 Network::Network(){
+	
 	Elevator* elev_temp = new Elevator;
 	std::vector<std::vector<Queue_element> > temp = twoD_vector_init();
 	elev_temp->set_order_matrix(&temp);
@@ -10,10 +11,11 @@ Network::Network(){
 		elevators[i]->set_ID(i);
 	}
 	this->master_ip = "0";
+	this->master_ID = 0;	
 }
 
 Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix_ptr, int elevator_ID){
-	
+	this->master_ID = 0;	
 	Elevator* elev_temp_this = new Elevator(elevator_status, order_matrix_ptr);
 	elev_temp_this->set_online(true);
 	Elevator* elev_temp_others = new Elevator(elevator_status);
@@ -225,6 +227,7 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 
 void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
+		std::cout << "elev " << i << "\tonline: " << this->elevators[i]->get_status().online << std::endl;
 		if(i != this_elevator_ID){
 			if(!is_node_responding(this_elevator_ID, i)){
 				elevators[i]->set_online(false);
@@ -237,9 +240,7 @@ void Network::check_responding_elevators(int this_elevator_ID){
 }
 
 void Network::check_my_role(int this_elevator_ID){
-	int master_ID = 0;	
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
-		std::cout << "elev " << i << "\tonline: " << this->elevators[i]->get_status().online << std::endl;
 		if(this->elevators[i]->get_status().online){
 			master_ID = this->elevators[i]->get_status().elevator_ID;
 			break;

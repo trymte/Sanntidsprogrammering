@@ -10,6 +10,8 @@ private:
 
 	std::string master_ip;
 
+	int master_ID;
+
 	Elevator messagestring_to_elevator_object(std::string &messagestring);
 
 	std::string elevator_object_to_messagestring(Elevator &elevator);
