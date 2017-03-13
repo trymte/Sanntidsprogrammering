@@ -231,6 +231,7 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		if ((elevators[this_elevator_ID]->get_status().role == MASTER) && (elevators[i]->get_status().online == false)){
+			
 			handle_message(SLAVE_ORDER_INCOMPLETE,this_elevator_ID,i);
 		}
 

@@ -21,14 +21,18 @@ void sv_manage_completed_order(Elevator* elevator){
 	}
 
 	//Removes all orders on current floor with correct elevator_ID
-	for(int i=0;i<N_BUTTONS;i++){
-		if (elevator_status.floor != -1){
-			if (elevator_order_matrix[elevator_status.floor][i].elevator_ID == elevator_status.elevator_ID){
-				elevator_order_matrix[elevator_status.floor][i].active_button = 0;
-				elevator_order_matrix[elevator_status.floor][i].elevator_ID = -1;
+	else{
+		for(int i=0;i<N_BUTTONS;i++){
+			if (elevator_status.floor != -1){
+				if (elevator_order_matrix[elevator_status.floor][i].elevator_ID == elevator_status.elevator_ID){
+					elevator_order_matrix[elevator_status.floor][i].active_button = 0;
+					elevator_order_matrix[elevator_status.floor][i].elevator_ID = -1;
+				}
 			}
 		}
 	}
+	
+	
 
 	elevator->set_order_matrix(&elevator_order_matrix);
 }
