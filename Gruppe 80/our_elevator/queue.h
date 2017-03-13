@@ -3,8 +3,6 @@
 #include "elevator.h"
 
 
-
-
 class Queue{
 private:
 	std::vector<std::vector<Queue_element> > order_matrix;
@@ -18,28 +16,30 @@ private:
 public:
 	Queue();
 
-	Queue(unsigned int n_floors,unsigned int n_buttons);
-
 	~Queue();
+
 
 	static std::vector<std::vector<Queue_element> > assign_elevators_to_orders(std::vector<Elevator*> elevators, int elevator_ID);
 
 //------------------------------------------------------------------------------------------------------------
 //		Get functions
 //------------------------------------------------------------------------------------------------------------
+
 	Order get_next_order(int elevator_ID);
 
 	std::vector<std::vector<Queue_element> > get_order_matrix(){return this->order_matrix;}
 
 	std::vector<std::vector<Queue_element> >* get_order_matrix_ptr(){return &this->order_matrix;}
 
+//------------------------------------------------------------------------------------------------------------
+
 	void add_order(Order new_order, int elevator_ID);
 
 	void remove_order(Order order);
 
-	void reset_orders(Status status);
-
 	static void reset_orders(std::vector <std::vector <Queue_element> > &order_matrix, Status status);
+
+	void reset_orders(Status status);
 
 //------------------------------------------------------------------------------------------------------------
 //		Order matrix backup file functions
@@ -50,6 +50,3 @@ public:
 	void read_order_matrix_from_file();
 
 };
-
-
-

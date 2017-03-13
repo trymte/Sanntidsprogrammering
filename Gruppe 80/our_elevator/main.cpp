@@ -1,12 +1,21 @@
 #include <iostream>
 #include <thread>
 #include <unistd.h>
-
 #include "eventmanager.h"
 
 
 int main(){
+
+	//---------------------------------------------------------------------------------------------------
+	// Set up connections: Broadcast, local send and recieve + ping
+	//---------------------------------------------------------------------------------------------------
+
 	udp_init(MASTERPORT);
+
+	//---------------------------------------------------------------------------------------------------
+	// Setting up this elevator, queue and network objects
+	//---------------------------------------------------------------------------------------------------
+
 	Status init_status = init_elev_status();
 	init_status.ip = get_my_ipaddress();
 	int this_elev_id;
@@ -22,9 +31,10 @@ int main(){
 	Elevator* my_elevator;
 	my_elevator = my_network.get_elevator_ptr(this_elev_id);
     my_elevator->set_order_matrix_ptr(my_queue.get_order_matrix_ptr());
-    usleep(1000000);
 
-
+    //---------------------------------------------------------------------------------------------------
+    // Setting up threads for the eventmanager and network
+    //---------------------------------------------------------------------------------------------------
 
 	std::thread event_manager_thread(event_manager_main,std::ref(my_elevator), std::ref(my_network), std::ref(my_queue));
 	std::thread network_send_thread(network_send, std::ref(my_elevator), std::ref(my_network));

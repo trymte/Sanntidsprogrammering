@@ -4,11 +4,7 @@
 #include <unistd.h>
 #include <deque>
 #include <algorithm>
-
-
 #include "eventmanager.h"
-#include "timer.h"
-
 
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -28,14 +24,14 @@ void elev_drive_to_init_floor(Elevator *my_elevator){
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
-//		Hardware monitoring local eventmanager functions
+//		Local eventmanager functions which monitor hardware 
 //--------------------------------------------------------------------------------------------------------------------------------
 
 bool check_buttons(Elevator *my_elevator, Queue &my_queue){
 	Order new_order;
 	bool new_button_press = 0;
-	for(int i=0; i<N_FLOORS;i++){
-		for(int j=0;j<N_BUTTONS;j++){
+	for(unsigned int i=0; i<N_FLOORS;i++){
+		for(unsigned int j=0;j<N_BUTTONS;j++){
 			if (elev_get_button_signal((elev_button_type_t)j,i) && (my_queue.get_order_matrix()[i][j].active_button == 0)){
 				new_order.floor = i;
 				new_order.btn = (Button)j;
@@ -50,10 +46,11 @@ bool check_buttons(Elevator *my_elevator, Queue &my_queue){
 	return new_button_press;
 }
 
+
 void check_all_lights(Elevator *my_elevator, Queue &my_queue){
-	for(int i =0;i<N_FLOORS;i++){
-		//Set external lights if any order
-		for(int j=0;j<N_BUTTONS-1;j++){
+	for(unsigned int i =0;i<N_FLOORS;i++){
+		//Set external lights if any order with correct elevator ID
+		for(unsigned int j=0;j<N_BUTTONS-1;j++){
 			if(my_queue.get_order_matrix()[i][j].active_button == 1){
 				elev_set_button_lamp((elev_button_type_t)j,i,1);
 			}
@@ -61,8 +58,7 @@ void check_all_lights(Elevator *my_elevator, Queue &my_queue){
 				elev_set_button_lamp((elev_button_type_t)j,i,0);
 		}
 		//Set internal lights if any order
-		if ((my_queue.get_order_matrix()[i][(int)B_Cab].active_button == 1) && 
-			(my_queue.get_order_matrix()[i][(int)B_Cab].elevator_ID == my_elevator->get_status().elevator_ID)){
+		if (my_queue.get_order_matrix()[i][(int)B_Cab].active_button == 1){//ee
 			elev_set_button_lamp(BUTTON_COMMAND,i,1);
 		}
 		else{
@@ -73,13 +69,11 @@ void check_all_lights(Elevator *my_elevator, Queue &my_queue){
 
 
 void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my_queue){
-	if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ 
+	if((timer_timed_out())&& (get_timer_id() == TIMER_CONDITION_ID)){ 
 		std::cout << "Elevator is out of order" << std::endl;
 		my_elevator->set_out_of_order(1);
 		timer_stop();
-
 		my_queue.reset_orders(my_elevator->get_status());
-
 		switch(my_elevator->get_status().role){
 			case MASTER:
 				sv_manage_order_matrix(my_network.get_elevators(), my_elevator->get_status().elevator_ID);  
@@ -93,8 +87,9 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 	} 
 }
 
+
 void check_door_timer(Elevator* my_elevator, Network &my_network, Queue &my_queue){
-	if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){
+	if((timer_timed_out()) && (get_timer_id() == TIMER_DOOR_ID)){
 		fsm_on_door_timeout(my_elevator,my_queue);
 		switch(my_elevator->get_status().role){
 			case MASTER:
@@ -107,14 +102,14 @@ void check_door_timer(Elevator* my_elevator, Network &my_network, Queue &my_queu
 	}
 }
  
+
 void check_order_to_be_executed(Elevator* my_elevator, Queue &my_queue){
 	Order next_order = my_queue.get_next_order(my_elevator->get_status().elevator_ID);
-
-
 	if (next_order.active_order){ 
 		fsm_execute_order(my_elevator,my_queue,next_order);
 	}
 }
+
 
 void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_network){
 	int current_floor = elev_get_floor_sensor_signal();
@@ -135,7 +130,6 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 		}
 	}
  }
-
 
 
 //-----------------------------------------------------------------------------------------------------------------------------------------

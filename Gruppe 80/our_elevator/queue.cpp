@@ -1,10 +1,11 @@
 #include "queue.h"
 
-//--------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 //Constructor and destructor
 //----------------------------------------------------------------------------------------------------
+
 Queue::Queue(){
-	std::vector<std::vector<Queue_element> > temp = twoD_vector_init();
+	std::vector<std::vector<Queue_element> > temp = init_twoD_vector();
 	this->order_matrix = temp;
 }
 
@@ -18,17 +19,14 @@ Queue::~Queue(){
 }
 
 
-//--------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 //Private member functions
 //----------------------------------------------------------------------------------------------------
 
-//Her burde calculate_cost ligge
-//Fikk problemer med å kalle privat static funksjon fra assign_elevator_to_order, prøve igjen senere...
-
-
-//--------------------------------------------------------------------------------------------------
-//Public member functions
-//----------------------------------------------------------------------------------------------------
+void Queue::add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID){
+	order_matrix[new_order.floor][new_order.btn].active_button = 1;
+	order_matrix[new_order.floor][new_order.btn].elevator_ID = elevator_ID;
+}
 
 
 unsigned int Queue::calculate_cost(Order order, Status status){
@@ -75,70 +73,26 @@ unsigned int Queue::get_lowest_cost_elevator(Order order, std::vector<Status>& s
 	unsigned int lowest_cost = 10000;
 	int elevator_ID = -1;
 	Status status_it;
-
-	for(int i = 0; i<N_ELEVATORS; i++){
-//	for(std::vector<Status>::iterator it = status_vector.begin(); it != status_vector.end();++it){
-		status_it = status_vector[i];//*it;
-//		if (((status_it.out_of_order) || !(status_it.online)) != 1){ 
+	for(unsigned int i = 0; i<N_ELEVATORS; i++){
+		status_it = status_vector[i];
 		if (elevators[i]->get_condition()){
 			temp_cost = calculate_cost(order,status_it);
 			if (temp_cost < lowest_cost){
 				lowest_cost = temp_cost;
 				elevator_ID = status_it.elevator_ID;
 			}
-
 		}
 	}
 	return elevator_ID;
 }
 
 
-void Queue::add_order(std::vector <std::vector <Queue_element> > &order_matrix, Order &new_order, int elevator_ID){
-	if (new_order.floor > N_FLOORS){
-		std::cout << "Floor in new_order doesn't match number of floors in system" << std::endl;
-		return;
-	}
-	if (new_order.btn > N_BUTTONS){
-		std::cout << "Button in new_order doesn't match number of buttons in system, " << new_order.btn << " > " << N_BUTTONS <<  std::endl;
-		return;
-	}
-
-	if ((order_matrix.size() < new_order.floor)||(order_matrix[0].size() < new_order.btn)){
-		std::cout << "Dimensions disagree in queue_add_order" << std::endl;
-		return;
-	}
-
-	order_matrix[new_order.floor][new_order.btn].active_button = 1;
-	order_matrix[new_order.floor][new_order.btn].elevator_ID = elevator_ID;
-}
-
-void Queue::add_order(Order new_order, int elevator_ID){
-	if (new_order.floor > N_FLOORS){
-		std::cout << "Floor in new_order doesn't match number of floors in system" << std::endl;
-		return ;
-	}
-	if (new_order.btn > N_BUTTONS){
-		std::cout << "Button in new_order doesn't match number of buttons in system" << std::endl;
-		return ;
-	}
-	this->order_matrix[new_order.floor][new_order.btn].active_button = 1;
-	this->order_matrix[new_order.floor][new_order.btn].elevator_ID = elevator_ID;
-}
-
-
-void Queue::remove_order(Order order){
-	this->order_matrix[order.floor][order.btn].active_button = 0;
-	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
-}
+//--------------------------------------------------------------------------------------------------
+//Public member functions
+//----------------------------------------------------------------------------------------------------
 
 
 std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::vector<Elevator*> elevators, int elevator_ID){
-
-	if (elevators.size() == 0){
-		std::cout << "Cant assign empty elevators to orders in queue_assign_elevators_to_orders" << std::endl;
-		std::vector<std::vector<Queue_element> > empty_order_matrix;
-		return empty_order_matrix;
-	}
 
 	//Create a status_vector based on the input.
 	std::vector<Status> status_vector;
@@ -148,9 +102,9 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 	}
 
 	//Create an order_matrix that contains all the orders assigned to an elevator
-	std::vector <std::vector <Queue_element> > assigned_order_matrix = twoD_vector_init();
-	std::vector <std::vector <Queue_element > > curr_order_matrix = twoD_vector_init();
-	assigned_order_matrix = *elevators[elevator_ID]->get_order_matrix_ptr(); //Tar utgangspunkt i elevator_ID's heis.
+	std::vector <std::vector <Queue_element> > assigned_order_matrix = init_twoD_vector();
+	std::vector <std::vector <Queue_element > > curr_order_matrix = init_twoD_vector();
+	assigned_order_matrix = *elevators[elevator_ID]->get_order_matrix_ptr(); 
 	Order order_to_be_assigned;
 	int assigned_elevator_ID = -1;
 
@@ -171,6 +125,38 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 	}
 	return assigned_order_matrix;
 }
+
+
+Order Queue::get_next_order(int elevator_ID){
+	Order next_order;
+	next_order.floor = 0;
+	next_order.btn = B_HallDown;
+	next_order.active_order = 0;
+	for (unsigned int floors = 0; floors<N_FLOORS;floors++){
+		for (unsigned int btn = 0;btn<N_BUTTONS;btn++){
+			if ((this->order_matrix[floors][btn].active_button == 1)&&(this->order_matrix[floors][btn].elevator_ID == elevator_ID)){
+				next_order.floor = floors;
+				next_order.active_order = 1;
+				next_order.btn = (Button)btn;
+				return next_order;
+			}
+		}
+	}
+	return next_order;	
+}
+
+
+void Queue::add_order(Order new_order, int elevator_ID){
+	this->order_matrix[new_order.floor][new_order.btn].active_button = 1;
+	this->order_matrix[new_order.floor][new_order.btn].elevator_ID = elevator_ID;
+}
+
+
+void Queue::remove_order(Order order){
+	this->order_matrix[order.floor][order.btn].active_button = 0;
+	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
+}
+
 
 void Queue::reset_orders(std::vector <std::vector <Queue_element> > &order_matrix, Status status){
 	for(unsigned int i = 0; i<N_FLOORS; i++){
@@ -194,31 +180,10 @@ void Queue::reset_orders(Status status){
 }
 
 
-
-Order Queue::get_next_order(int elevator_ID){
-	Order next_order;
-	next_order.floor = 0;
-	next_order.btn = B_HallDown;
-	next_order.active_order = 0;
-	for (unsigned int floors = 0; floors<N_FLOORS;floors++){
-		for (unsigned int btn = 0;btn<N_BUTTONS;btn++){
-			if ((this->order_matrix[floors][btn].active_button == 1)&&(this->order_matrix[floors][btn].elevator_ID == elevator_ID)){
-				next_order.floor = floors;
-				next_order.active_order = 1;
-				next_order.btn = (Button)btn;
-				return next_order;
-			}
-		}
-	}
-	return next_order;	
-}
-
-
 void Queue::write_order_matrix_to_file(){
 	std::ofstream file;
 	file.open("backup_file.txt");
 	if (file.is_open()){
-
 		for (unsigned int i=0;i<N_FLOORS;i++){ 
 			for (unsigned int j=0;j<N_BUTTONS;j++){
 				file << this->order_matrix[i][j].active_button << this->order_matrix[i][j].elevator_ID << "&";
@@ -228,15 +193,17 @@ void Queue::write_order_matrix_to_file(){
 	}
 }
 
+
 void Queue::read_order_matrix_from_file(){
-	std::string line;
-	std::string result;
+	std::string order_matrix_string;
 	std::ifstream file;
 	file.open("backup_file.txt");
 	std::vector< std::vector< Queue_element > > temp_order_matrix;
 	if (file.is_open()){
-		getline(file,result);
-		temp_order_matrix = string_to_order_matrix(result); 
+		getline(file, order_matrix_string);
+		temp_order_matrix = string_to_order_matrix(order_matrix_string); 
+
+		//Read only Cab orders from file
 		for (unsigned int i = 0; i< N_FLOORS;i++){
 			this->order_matrix[i][(int)B_Cab] = temp_order_matrix[i][(int)B_Cab];
 		}

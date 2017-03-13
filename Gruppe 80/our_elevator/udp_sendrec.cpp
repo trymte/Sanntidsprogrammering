@@ -12,15 +12,13 @@ void get_my_ipaddress(std::string &ip){
     struct ifaddrs * ifAddrStruct=NULL;
     struct ifaddrs * ifa=NULL;
     void * tmpAddrPtr=NULL;
-
     getifaddrs(&ifAddrStruct);
 
     for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
         if (!ifa->ifa_addr) {
             continue;
         }
-        if (ifa->ifa_addr->sa_family == AF_INET) { // check if it is IP4
-            // is a valid IP4 Address
+        if (ifa->ifa_addr->sa_family == AF_INET) {                          // check if it is a valid IP4 Address 
             tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
             char addressBuffer[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN); 
@@ -33,9 +31,9 @@ void get_my_ipaddress(std::string &ip){
 
 std::string get_my_ipaddress(){
     std::string ip;
-    struct ifaddrs * ifAddrStruct=NULL;
-    struct ifaddrs * ifa=NULL;
-    void * tmpAddrPtr=NULL;
+    struct ifaddrs * ifAddrStruct = NULL;
+    struct ifaddrs * ifa = NULL;
+    void * tmpAddrPtr = NULL;
 
     getifaddrs(&ifAddrStruct);
 
@@ -43,8 +41,7 @@ std::string get_my_ipaddress(){
         if (!ifa->ifa_addr) {
             continue;
         }
-        if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
-            // is a valid IP4 Address
+        if (ifa->ifa_addr->sa_family == AF_INET) {
             tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
             char addressBuffer[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
@@ -62,8 +59,9 @@ void udp_init(int localPort){
     struct sockaddr_in laddr, baddr, paddr;
     
     //_------------------------------------------------------------------------
-    // Broadcast connection
+    // Broadcast connection between master and slaves
     //_------------------------------------------------------------------------
+
     int broadcastEnable=1;
     if ((bsocket = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
     {
@@ -90,8 +88,6 @@ void udp_init(int localPort){
     baddr.sin_family = AF_INET;
     baddr.sin_port = htons(BROADCASTPORT);
     baddr.sin_addr.s_addr = inet_addr(BROADCASTIP);
-    
- 
     if( bind(bsocket, (struct sockaddr*)&baddr, sizeof(baddr)) == -1)
     {
             die("bbind");
@@ -99,7 +95,7 @@ void udp_init(int localPort){
     
 
     //_------------------------------------------------------------------------
-    // Local send/rcv connection
+    //   Local send and recieve connection between master and slave
     //---------------------------------------------------------------------------
      
     if ((lsocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
@@ -116,6 +112,7 @@ void udp_init(int localPort){
         die("setsockopt");
     }
     #endif
+
     memset((char *) &laddr, 0, sizeof(laddr));
     laddr.sin_family = AF_INET;
     laddr.sin_port = htons(localPort);
@@ -126,7 +123,7 @@ void udp_init(int localPort){
     }
 
     //_------------------------------------------------------------------------
-    //Local ping/handshake connection
+    //    Local ping/handshake connection between everyone
     //_------------------------------------------------------------------------
 
     if ((psocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
@@ -143,10 +140,10 @@ void udp_init(int localPort){
         die("setsockopt");
     }
     #endif
+
     memset((char *) &paddr, 0, sizeof(paddr));
     paddr.sin_family = AF_INET;
     paddr.sin_port = htons(PINGPORT);
-    //
     paddr.sin_addr.s_addr = INADDR_ANY;
     if( bind(psocket, (struct sockaddr*)&paddr, sizeof(paddr) ) == -1)
     {
@@ -157,7 +154,7 @@ void udp_init(int localPort){
 }
 
 
-int udp_broadcaster(std::string message){
+void udp_broadcaster(std::string message){
     struct sockaddr_in baddr;
     char * sbuff;
     sbuff = (char *) malloc(BUFLEN);
@@ -168,15 +165,11 @@ int udp_broadcaster(std::string message){
     baddr.sin_port = htons(BROADCASTPORT);
     baddr.sin_addr.s_addr = inet_addr(BROADCASTIP);
 
-    if (sendto(bsocket, sbuff, BUFLEN, 0, (struct sockaddr*) &baddr, sizeof(baddr)) == -1)
-    {
-        //die("bcast");
-    }
-    return 0;
-
+    sendto(bsocket, sbuff, BUFLEN, 0, (struct sockaddr*) &baddr, sizeof(baddr));
 }
 
-int udp_sender(std::string message, int localPort, char * reciever_ip) //master_ip = reciever_ip
+
+void udp_sender(std::string message, int localPort, char * reciever_ip)  // Master IP = Reciever IP
 {
     struct sockaddr_in addr;
     char sbuff[BUFLEN];
@@ -184,17 +177,15 @@ int udp_sender(std::string message, int localPort, char * reciever_ip) //master_
     strcat(sbuff, message.c_str());
 
     memset((char *) &addr, 0, sizeof(addr));
+
     addr.sin_family = AF_INET;
     addr.sin_port = htons(localPort);
     addr.sin_addr.s_addr = inet_addr(reciever_ip);
-    if (sendto(lsocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr)) == -1)
-    {
-        //die("sendto");
-    }
-    return 0;
+    sendto(lsocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr));
 }
 
-int udp_handshake_sender(std::string message, int localPort, char * reciever_ip) //master_ip = reciever_ip
+
+void udp_handshake_sender(std::string message, int localPort, char * reciever_ip)
 {
     struct sockaddr_in addr;
     char sbuff[BUFLEN];
@@ -205,40 +196,32 @@ int udp_handshake_sender(std::string message, int localPort, char * reciever_ip)
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PINGPORT);
     addr.sin_addr.s_addr = inet_addr(reciever_ip);
-    if (sendto(psocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr)) == -1)
-    {
-        //die("sendto");
-    }
-    return 0;
+    sendto(psocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr));
 }
+
 
 struct code_message udp_reciever()
 {
     struct sockaddr_in addr;
-    int recv_len;
     socklen_t slen = sizeof(addr); 
     char rbuff[BUFLEN];
     struct code_message code;
-
     std::string data;
-    std::string rip;
     
-    // zero out the structure
     memset((char *) &addr, 0, sizeof(addr));
+    memset(&rbuff[0], 0, sizeof(rbuff));
+
     struct timeval read_timeout;
     read_timeout.tv_sec = 10;
     read_timeout.tv_usec = 0;
     if(setsockopt(lsocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
         die("setsockopt");
     }
-    memset(&rbuff[0], 0, sizeof(rbuff));
-    if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0);
+
+    recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen);
 
     data.assign(rbuff);
     code.data = data;
-    rip.assign(inet_ntoa(addr.sin_addr));
-    code.rip = rip;   
-    code.port = addr.sin_port;
     return code;
 }
 
@@ -246,23 +229,22 @@ struct code_message udp_reciever()
 struct code_message udp_handshake_reciever()
 {
     struct sockaddr_in addr;
-    int recv_len;
     socklen_t slen = sizeof(addr); 
     char rbuff[BUFLEN];
     struct code_message code;
     code.responding = false;
     std::string data;
-    std::string rip;
     
     memset((char *) &addr, 0, sizeof(addr));
-
     memset(&rbuff[0], 0, sizeof(rbuff)); 
+
     struct timeval read_timeout;
     read_timeout.tv_sec = 0;
     read_timeout.tv_usec = 25000;
     if(setsockopt(psocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
         die("setsockopt");
     }  
+
     if(recvfrom(psocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0)
     {
         code.responding = false;
@@ -272,45 +254,31 @@ struct code_message udp_handshake_reciever()
     }
     data.assign(rbuff);
     code.data = data;
-    rip.assign(inet_ntoa(addr.sin_addr));
-    code.rip = rip;
-    code.port = addr.sin_port;
 
     return code;
 }
 
+
 struct code_message udp_recieve_broadcast(){
-    int recv_len;
     struct code_message code;
     struct sockaddr_in addr;
     socklen_t slen = sizeof(addr);
     char rbuff [BUFLEN];
     std::string data;
-    std::string rip;
+
 
     memset((char *) &addr, 0, sizeof(addr));
     memset(&rbuff[0], 0, sizeof(rbuff));
       
-    if(recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) == -1)
-    {
-        //die("brecvfrom");
-    }
+    recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen);
     data.assign(rbuff);
     code.data = data;
-    rip.assign(inet_ntoa(addr.sin_addr));
-    code.rip = rip;
-    code.port = addr.sin_port;
     return code; 
 }
 
-int bytes(){
-    char buff[BUFLEN];
-    return recv(bsocket, buff, BUFLEN, 0);
-}
 
 void udp_close(){
     close(bsocket);
     close(lsocket);
     close(psocket);
 }
-

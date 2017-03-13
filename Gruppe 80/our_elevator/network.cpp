@@ -4,7 +4,7 @@
 Network::Network(){
 	
 	Elevator* elev_temp = new Elevator;
-	std::vector<std::vector<Queue_element> > temp = twoD_vector_init();
+	std::vector<std::vector<Queue_element> > temp = init_twoD_vector();
 	elev_temp->set_order_matrix(&temp);
 	for(unsigned int i = 0; i < N_ELEVATORS ; i++){
 		this->elevators.push_back(elev_temp);
@@ -238,7 +238,7 @@ void Network::check_responding_elevators(int this_elevator_ID){
 		std::cout << "elev " << i << "\tonline: " << this->elevators[i]->get_status().online << "\tip: " << this->elevators[i]->get_status().ip << std::endl;
 		if(i != this_elevator_ID){
 			int ping_count = 0;
-			for (unsigned int j = 0; j<PING_INTERVAL; j++){
+			for (unsigned int j = 0; j<NUMBER_OF_PINGS; j++){
 				ping_count += is_node_responding(this_elevator_ID, i);
 			}
 

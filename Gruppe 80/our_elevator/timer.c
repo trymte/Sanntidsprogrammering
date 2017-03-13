@@ -3,6 +3,10 @@
 #include "utilities.h"
 
 
+static double timerEndTime;
+static int timerActive;
+int timer_id;
+int* timer_id_ptr = &timer_id;
 
 
 static double get_wall_time(void){
@@ -12,17 +16,10 @@ static double get_wall_time(void){
 }
 
 
-static  double          timerEndTime;
-static  int             timerActive;
-int timer_id;
-int* timer_id_ptr = &timer_id;
-
-void timer_start(double duration, unsigned int id){ //Duration in seconds
-    //if(timer_id == 0){
+void timer_start(double duration, unsigned int id){     //Duration in seconds
     timerEndTime    = get_wall_time() + duration;
     timerActive     = 1;
-    *timer_id_ptr = id; //kva er vitsen med denne iden?
-    //} 
+    *timer_id_ptr = id;
 }
 
 void timer_stop(void){
@@ -30,7 +27,7 @@ void timer_stop(void){
     *timer_id_ptr = 0;
 }
 
-int timer_timedOut(void){
+int timer_timed_out(void){
     return (timerActive  &&  get_wall_time() > timerEndTime);
 }
 

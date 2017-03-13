@@ -8,17 +8,24 @@
 #include <sstream>
 #include <stdlib.h>
 
+
+//-------------------------------------------------------------------------------
+//      Definition of structs and constants used in multiple files
+//-------------------------------------------------------------------------------
+
+
 const unsigned int N_FLOORS = 4;
 const unsigned int N_BUTTONS = 3;
 const unsigned int N_ELEVATORS = 3;
-const unsigned int DOOR_TIME_S = 1;
-const unsigned int TIME_CONDITION_S = 10;
-const unsigned int TIMER_DOOR_ID = 1;
-const unsigned int TIMER_CONDITION_ID = 2;
-const unsigned int TIMER_NETWORK = 1;
-const unsigned int MIN_MESSAGE_LENGTH = 69;
-const unsigned int PING_INTERVAL = 10;
 
+const unsigned int DOOR_TIME_S = 1;             // Door open time
+const unsigned int TIME_CONDITION_S = 10;       // Duration allowed for an order to be finished
+
+const unsigned int TIMER_DOOR_ID = 1;           // Id for the timer used for open door
+const unsigned int TIMER_CONDITION_ID = 2;      // Id for the timer used to check out_of_order
+ 
+const unsigned int MIN_MESSAGE_LENGTH = 69;     // Minimum allowed message length
+const unsigned int NUMBER_OF_PINGS = 10;        // Number of pings used to determine connection
 
 
 typedef enum { 
@@ -80,9 +87,13 @@ struct Status{
     Role role;
 };
 
+//-------------------------------------------------------------------------------------------------------
+//  Extra functions used in multiple cpp files
+//-------------------------------------------------------------------------------------------------------
+
 Status init_elev_status();
 
-std::vector<std::vector<Queue_element> > twoD_vector_init(); 
+std::vector<std::vector<Queue_element> > init_twoD_vector(); 
 
 std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string &order_matrix_string);
 

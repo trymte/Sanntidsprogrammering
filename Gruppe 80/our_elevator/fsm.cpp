@@ -6,8 +6,8 @@
 
 
 bool requests_above(Elevator *my_elevator, Queue &my_queue,int current_floor){
-	for(int i=current_floor+1;i<N_FLOORS;i++){
-		for(int j=0;j<N_BUTTONS;j++){
+	for(unsigned int i = current_floor + 1; i<N_FLOORS; i++){
+		for(unsigned int j=0; j<N_BUTTONS; j++){
 			if ((my_queue.get_order_matrix()[i][j].active_button == 1) && (my_queue.get_order_matrix()[i][j].elevator_ID == my_elevator->get_status().elevator_ID))
 				return 1;
 		}
@@ -15,9 +15,10 @@ bool requests_above(Elevator *my_elevator, Queue &my_queue,int current_floor){
 	return 0;
 }
 
+
 bool requests_below(Elevator *my_elevator, Queue &my_queue, int current_floor){
-	for(int i=0;i<current_floor;i++){
-		for(int j=0;j<N_BUTTONS;j++){
+	for(int i=0; i<current_floor; i++){
+		for(unsigned int j=0; j<N_BUTTONS; j++){
 			if ((my_queue.get_order_matrix()[i][j].active_button == 1) && (my_queue.get_order_matrix()[i][j].elevator_ID == my_elevator->get_status().elevator_ID))
 				return 1;
 		}
@@ -59,9 +60,11 @@ void open_door(){
 	timer_start(DOOR_TIME_S, TIMER_DOOR_ID);
 }
 
+
 //-----------------------------------------------------------------------------------------------------------------
 //									fsm executing functions
 //-----------------------------------------------------------------------------------------------------------------
+
 
 void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){
 	int current_floor = my_elevator->get_status().floor;
@@ -109,7 +112,7 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 			break;
 			
 		case IDLE:
-			for(int i=0;i<N_BUTTONS;i++){
+			for(unsigned int i=0;i<N_BUTTONS;i++){
 				if ((my_queue.get_order_matrix()[current_floor][i].active_button == 1) && 
 					(my_queue.get_order_matrix()[current_floor][i].elevator_ID == my_elevator->get_status().elevator_ID)){
 					stopped = true;
@@ -150,7 +153,7 @@ void fsm_on_door_timeout(Elevator *my_elevator,Queue &my_queue){
 		timer_stop();
 
 	Order order_to_be_removed;
-	for(int i=0;i<N_BUTTONS;i++){
+	for(unsigned int i=0;i<N_BUTTONS;i++){
 		if((my_queue.get_order_matrix()[current_floor][i].active_button == 1) && 
 			(my_queue.get_order_matrix()[current_floor][i].elevator_ID == my_elevator->get_status().elevator_ID)){
 			order_to_be_removed.floor = current_floor;
