@@ -23,7 +23,6 @@ Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> 
 	}
 	else{
 		this->master_ip = "0";
-		elev_temp_others->set_role(SLAVE);
 	}
 	
 	for(unsigned int i = 0; i < N_ELEVATORS ; i++){
