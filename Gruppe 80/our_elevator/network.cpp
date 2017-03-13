@@ -208,7 +208,6 @@ void Network::recieve_message_packet(int this_elevator_ID){
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 
 		if(temp_elevator.get_elevator_status().ip != elevators[this_elevator_ID]->get_elevator_status().ip){
-			std::cout << "Recieved message from another ip" << std::endl;
 			Status temp_status = temp_elevator.get_elevator_status();
 			elevators[temp_status.elevator_ID]->set_elevator_status(temp_status);
 			elevators[temp_status.elevator_ID]->set_elevator_order_matrix(temp_elevator.get_order_matrix_ptr());
@@ -298,7 +297,7 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 
 	code = udp_handshake_reciever();
 //	std::cout << "code.data_ " << code.data << std::endl;
-	std::cout << "Responding = " << code.responding << std::endl;
+//	std::cout << "Responding = " << code.responding << std::endl;
 //	std::cout << "------------------------------------------------------------------------"<< std::endl;
 	return code.responding;
 }
