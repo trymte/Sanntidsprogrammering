@@ -229,11 +229,16 @@ void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		std::cout << "elev " << i << "\tonline: " << this->elevators[i]->get_status().online << std::endl;
 		if(i != this_elevator_ID){
-			if(!is_node_responding(this_elevator_ID, i)){
-				elevators[i]->set_online(false);
+			int ping_count = 0;
+			for (unsigned int j = 0; j<PING_INTERVAL; j++){
+				ping_count += is_node_responding(this_elevator_ID, i);
+			}
+
+			if(ping_count != 0){
+				elevators[i]->set_online(true);
 			}
 			else{
-				elevators[i]->set_online(true);
+				elevators[i]->set_online(false);
 			}
 		}	
 	}
