@@ -26,6 +26,9 @@ public:
 
 	static std::vector<std::vector<Queue_element> > assign_elevators_to_orders(std::vector<Elevator*> elevators, int elevator_ID);
 
+//------------------------------------------------------------------------------------------------------------
+//		Get functions
+//------------------------------------------------------------------------------------------------------------
 	Order get_next_order(int elevator_ID);
 
 	std::vector<std::vector<Queue_element> > get_order_matrix(){return this->order_matrix;}

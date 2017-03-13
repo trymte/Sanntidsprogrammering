@@ -238,12 +238,14 @@ void Network::check_responding_elevators(int this_elevator_ID){
 void Network::check_my_role(int this_elevator_ID){
 	int master_ID = 0;	
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
+		std::cout << "elev " << i << "\tonline: " << this->elevators[i]->get_status().online << std::endl;
 		if(this->elevators[i]->get_status().online){
 			master_ID = this->elevators[i]->get_status().elevator_ID;
 			break;
 		}
 		
 	}
+	std::cout << "master id: " << master_ID << std::endl; 
 	if((master_ID == this_elevator_ID) && (this->elevators[this_elevator_ID]->get_status().role == SLAVE)){
 		this->elevators[this_elevator_ID]->set_role(MASTER);
 		std::cout << "Role changed from slave to master: " << std::endl;

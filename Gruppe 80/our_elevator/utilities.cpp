@@ -76,5 +76,5 @@ void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_
 }
 
 Status init_elev_status(){
-    return {.ip = "", .dir = D_Stop, .floor = 0, .last_floor = 0, .current_state = IDLE, .elevator_ID = 0, .out_of_order = false, .online = true, .role = SLAVE};
+    return {.ip = "", .dir = D_Stop, .floor = 0, .last_floor = 0, .current_state = IDLE, .elevator_ID = 0, .out_of_order = false, .online = false, .role = SLAVE};
 }
