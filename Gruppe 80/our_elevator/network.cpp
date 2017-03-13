@@ -91,7 +91,7 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 //Public functions
 //----------------------------------------------------------------------------------------------------
 
-void Network::handle_message(Message message, int foreign_elevator_ID, int this_elevator_ID){
+void Network::handle_message(Message message, int this_elevator_ID, int foreign_elevator_ID){
 	switch(message){
 		case MASTER_IP_INIT:
 			this->master_ip = elevators[foreign_elevator_ID]->get_status().ip;
@@ -153,7 +153,7 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			temp_status.online = elevators[temp_status.elevator_ID]->get_status().online;
 			elevators[temp_status.elevator_ID]->set_status(temp_status);
 			elevators[temp_status.elevator_ID]->set_order_matrix(temp_elevator.get_order_matrix_ptr());
-			handle_message(message, temp_status.elevator_ID, this_elevator_ID);
+			handle_message(message, this_elevator_ID, temp_status.elevator_ID);
 		}
 	}
 }
@@ -169,7 +169,7 @@ void Network::recieve_handshake_message(int this_elevator_ID){
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 		Status temp_status = temp_elevator.get_status();
-		handle_message(message, temp_status.elevator_ID, this_elevator_ID);
+		handle_message(message, this_elevator_ID, temp_status.elevator_ID);
 	}	
 }
 
@@ -229,6 +229,10 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 
 void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
+		if ((elevators[this_elevator_ID]->get_status().role == MASTER) && (elevators[i]->get_status().online == false)){
+			handle_message(SLAVE_ORDER_INCOMPLETE,this_elevator_ID,i);
+		}
+
 		std::cout << "elev " << i << "\tonline: " << this->elevators[i]->get_status().online << "\tip: " << this->elevators[i]->get_status().ip << std::endl;
 		if(i != this_elevator_ID){
 			int ping_count = 0;

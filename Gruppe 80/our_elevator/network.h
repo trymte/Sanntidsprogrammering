@@ -39,7 +39,7 @@ public:
 
 	void set_master_ip(std::string master_ip){this->master_ip = master_ip;}
 
-	void handle_message(Message message_ID, int foreign_elevator_ID, int this_elevator_ID);
+	void handle_message(Message message_ID, int this_elevator_ID, int foreign_elevator_ID);
 
 	void recieve_message_packet(int this_elevator_ID);
 
