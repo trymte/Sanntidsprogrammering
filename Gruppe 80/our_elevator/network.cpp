@@ -162,6 +162,7 @@ void Network::recieve_handshake_message(int this_elevator_ID){
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 		Status temp_status = temp_elevator.get_status();
+		std::cout << "Elevator id: " << temp_elevator.get_status().elevator_ID << "\t Role: " << temp_elevator.get_status().role << std::endl;
 		handle_message(message, temp_status.elevator_ID, this_elevator_ID);
 	}	
 }
