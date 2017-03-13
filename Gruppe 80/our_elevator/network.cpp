@@ -144,6 +144,8 @@ void Network::recieve_message_packet(int this_elevator_ID){
 
 		if(temp_elevator.get_status().ip != elevators[this_elevator_ID]->get_status().ip){
 			Status temp_status = temp_elevator.get_status();
+			temp_status.role = elevators[temp_status.elevator_ID]->get_status().role;
+			temp_status.online = elevators[temp_status.elevator_ID]->get_status().online;
 			elevators[temp_status.elevator_ID]->set_status(temp_status);
 			elevators[temp_status.elevator_ID]->set_order_matrix(temp_elevator.get_order_matrix_ptr());
 			handle_message(message, temp_status.elevator_ID, this_elevator_ID);
@@ -162,7 +164,6 @@ void Network::recieve_handshake_message(int this_elevator_ID){
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 		Status temp_status = temp_elevator.get_status();
-		std::cout << "Elevator id: " << temp_elevator.get_status().elevator_ID << "\t Role: " << temp_elevator.get_status().role << std::endl;
 		handle_message(message, temp_status.elevator_ID, this_elevator_ID);
 	}	
 }
@@ -244,7 +245,18 @@ void Network::check_my_role(int this_elevator_ID){
 		
 	}
 
+	if((master_ID == this_elevator_ID) && (this->elevators[this_elevator_ID]->get_status().role == SLAVE)){
+		this->elevators[this_elevator_ID]->set_role(MASTER);
+		std::cout << "Role changed from slave to master: " << std::endl;
+	}
+	else{
+		this->elevators[this_elevator_ID]->set_role(SLAVE);
+		std::cout << "Role changed from master to slave: " <<  std::endl;
+	}
+
+/*
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
+		std::cout << "Elevator  role: " << this->elevators[2]->get_status().role << std::endl;
 		if(i == master_ID){
 			if(this->elevators[i]->get_status().role == SLAVE)
 				std::cout << "Role changed from slave to master: " << i <<  std::endl;
@@ -256,7 +268,7 @@ void Network::check_my_role(int this_elevator_ID){
 				std::cout << "Role changed from master to slave: " <<  i << std::endl;
 			this->elevators[i]->set_role(SLAVE);
 		}
-	}
+	}*/
 	this->master_ip = this->elevators[master_ID]->get_status().ip;
 } 
 
@@ -286,7 +298,9 @@ void network_recieve(Elevator* my_elevator, Network &my_network){
 	while(1){
 		usleep(25000);
 		my_mutex1.lock();
+		
 		my_network.recieve_message_packet(my_elevator->get_status().elevator_ID);
+		
 		my_mutex1.unlock();
 	}
 }
@@ -300,5 +314,6 @@ void network_ping(Elevator* my_elevator, Network &my_network){
 		my_mutex2.unlock();
 		my_network.check_responding_elevators(my_elevator->get_status().elevator_ID);
 		my_network.recieve_handshake_message(my_elevator->get_status().elevator_ID);
+		
 	}
 }
