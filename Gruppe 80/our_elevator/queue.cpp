@@ -243,7 +243,7 @@ void Queue::read_order_matrix_from_file(){
 		getline(file,result);
 		std::cout << "Result: " << result << std::endl;
 		temp_order_matrix = string_to_order_matrix(result); 
-		for (int i = 0; i< N_FLOORS;i++){
+		for (unsigned int i = 0; i< N_FLOORS;i++){
 			this->order_matrix[i][(int)B_Cab] = temp_order_matrix[i][(int)B_Cab];
 		}
 	}

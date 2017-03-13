@@ -238,10 +238,8 @@ void Network::check_responding_elevators(int this_elevator_ID){
 void Network::check_my_role(int this_elevator_ID){
 	int master_ID = 0;	
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
-		std::cout << i << " : " << this->elevators[i]->get_status().online << std::endl;
 		if(this->elevators[i]->get_status().online){
 			master_ID = this->elevators[i]->get_status().elevator_ID;
-			std::cout << "Master id: " << master_ID << std::endl;
 			break;
 		}
 		

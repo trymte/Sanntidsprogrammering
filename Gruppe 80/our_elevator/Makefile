@@ -10,12 +10,12 @@ LIBS = -lpthread -lcomedi
 
 .PHONY: all clean
 
-all: test_heis
+all: elevator
 
-test_heis : $(OBJS)
-	$(CC) $(LFLAGS) $(OBJS) $(LIBS) -o test_heis
+elevator : $(OBJS)
+	$(CC) $(LFLAGS) $(OBJS) $(LIBS) -o elevator
 
-network.o : network.h network.cpp elevator.h utilities.h
+network.o : network.h network.cpp queue.h supervisor.h
 	$(CC) $(CFLAGS) network.cpp
 
 elev.o : elev.c elev.h utilities.h
@@ -25,22 +25,22 @@ io.o : io.c io.h
 
 timer.o : timer.c timer.h
 
-elevator.o : elevator.h elevator.cpp  queue.h udp_sendrec.h utilities.h
+elevator.o : elevator.h elevator.cpp udp_sendrec.h utilities.h
 	$(CC) $(CFLAGS) elevator.cpp
 
 fsm.o : fsm.cpp fsm.h queue.h
 	$(CC) $(CFLAGS) fsm.cpp
 
-supervisor.o : supervisor.cpp supervisor.h queue.h utilities.h
+supervisor.o : supervisor.cpp supervisor.h queue.h
 	$(CC) $(CFLAGS) supervisor.cpp
 
 queue.o : queue.cpp queue.h elevator.h 
 	$(CC) $(CFLAGS) queue.cpp
 
-main.o : main.cpp eventmanager.h elevator.h network.h queue.h supervisor.h
+main.o : main.cpp eventmanager.h network.h
 	$(CC) $(CFLAGS) main.cpp
 
-eventmanager.o : eventmanager.h eventmanager.cpp queue.h elev.h network.h
+eventmanager.o : eventmanager.h eventmanager.cpp elev.h network.h
 	$(CC) $(CFLAGS) eventmanager.cpp
 
 utilities.o : utilities.h utilities.cpp
@@ -50,6 +50,6 @@ udp_sendrec.o : udp_sendrec.cpp udp_sendrec.h
 	$(CC) $(CFLAGS) udp_sendrec.cpp
 
 clean:
-	\rm *.o test_heis
+	\rm *.o elevator
 
 .PHONY: all clean
