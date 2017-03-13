@@ -61,7 +61,3 @@ public:
 
 	void set_status(Status &status){this->elevator_status = status;}
 };
-
-
-
-

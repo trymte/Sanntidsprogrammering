@@ -15,6 +15,7 @@ Network::Network(){
 Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix_ptr, int elevator_ID){
 	
 	Elevator* elev_temp_this = new Elevator(elevator_status, order_matrix_ptr);
+	elev_temp_this->set_online(true);
 	Elevator* elev_temp_others = new Elevator(elevator_status);
 	elev_temp_others->set_ip("0");
 	if(elevator_status.role == MASTER){	
