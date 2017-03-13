@@ -152,7 +152,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			std::cout << "------------------------------------------------------------------------"<< std::endl;
 			std::cout << "Slave order incomplete: " << std::endl;
 			std::cout << "------------------------------------------------------------------------"<< std::endl;
-			sv_manage_completed_order(elevators[elevator_ID]);
+			sv_manage_completed_order(elevators[this_elevator_ID]);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
