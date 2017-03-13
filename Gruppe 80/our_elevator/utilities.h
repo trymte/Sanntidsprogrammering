@@ -25,7 +25,7 @@ const unsigned int TIMER_DOOR_ID = 1;           // Id for the timer used for ope
 const unsigned int TIMER_CONDITION_ID = 2;      // Id for the timer used to check out_of_order
  
 const unsigned int MIN_MESSAGE_LENGTH = 69;     // Minimum allowed message length
-const unsigned int NUMBER_OF_PINGS = 10;        // Number of pings used to determine connection
+const unsigned int NUMBER_OF_PINGS = 5;        // Number of pings used to determine connection
 
 
 typedef enum { 
