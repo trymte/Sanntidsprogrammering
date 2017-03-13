@@ -4,9 +4,6 @@
 #include "queue.h"
 #include <mutex>
 
-
-
-
 class Network{
 private:
 	std::vector<Elevator*> elevators;
@@ -24,11 +21,19 @@ public:
 
 	Network(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix_ptr, int elevator_ID);
 
+//----------------------------------------------------------------------------------------------------------------------
+//		Network get functions
+//----------------------------------------------------------------------------------------------------------------------
+
 	std::vector<Elevator*> get_elevators(){return elevators;}
 
 	Elevator* get_elevator_ptr(int elevator_ID){return elevators[elevator_ID];}
 
 	std::string get_master_ip(){return master_ip;}
+
+//----------------------------------------------------------------------------------------------------------------------
+//		Network set functions
+//----------------------------------------------------------------------------------------------------------------------
 
 	void set_master_ip(std::string master_ip){this->master_ip = master_ip;}
 
@@ -48,12 +53,12 @@ public:
 };
 
 
-void network_send(Elevator* my_elevator, Network &my_network);
+//----------------------------------------------------------------------------------------------------------------------
+//		Network thread functions
+//----------------------------------------------------------------------------------------------------------------------
 
+void network_send(Elevator* my_elevator, Network &my_network);
 
 void network_recieve(Elevator* my_elevator, Network &my_network);
 
-
 void network_ping(Elevator* my_elevator, Network &my_network);
-
-

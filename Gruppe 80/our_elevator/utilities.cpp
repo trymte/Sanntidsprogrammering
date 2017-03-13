@@ -24,7 +24,7 @@ std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string &or
 	Queue_element temp_queue_element;
 	std::string queue_element_string;
 	std::string act_btn;
-	std::string elv_id;
+	std::string elev_id;
 	while(std::getline(ss2,queue_element_string, '&')){
 		if(count == 3){
 			temp_floor +=1;
@@ -32,10 +32,10 @@ std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string &or
 		}
 		if(queue_element_string.size() == 2){
 			act_btn = queue_element_string[0];
-			elv_id = queue_element_string[1];
+			elev_id = queue_element_string[1];
 		} else if(queue_element_string.size() == 3){
 			act_btn = queue_element_string[0];
-			elv_id = queue_element_string.substr(1, 2);
+			elev_id = queue_element_string.substr(1, 2);
 		}
 		if(act_btn == "0"){
 			temp_queue_element.active_button = false;
@@ -43,7 +43,7 @@ std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string &or
 			temp_queue_element.active_button = true;
 		}
 		
-		temp_queue_element.elevator_ID = atoi(elv_id.c_str());
+		temp_queue_element.elevator_ID = atoi(elev_id.c_str());
 		order_matrix[temp_floor][count] = temp_queue_element;
 		count += 1;
 	}
@@ -61,38 +61,6 @@ std::string order_matrix_to_string(std::vector<std::vector <Queue_element> > *or
 	return ss.str();
 }
 
-Message message_id_string_to_enum(std::string str){
-	Message message;
-	switch(atoi(str.c_str())){
-		case 0:
-			message = MASTER_IP_INIT;
-			break;
-		case 1:
-			message = SLAVE_IP_INIT;
-			break;
-		case 2:
-			message = HANDSHAKE;
-			break;
-		case 3:
-			message = SLAVE_ORDER_COMPLETE;
-			break;
-		case 4: 
-			message = SLAVE_ORDER_INCOMPLETE;
-			break;
-		case 5: 
-			message = SLAVE_SEND_ELEVATOR_INFORMATION;
-			break;
-		case 6: 
-			message = MASTER_DISTRIBUTE_ORDER_MATRIX;
-			break;
-		default:
-			std::cout << "No valid message" << std::endl;
-			break;
-
-	}
-	return message;
-}
-
 void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr){
 	std::cout << "Order matrix: " << std::endl;
 	std::vector<std::vector <Queue_element> > ordr = *order_matrix_ptr;
@@ -106,9 +74,6 @@ void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_
 	}
 
 }
-
-
-
 
 Status init_elev_status(){
     return {.ip = "", .dir = D_Stop, .floor = 0, .last_floor = 0, .current_state = IDLE, .elevator_ID = 0, .out_of_order = false, .online = true, .role = SLAVE};

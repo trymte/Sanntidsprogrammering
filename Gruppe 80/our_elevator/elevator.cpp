@@ -53,6 +53,16 @@ Elevator::~Elevator(){
 //Public functions
 //--------------------------------------------------------------------------------------------------
 
+Elevator& Elevator::operator=(const Elevator &rhs){
+	this->elevator_status = rhs.elevator_status;
+	if(this->order_matrix_ptr == NULL){
+		this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
+	}
+	*this->order_matrix_ptr = *order_matrix_ptr;
+	return *this;
+}
+
+
 void Elevator::print_elevator(){
 	std::cout << "Elevator ip : " << elevator_status.ip << std::endl;
 	std::cout << "Elevator Role : " << elevator_status.role << std::endl;
@@ -66,7 +76,7 @@ void Elevator::print_elevator(){
 	print_order_matrix(order_matrix_ptr);
 }
 
-void Elevator::set_elevator_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr){
+void Elevator::set_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr){
 	if(this->order_matrix_ptr == NULL){
 		this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
 		*this->order_matrix_ptr = *order_matrix_ptr;
@@ -84,21 +94,4 @@ void Elevator::set_elevator_order_matrix(std::vector<std::vector <Queue_element>
 		}
 		*this->order_matrix_ptr = temp;
 	}
-	
 }
-
-Elevator& Elevator::operator=(const Elevator &rhs){
-	this->elevator_status = rhs.elevator_status;
-	if(this->order_matrix_ptr == NULL){
-		this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
-	}
-	*this->order_matrix_ptr = *order_matrix_ptr;
-	return *this;
-}
-
-
-
-
-//------------------------------------------------------------------------------------------------------------
-//Others
-//

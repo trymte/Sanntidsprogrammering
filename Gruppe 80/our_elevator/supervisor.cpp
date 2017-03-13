@@ -1,6 +1,5 @@
 #include "supervisor.h"
 
-
 void sv_manage_order_matrix(std::vector<Elevator*> elevators, int elevator_ID){	
 	std::vector<std::vector<Queue_element> > temp = Queue::assign_elevators_to_orders(elevators,elevator_ID);
 	std::cout << "------------------------------------------------------------------------"<< std::endl;
@@ -8,14 +7,12 @@ void sv_manage_order_matrix(std::vector<Elevator*> elevators, int elevator_ID){
 	std::cout << "------------------------------------------------------------------------- " <<std::endl;
 	print_order_matrix(&temp);
 	for(unsigned int i = 0; i < N_ELEVATORS; i ++){
-		elevators[i]->set_elevator_order_matrix(&temp);
+		elevators[i]->set_order_matrix(&temp);
 	}
 }
 
-
 void sv_manage_completed_order(Elevator* elevator){
-	//Remove order that elevator is done with.
-	Status elevator_status = elevator->get_elevator_status();
+	Status elevator_status = elevator->get_status();
 	std::vector<std::vector<Queue_element> > elevator_order_matrix = *elevator->get_order_matrix_ptr();
 	//Removes all orders on current floor with correct elevator_ID
 	for(int i=0;i<N_BUTTONS;i++){
@@ -26,6 +23,5 @@ void sv_manage_completed_order(Elevator* elevator){
 			}
 		}
 	}
-	elevator->set_elevator_order_matrix(&elevator_order_matrix);
-
+	elevator->set_order_matrix(&elevator_order_matrix);
 }

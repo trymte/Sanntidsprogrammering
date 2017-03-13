@@ -86,6 +86,4 @@ std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string &or
 
 std::string order_matrix_to_string(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
 
-Message message_id_string_to_enum(std::string str);
-
 void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_ptr);
