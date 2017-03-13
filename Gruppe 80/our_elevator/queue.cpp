@@ -142,7 +142,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 	std::vector<Status> status_vector;
 	Status iteration_status;
 	for (unsigned int i = 0; i < N_ELEVATORS; i++){		
-		status_vector.push_back(elevators[i]->get_elevator_status());
+		status_vector.push_back(elevators[i]->get_status());
 	}
 
 	//Create an order_matrix that contains all the orders assigned to an elevator

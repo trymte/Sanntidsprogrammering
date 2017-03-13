@@ -117,9 +117,9 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 					if (get_timer_id() == 0){
 						open_door();
 					}
-					my_elevator->set_elevator_dir(D_Stop);
-		   			my_elevator->set_elevator_current_state(DOOR_OPEN);
-		   			my_elevator->set_elevator_out_of_order(0);
+					my_elevator->set_dir(D_Stop);
+		   			my_elevator->set_current_state(DOOR_OPEN);
+		   			my_elevator->set_out_of_order(0);
 
 		   			if ((my_queue.get_order_matrix()[current_floor][(int)B_Cab].active_button) && 
 		   				(my_queue.get_order_matrix()[current_floor][(int)B_Cab].elevator_ID == my_elevator->get_status().elevator_ID)){

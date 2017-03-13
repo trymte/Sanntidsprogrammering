@@ -58,11 +58,11 @@ void check_all_lights(Elevator *my_elevator, Queue &my_queue){
 void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my_queue){
 	if((timer_timedOut())&& (get_timer_id() == TIMER_CONDITION_ID)){ 
 		std::cout << "Elevator is out of order" << std::endl;
-		my_elevator->set_elevator_out_of_order(1);
+		my_elevator->set_out_of_order(1);
 		timer_stop();
 
 		my_queue.reset_orders(my_elevator->get_status());
-		switch(my_elevator->get_elevator_status().role){
+		switch(my_elevator->get_status().role){
 			case MASTER:
 				sv_manage_order_matrix(my_network.get_elevators(), my_elevator->get_status().elevator_ID);  
 				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_status().elevator_ID,"");

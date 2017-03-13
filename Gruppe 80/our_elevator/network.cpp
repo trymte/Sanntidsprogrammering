@@ -89,7 +89,7 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 void Network::handle_message(Message message, int foreign_elevator_ID, int this_elevator_ID){
 	switch(message){
 		case MASTER_IP_INIT:
-			this->master_ip = elevators[foreign_elevator_ID]->get_ip();
+			this->master_ip = elevators[foreign_elevator_ID]->get_status().ip;
 			break;
 
 		case SLAVE_IP_INIT:
@@ -97,7 +97,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			break;
 
 		case HANDSHAKE:
-			send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_elevator_ip());
+			send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_status().ip);
 			break;
 
 		case SLAVE_ORDER_COMPLETE:
@@ -107,7 +107,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			break;
 
 		case SLAVE_ORDER_INCOMPLETE:
-			sv_manage_completed_order(elevators[elevator_ID]);
+			sv_manage_completed_order(elevators[foreign_elevator_ID]);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 
@@ -128,7 +128,7 @@ void Network::recieve_message_packet(int this_elevator_ID){
 	std::string datastring;
 	std::string messagestring;
 	struct code_message packet;
-	switch(elevators[this_elevator_ID]->get_role()){
+	switch(elevators[this_elevator_ID]->get_status().role){
 		case MASTER:
 			packet = udp_reciever();
 			break;
@@ -138,7 +138,7 @@ void Network::recieve_message_packet(int this_elevator_ID){
 	}
 	datastring.assign(packet.data);
 	if((datastring.length() > MIN_MESSAGE_LENGTH) && (datastring[1] == ':')){
-		Message message = (Message)atoi(datastring.substr(0,1));
+		Message message = (Message)atoi(datastring.substr(0,1).c_str());
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 
@@ -158,10 +158,10 @@ void Network::recieve_handshake_message(int this_elevator_ID){
 	packet = udp_handshake_reciever();
 	datastring.assign(packet.data);
 	if((datastring.length() !=0) && (datastring[1] == ':')){
-		Message message = (Message)atoi(datastring.substr(0,1));
+		Message message = (Message)atoi(datastring.substr(0,1).c_str());
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
-		Status temp_status = temp_elevator.get_elevator_status();
+		Status temp_status = temp_elevator.get_status();
 		handle_message(message, temp_status.elevator_ID, this_elevator_ID);
 	}	
 }
@@ -215,7 +215,7 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 		return false;
 	}
 	struct code_message code;
-	send_message_packet(HANDSHAKE, this_elevator_ID, this->elevators[foreign_elevator_ID]->get_ip());
+	send_message_packet(HANDSHAKE, this_elevator_ID, this->elevators[foreign_elevator_ID]->get_status().ip);
 	code = udp_handshake_reciever();
 	return code.responding;
 }
@@ -245,18 +245,18 @@ void Network::check_my_role(int this_elevator_ID){
 
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
 		if(i == master_ID){
-			if(this->elevators[i]->elevators[i]->get_status().role == SLAVE)
+			if(this->elevators[i]->get_status().role == SLAVE)
 				std::cout << "Role changed from slave to master: " << i <<  std::endl;
 			this->elevators[i]->set_role(MASTER);
 		}
 
 		else{
-			if(this->elevators[i]->get_elevator_role() == MASTER)
+			if(this->elevators[i]->get_status().role == MASTER)
 				std::cout << "Role changed from master to slave: " <<  i << std::endl;
-			this->elevators[i]->set_elevator_role(SLAVE);
+			this->elevators[i]->set_role(SLAVE);
 		}
 	}
-	this->master_ip = this->elevators[master_ID]->get_elevator_ip();
+	this->master_ip = this->elevators[master_ID]->get_status().ip;
 } 
 
 // End of class
@@ -269,7 +269,7 @@ void Network::check_my_role(int this_elevator_ID){
 void network_send(Elevator* my_elevator, Network &my_network){
 	while(1){
 		usleep(100000);
-		switch(my_elevator->get_elevator_role()){
+		switch(my_elevator->get_status().role){
 			case MASTER:
 				my_network.send_message_packet(MASTER_IP_INIT, my_elevator->get_status().elevator_ID,"");
 				break;

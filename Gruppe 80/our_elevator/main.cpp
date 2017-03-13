@@ -21,7 +21,7 @@ int main(){
 	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr(), this_elev_id);
 	Elevator* my_elevator;
 	my_elevator = my_network.get_elevator_ptr(this_elev_id);
-    my_elevator->set_elevator_order_matrix_ptr(my_queue.get_order_matrix_ptr());
+    my_elevator->set_order_matrix_ptr(my_queue.get_order_matrix_ptr());
     usleep(1000000);
 
 
