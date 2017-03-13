@@ -236,20 +236,23 @@ void Network::check_responding_elevators(int this_elevator_ID){
 }
 
 void Network::check_my_role(int this_elevator_ID){
+	std::cout << "Id: " << elevators[this_elevator_ID]->get_status().elevator_ID << "\tRole: " << elevators[this_elevator_ID]->get_status().role << std::endl;
 	int master_ID = 0;	
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
+		std::cout << i << " : " << this->elevators[i]->get_status().online << std::endl;
 		if(this->elevators[i]->get_status().online){
 			master_ID = this->elevators[i]->get_status().elevator_ID;
+			std::cout << "Master id: " << master_ID << std::endl;
 			break;
 		}
 		
 	}
-
+	std::cout << "Id: " << elevators[this_elevator_ID]->get_status().elevator_ID << "\tRole: " << elevators[this_elevator_ID]->get_status().role << std::endl;
 	if((master_ID == this_elevator_ID) && (this->elevators[this_elevator_ID]->get_status().role == SLAVE)){
 		this->elevators[this_elevator_ID]->set_role(MASTER);
 		std::cout << "Role changed from slave to master: " << std::endl;
 	}
-	else{
+	else if (master_ID != this_elevator_ID){
 		this->elevators[this_elevator_ID]->set_role(SLAVE);
 		std::cout << "Role changed from master to slave: " <<  std::endl;
 	}
@@ -310,10 +313,11 @@ void network_ping(Elevator* my_elevator, Network &my_network){
 	while(1){
 		usleep(1000000);
 		my_mutex2.lock();
+		std::cout << "Id: " << my_elevator->get_status().elevator_ID << "\tRole: " <<my_network.get_elevators()[my_elevator->get_status().elevator_ID]->get_status().role << std::endl;
 		my_network.check_my_role(my_elevator->get_status().elevator_ID);
 		my_mutex2.unlock();
 		my_network.check_responding_elevators(my_elevator->get_status().elevator_ID);
 		my_network.recieve_handshake_message(my_elevator->get_status().elevator_ID);
-		
+		std::cout << "Id: " << my_elevator->get_status().elevator_ID << "\tRole: " <<my_network.get_elevators()[my_elevator->get_status().elevator_ID]->get_status().role << std::endl;
 	}
 }
