@@ -137,6 +137,10 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 	elev_drive_to_init_floor();
 	std::cout << "				Event manager initialized" << std::endl;
 	std::cout << "--------------------------------------------------------" << std::endl; 
+	my_queue.read_order_matrix_from_file();
+	print_order_matrix(my_queue.get_order_matrix_ptr());
+/////////////////////////////////////////////////////////////////////////////////
+
  	
 	while(1){ 
 		if (check_buttons(my_elevator, my_queue)){

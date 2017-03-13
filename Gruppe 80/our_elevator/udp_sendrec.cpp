@@ -247,7 +247,7 @@ struct code_message udp_handshake_reciever()
     socklen_t slen = sizeof(addr); 
     char rbuff[BUFLEN];
     struct code_message code;
-    code.responding = true;
+    code.responding = false;
     std::string data;
     std::string rip;
     
@@ -262,7 +262,7 @@ struct code_message udp_handshake_reciever()
     }  
     if(recvfrom(psocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0)
     {
-        code.responding = false; 
+        code.responding = false;
     }
     else{
         code.responding = true;
