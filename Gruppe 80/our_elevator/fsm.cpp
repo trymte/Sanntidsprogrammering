@@ -55,7 +55,6 @@ bool requests_should_stop(Elevator *my_elevator, Queue &my_queue){
 }
 
 void open_door(){
-	std::cout << "Door open" << std::endl;
 	elev_set_door_open_lamp(1);
 	timer_start(DOOR_TIME_S, TIMER_DOOR_ID);
 }
@@ -144,7 +143,6 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 }
 
 void fsm_on_door_timeout(Elevator *my_elevator,Queue &my_queue){
-	std::cout << "Door timed out " << std::endl;
 	int current_floor = elev_get_floor_sensor_signal();
 	my_elevator->set_current_state(IDLE);
 	elev_set_door_open_lamp(0);
