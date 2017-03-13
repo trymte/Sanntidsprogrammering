@@ -10,7 +10,7 @@
 
 const unsigned int N_FLOORS = 4;
 const unsigned int N_BUTTONS = 3;
-const unsigned int N_ELEVATORS = 2;
+const unsigned int N_ELEVATORS = 3;
 const unsigned int DOOR_TIME_S = 1;
 const unsigned int TIME_CONDITION_S = 10;
 const unsigned int TIMER_DOOR_ID = 1;
