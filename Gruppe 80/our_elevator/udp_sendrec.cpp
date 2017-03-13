@@ -225,11 +225,12 @@ struct code_message udp_reciever()
     
     // zero out the structure
     memset((char *) &addr, 0, sizeof(addr));
-    
-    memset(&rbuff[0], 0, sizeof(rbuff)); 
+    std::cout << "udp_receiver_1" << std::endl;
+    memset(&rbuff[0], 0, sizeof(rbuff));
     if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0){
     	die("recvfrom");
     }
+    std::cout << "udp_receiver_2" << std::endl;
 
     data.assign(rbuff);
     code.data = data;

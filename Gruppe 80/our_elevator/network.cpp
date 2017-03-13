@@ -266,6 +266,7 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), MASTERPORT, ip);
 			break;
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
+			std::cout << "Distribute order matrix from send_message_packet" << std::endl;
 			message_string = "6:"; 
 			udp_broadcaster(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]));
 			break;	

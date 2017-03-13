@@ -32,6 +32,8 @@ int main(){
 	network_recieve_thread.join();
 	network_ping_thread.join();
 
+	std::cout << "Program terminated" << std::endl;
+
 
     return 0;
 }
