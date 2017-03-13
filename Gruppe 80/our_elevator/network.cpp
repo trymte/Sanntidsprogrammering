@@ -112,8 +112,8 @@ void Network::handle_message(Message message, int this_elevator_ID, int foreign_
 			break;
 
 		case SLAVE_ORDER_INCOMPLETE:
-			std::cout << "order incomplete " << std::endl;
 			sv_manage_completed_order(elevators[foreign_elevator_ID]);
+			sv_manage_order_matrix(elevators, foreign_elevator_ID);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 
