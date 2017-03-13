@@ -79,7 +79,7 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 		timer_stop();
 
 		my_queue.reset_orders(my_elevator->get_status());
-		elev_drive_to_init_floor(my_elevator);
+
 		switch(my_elevator->get_status().role){
 			case MASTER:
 				sv_manage_order_matrix(my_network.get_elevators(), my_elevator->get_status().elevator_ID);  
@@ -89,6 +89,7 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 				my_network.send_message_packet(SLAVE_ORDER_INCOMPLETE, my_elevator->get_status().elevator_ID, my_network.get_master_ip());
 				break;
 		}
+		elev_drive_to_init_floor(my_elevator);
 	} 
 }
 
