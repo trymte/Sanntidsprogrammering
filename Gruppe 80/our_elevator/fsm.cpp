@@ -80,6 +80,7 @@ void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){
 			my_elevator->set_dir(D_Up);
 			my_elevator->set_current_state(MOVING);
 		}
+		
 	}
 }
 

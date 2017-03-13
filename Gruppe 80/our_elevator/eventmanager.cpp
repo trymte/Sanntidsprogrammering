@@ -10,6 +10,23 @@
 #include "timer.h"
 
 
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// Function to initialize elevator to floor 0
+//-----------------------------------------------------------------------------------------------------------------------------------------
+
+void elev_drive_to_init_floor(Elevator *my_elevator){
+	while(elev_get_floor_sensor_signal() != 0)
+		elev_set_motor_direction(DIRN_DOWN);
+		my_elevator->set_current_state(MOVING);
+	elev_set_motor_direction(DIRN_STOP); 
+	elev_set_floor_indicator(0);
+	my_elevator->set_out_of_order(0);
+	my_elevator->set_current_state(IDLE);
+	std::cout << "Elevator not out of order" << std::endl;
+
+}
+
 //--------------------------------------------------------------------------------------------------------------------------------
 //		Hardware monitoring local eventmanager functions
 //--------------------------------------------------------------------------------------------------------------------------------
@@ -62,6 +79,7 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 		timer_stop();
 
 		my_queue.reset_orders(my_elevator->get_status());
+		elev_drive_to_init_floor(my_elevator);
 		switch(my_elevator->get_status().role){
 			case MASTER:
 				sv_manage_order_matrix(my_network.get_elevators(), my_elevator->get_status().elevator_ID);  
@@ -76,11 +94,9 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 
 void check_door_timer(Elevator* my_elevator, Network &my_network, Queue &my_queue){
 	if((timer_timedOut()) && (get_timer_id() == TIMER_DOOR_ID)){
-		std::cout << "Check door timer" << std::endl;
 		fsm_on_door_timeout(my_elevator,my_queue);
 		switch(my_elevator->get_status().role){
 			case MASTER:
-				//sv_manage_order_matrix(my_network.get_elevators_ptr(), my_elevator->get_elevator_ID()); 
 				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_status().elevator_ID,"");
 				break;
 			case SLAVE:
@@ -92,6 +108,8 @@ void check_door_timer(Elevator* my_elevator, Network &my_network, Queue &my_queu
  
 void check_order_to_be_executed(Elevator* my_elevator, Queue &my_queue){
 	Order next_order = my_queue.get_next_order(my_elevator->get_status().elevator_ID);
+
+
 	if (next_order.active_order){ 
 		fsm_execute_order(my_elevator,my_queue,next_order);
 	}
@@ -117,26 +135,17 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 	}
  }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
-// Function to initialize elevator to floor 0
-//-----------------------------------------------------------------------------------------------------------------------------------------
 
-void elev_drive_to_init_floor(){
-	while(elev_get_floor_sensor_signal() != 0)
-		elev_set_motor_direction(DIRN_DOWN);
-	elev_set_motor_direction(DIRN_STOP); 
-	elev_set_floor_indicator(0);
-}
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 
 void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_queue){  
 	int input_poll_rate_ms = 25;
 	std::cout << "--------------------------------------------------------" << std::endl;  
-	std::cout << "				Event manager initializing...			  " << std::endl; 
+	std::cout << "		Event manager initializing...			  " << std::endl; 
 	elev_init();
-	elev_drive_to_init_floor();
-	std::cout << "				Event manager initialized" << std::endl;
+	elev_drive_to_init_floor(my_elevator);
+	std::cout << "		Event manager initialized" 	<< std::endl;
 	std::cout << "--------------------------------------------------------" << std::endl; 
 	my_queue.read_order_matrix_from_file();
 	print_order_matrix(my_queue.get_order_matrix_ptr());

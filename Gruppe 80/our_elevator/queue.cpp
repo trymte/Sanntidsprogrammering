@@ -171,26 +171,22 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 }
 
 void Queue::reset_orders(std::vector <std::vector <Queue_element> > &order_matrix, Status status){
-	std::vector<std::vector<Queue_element> >::iterator row;
-	std::vector<Queue_element>::iterator col;
-
-	for (row = order_matrix.begin(); row!=order_matrix.end();++row){
-		for (col = row->begin(); col != row->end(); ++col){
-			if ((col->active_button == 1)&&(col->elevator_ID == status.elevator_ID))
-				col->elevator_ID = -1;
+	for(unsigned int i = 0; i<N_FLOORS; i++){
+		for (unsigned int j = 0; j<N_BUTTONS-1; j++){
+			if ((order_matrix[i][j].active_button == 1) && (order_matrix[i][j].elevator_ID == status.elevator_ID)){
+				order_matrix[i][j].elevator_ID = -1;
+			}
 		}
 	}
 }
 
 
 void Queue::reset_orders(Status status){
-	std::vector<std::vector<Queue_element> >::iterator row;
-	std::vector<Queue_element>::iterator col;
-
-	for (row = this->order_matrix.begin(); row!=this->order_matrix.end();++row){
-		for (col = row->begin(); col != row->end(); ++col){
-			if ((col->active_button == 1)&&(col->elevator_ID == status.elevator_ID))
-				col->elevator_ID = -1;
+	for(unsigned int i = 0; i<N_FLOORS; i++){
+		for (unsigned int j = 0; j<N_BUTTONS-1; j++){
+			if ((this->order_matrix[i][j].active_button == 1) && (this->order_matrix[i][j].elevator_ID == status.elevator_ID)){
+				this->order_matrix[i][j].elevator_ID = -1;
+			}
 		}
 	}
 }
@@ -228,9 +224,6 @@ void Queue::write_order_matrix_to_file(){
 		}
 		file.close();
 	}
-	else{
-		std::cout << "Unable to open backup file for write" << std::endl;
-	}
 }
 
 void Queue::read_order_matrix_from_file(){
@@ -241,12 +234,9 @@ void Queue::read_order_matrix_from_file(){
 	std::vector< std::vector< Queue_element > > temp_order_matrix;
 	if (file.is_open()){
 		getline(file,result);
-		std::cout << "Result: " << result << std::endl;
 		temp_order_matrix = string_to_order_matrix(result); 
 		for (unsigned int i = 0; i< N_FLOORS;i++){
 			this->order_matrix[i][(int)B_Cab] = temp_order_matrix[i][(int)B_Cab];
 		}
 	}
-	else
-		std::cout << "Unable to open backup file for read" << std::endl;
 }

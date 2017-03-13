@@ -229,7 +229,7 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 
 void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
-		std::cout << "elev " << i << "\tonline: " << this->elevators[i]->get_status().online << "\tip: " << this->elevators[i]->get_status().ip << std::endl;
+//		std::cout << "elev " << i << "\tonline: " << this->elevators[i]->get_status().online << "\tip: " << this->elevators[i]->get_status().ip << std::endl;
 		if(i != this_elevator_ID){
 			int ping_count = 0;
 			for (unsigned int j = 0; j<PING_INTERVAL; j++){
@@ -254,7 +254,6 @@ void Network::check_my_role(int this_elevator_ID){
 		}
 		
 	}
-	std::cout << "master id: " << master_ID << std::endl; 
 	if((master_ID == this_elevator_ID) && (this->elevators[this_elevator_ID]->get_status().role == SLAVE)){
 		this->elevators[this_elevator_ID]->set_role(MASTER);
 		std::cout << "Role changed from slave to master: " << std::endl;
