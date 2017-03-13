@@ -74,7 +74,7 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 	std::vector<std::vector <Queue_element> > order_matrix_temp = string_to_order_matrix(order_matrix_string);
 	temp_elevator.set_order_matrix(&order_matrix_temp);
 
-	temp_elevator.print_elevator();
+
 	return temp_elevator;
 }
 
@@ -152,8 +152,6 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			temp_status.role = elevators[temp_status.elevator_ID]->get_status().role;
 			temp_status.online = elevators[temp_status.elevator_ID]->get_status().online;
 			elevators[temp_status.elevator_ID]->set_status(temp_status);
-			std::cout << "elevators[temp_status.elevator_ID]: " << std::endl;
-			elevators[temp_status.elevator_ID]->print_elevator();
 			elevators[temp_status.elevator_ID]->set_order_matrix(temp_elevator.get_order_matrix_ptr());
 			handle_message(message, temp_status.elevator_ID, this_elevator_ID);
 		}
