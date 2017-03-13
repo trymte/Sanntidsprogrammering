@@ -149,6 +149,7 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			Status temp_status = temp_elevator.get_status();
 			temp_status.role = elevators[temp_status.elevator_ID]->get_status().role;
 			temp_status.online = elevators[temp_status.elevator_ID]->get_status().online;
+			temp_elevator.print_elevator();
 			elevators[temp_status.elevator_ID]->set_status(temp_status);
 			elevators[temp_status.elevator_ID]->set_order_matrix(temp_elevator.get_order_matrix_ptr());
 			handle_message(message, temp_status.elevator_ID, this_elevator_ID);
