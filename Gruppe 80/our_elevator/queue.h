@@ -8,8 +8,6 @@
 class Queue{
 private:
 	std::vector<std::vector<Queue_element> > order_matrix;
-
-
 	
 public:
 	Queue();

@@ -1,5 +1,9 @@
 #include "fsm.h"
 
+//-----------------------------------------------------------------------------------------------------------------
+//				Local functions used only in fsm
+//-----------------------------------------------------------------------------------------------------------------
+
 
 bool requests_above(Elevator *my_elevator, Queue &my_queue,int current_floor){
 	for(int i=current_floor+1;i<N_FLOORS;i++){
@@ -56,7 +60,9 @@ void open_door(){
 	timer_start(DOOR_TIME_S, TIMER_DOOR_ID);
 }
 
-
+//-----------------------------------------------------------------------------------------------------------------
+//									fsm executing functions
+//-----------------------------------------------------------------------------------------------------------------
 
 void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){
 	int current_floor = my_elevator->get_elevator_status().floor;
@@ -80,7 +86,6 @@ void fsm_execute_order(Elevator *my_elevator, Queue &my_queue, Order &order){
 
 
 bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_floor){
-
 	bool stopped = false;
 	elev_set_floor_indicator(current_floor);
 	my_elevator->set_elevator_floor(current_floor);
@@ -95,7 +100,6 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 				if (get_timer_id() == 0){
 					open_door();
 				}
-				
 				my_elevator->set_elevator_dir(D_Stop);
 	   			my_elevator->set_elevator_current_state(DOOR_OPEN);
 	   			my_elevator->set_elevator_out_of_order(0);
@@ -110,11 +114,9 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 					if (get_timer_id() == TIMER_CONDITION_ID){
 						timer_stop();
 					}
-
 					if (get_timer_id() == 0){
 						open_door();
 					}
-
 					my_elevator->set_elevator_dir(D_Stop);
 		   			my_elevator->set_elevator_current_state(DOOR_OPEN);
 		   			my_elevator->set_elevator_out_of_order(0);
@@ -130,10 +132,8 @@ bool fsm_on_floor_arrival(Elevator *my_elevator,Queue &my_queue, int current_flo
 			}
 			break;
 	}
-
 	return stopped;
 }
-
 
 void fsm_on_door_timeout(Elevator *my_elevator,Queue &my_queue){
 	std::cout << "Door timed out " << std::endl;
@@ -152,4 +152,3 @@ void fsm_on_door_timeout(Elevator *my_elevator,Queue &my_queue){
 		}
 	}
 }
-
