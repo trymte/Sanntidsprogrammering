@@ -170,7 +170,7 @@ int udp_broadcaster(std::string message){
 
     if (sendto(bsocket, sbuff, BUFLEN, 0, (struct sockaddr*) &baddr, sizeof(baddr)) == -1)
     {
-        die("bcast");
+        //die("bcast");
     }
     return 0;
 
@@ -189,7 +189,7 @@ int udp_sender(std::string message, int localPort, char * reciever_ip) //master_
     addr.sin_addr.s_addr = inet_addr(reciever_ip);
     if (sendto(lsocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr)) == -1)
     {
-        die("sendto");
+        //die("sendto");
     }
     return 0;
 }
@@ -207,7 +207,7 @@ int udp_handshake_sender(std::string message, int localPort, char * reciever_ip)
     addr.sin_addr.s_addr = inet_addr(reciever_ip);
     if (sendto(psocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr)) == -1)
     {
-        die("sendto");
+        //die("sendto");
     }
     return 0;
 }
@@ -225,11 +225,14 @@ struct code_message udp_reciever()
     
     // zero out the structure
     memset((char *) &addr, 0, sizeof(addr));
-    
-    memset(&rbuff[0], 0, sizeof(rbuff)); 
-    if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0){
-    	die("recvfrom");
+    struct timeval read_timeout;
+    read_timeout.tv_sec = 10;
+    read_timeout.tv_usec = 0;
+    if(setsockopt(lsocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
+        die("setsockopt");
     }
+    memset(&rbuff[0], 0, sizeof(rbuff));
+    if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0);
 
     data.assign(rbuff);
     code.data = data;
@@ -290,7 +293,7 @@ struct code_message udp_recieve_broadcast(){
       
     if(recvfrom(bsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) == -1)
     {
-        die("brecvfrom");
+        //die("brecvfrom");
     }
     data.assign(rbuff);
     code.data = data;

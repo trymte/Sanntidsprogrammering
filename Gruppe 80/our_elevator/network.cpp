@@ -124,9 +124,7 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 	}
 }
 
-
 void Network::recieve_message_packet(int this_elevator_ID){
-	Message message;
 	std::string datastring;
 	std::string messagestring;
 	struct code_message packet;
@@ -139,8 +137,8 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			break;
 	}
 	datastring.assign(packet.data);
-	if((datastring.length() !=0) && (datastring[1] == ':')){
-		message = message_id_string_to_enum(datastring.substr(0,1));
+	if((datastring.length() > MIN_MESSAGE_LENGTH) && (datastring[1] == ':')){
+		Message message = (Message)atoi(datastring.substr(0,1));
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 
@@ -212,7 +210,6 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 	delete[] ip;
 }
 
-
 bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	if (elevators[foreign_elevator_ID]->get_status().ip == "0"){
 		return false;
@@ -222,7 +219,6 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	code = udp_handshake_reciever();
 	return code.responding;
 }
-
 
 void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
@@ -270,7 +266,6 @@ void Network::check_my_role(int this_elevator_ID){
 //         Network threads for send, ping and recieving messages
 // ------------------------------------------------------------------------------------------------
 
-
 void network_send(Elevator* my_elevator, Network &my_network){
 	while(1){
 		usleep(100000);
@@ -303,7 +298,6 @@ void network_ping(Elevator* my_elevator, Network &my_network){
 		my_network.check_my_role(my_elevator->get_status().elevator_ID);
 		my_mutex2.unlock();
 		my_network.check_responding_elevators(my_elevator->get_status().elevator_ID);
-		
 		my_network.recieve_handshake_message(my_elevator->get_status().elevator_ID);
 	}
 }
