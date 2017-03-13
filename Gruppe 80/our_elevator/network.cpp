@@ -149,10 +149,10 @@ void Network::handle_message(Message message, int foreign_elevator_ID, int this_
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_ORDER_INCOMPLETE:
-//			std::cout << "------------------------------------------------------------------------"<< std::endl;
-//			std::cout << "Slave order incomplete: " << std::endl;
-//			std::cout << "------------------------------------------------------------------------"<< std::endl;
-			//sv_manage_completed_order(elevators[elevator_ID]);
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
+			std::cout << "Slave order incomplete: " << std::endl;
+			std::cout << "------------------------------------------------------------------------"<< std::endl;
+			sv_manage_completed_order(elevators[elevator_ID]);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
@@ -202,7 +202,7 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			break;
 	}
 	datastring.assign(packet.data);
-	if((datastring.length() !=0) && (datastring[1] == ':')){
+	if((datastring.length() > MIN_MESSAGE_LENGTH) && (datastring[1] == ':')){
 		message = message_id_string_to_enum(datastring.substr(0,1));
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
 		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);

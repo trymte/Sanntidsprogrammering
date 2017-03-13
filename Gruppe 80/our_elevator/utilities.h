@@ -16,6 +16,7 @@ const unsigned int TIME_CONDITION_S = 10;
 const unsigned int TIMER_DOOR_ID = 1;
 const unsigned int TIMER_CONDITION_ID = 2;
 const unsigned int TIMER_NETWORK = 1;
+const unsigned int MIN_MESSAGE_LENGTH = 69;
 
 
 
