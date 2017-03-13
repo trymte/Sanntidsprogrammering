@@ -26,7 +26,7 @@ public:
 
 	void add_order(Order new_order, int elevator_ID);
 
-	static void remove_order(std::vector <std::vector <Queue_element> > &order_matrix,Order order);
+	//static void remove_order(std::vector <std::vector <Queue_element> > &order_matrix,Order order);
 
 	void remove_order(Order order);
 

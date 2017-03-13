@@ -129,6 +129,8 @@ void event_manager_main(Elevator *my_elevator, Network &my_network, Queue &my_qu
 	elev_set_motor_direction(DIRN_STOP); 
 	elev_set_floor_indicator(0);
 	std::cout << "Event manager initialized" << std::endl;
+	my_queue.read_order_matrix_from_file();
+	print_order_matrix(my_queue.get_order_matrix_ptr());
 /////////////////////////////////////////////////////////////////////////////////
  	
 	while(1){ 

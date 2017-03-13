@@ -133,16 +133,6 @@ void Queue::remove_order(Order order){
 	this->order_matrix[order.floor][order.btn].elevator_ID = -1;
 }
 
-void Queue::remove_order(std::vector <std::vector <Queue_element> > &order_matrix,Order order){
-	if ((order_matrix.size() < order.floor)||(order_matrix[0].size() < order.btn)){
-		std::cout << "Dimensions disagree in queue_remove_order" << std::endl;
-	}
-	else{
-		order_matrix[order.floor][order.btn].active_button = 0;
-		order_matrix[order.floor][order.btn].elevator_ID = -1;
-	}
-}
-
 
 std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::vector<Elevator*> elevators, int elevator_ID){
 
@@ -255,12 +245,14 @@ void Queue::read_order_matrix_from_file(){
 	std::string result;
 	std::ifstream file;
 	file.open("backup_file.txt");
+	std::vector< std::vector< Queue_element > > temp_order_matrix;
 	if (file.is_open()){
-			while(getline(file,line,':')){
-				result += line;
-			}
-
-			this->order_matrix = string_to_order_matrix(result); 
+		getline(file,result);
+		std::cout << "Result: " << result << std::endl;
+		temp_order_matrix = string_to_order_matrix(result); 
+		for (int i = 0; i< N_FLOORS;i++){
+			this->order_matrix[i][(int)B_Cab] = temp_order_matrix[i][(int)B_Cab];
+		}
 	}
 	else
 		std::cout << "Unable to open file at queue_read_order_matrix_from_file" << std::endl;
