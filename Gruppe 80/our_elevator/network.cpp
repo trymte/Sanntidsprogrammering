@@ -18,8 +18,6 @@ Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> 
 	this->master_ID = 0;	
 	Elevator* elev_temp_this = new Elevator(elevator_status, order_matrix_ptr);
 	elev_temp_this->set_online(true);
-	Elevator* elev_temp_others = new Elevator(elevator_status);
-	elev_temp_others->set_ip("0");
 	if(elevator_status.role == MASTER){	
 		this->master_ip = elevator_status.ip;
 	}
@@ -29,6 +27,9 @@ Network::Network(Status elevator_status, std::vector<std::vector<Queue_element> 
 	}
 	
 	for(unsigned int i = 0; i < N_ELEVATORS ; i++){
+		Elevator* elev_temp_others = new Elevator(elevator_status);
+		elev_temp_others->set_ip("0");
+		elev_temp_others->set_role(SLAVE);
 		if(i != elevator_ID){
 			this->elevators.push_back(elev_temp_others);
 		} else{
