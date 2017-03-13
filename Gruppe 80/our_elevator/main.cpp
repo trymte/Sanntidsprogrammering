@@ -11,7 +11,11 @@ int main(){
 	init_status.ip = get_my_ipaddress();
 	int this_elev_id;
 	std::cout << "Write in your elevator id: " << std::endl;
-	std::cin >> this_elev_id; 
+	std::cin >> this_elev_id;
+	while((this_elev_id > N_ELEVATORS-1) || (this_elev_id < 0)){
+		std::cout << "Illegal elevator id, there are only " << N_ELEVATORS << " elevators. Please choose elevator id again" << std::endl;
+		std::cin >> this_elev_id;
+	}
 	init_status.elevator_ID = this_elev_id;
 	Queue my_queue;
 	Network my_network = Network(init_status, my_queue.get_order_matrix_ptr(), this_elev_id);
@@ -31,9 +35,6 @@ int main(){
 	network_send_thread.join();
 	network_recieve_thread.join();
 	network_ping_thread.join();
-
-	std::cout << "Program terminated" << std::endl;
-
 
     return 0;
 }
