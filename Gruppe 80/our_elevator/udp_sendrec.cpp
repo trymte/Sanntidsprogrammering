@@ -226,6 +226,12 @@ struct code_message udp_reciever()
     // zero out the structure
     memset((char *) &addr, 0, sizeof(addr));
     std::cout << "udp_receiver_1" << std::endl;
+    struct timeval read_timeout;
+    read_timeout.tv_sec = 10;
+    read_timeout.tv_usec = 0;
+    if(setsockopt(lsocket, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout)){
+        die("setsockopt");
+    }
     memset(&rbuff[0], 0, sizeof(rbuff));
     if(recvfrom(lsocket, rbuff, BUFLEN, 0, (struct sockaddr *) &addr, &slen) < 0){
     	die("recvfrom");
