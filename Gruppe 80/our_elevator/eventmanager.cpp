@@ -58,7 +58,7 @@ void check_all_lights(Elevator *my_elevator, Queue &my_queue){
 				elev_set_button_lamp((elev_button_type_t)j,i,0);
 		}
 		//Set internal lights if any order
-		if (my_queue.get_order_matrix()[i][(int)B_Cab].active_button == 1){//ee
+		if (my_queue.get_order_matrix()[i][(int)B_Cab].active_button == 1){
 			elev_set_button_lamp(BUTTON_COMMAND,i,1);
 		}
 		else{
@@ -76,6 +76,7 @@ void check_condition_timer(Elevator* my_elevator, Network &my_network, Queue &my
 		my_queue.reset_orders(my_elevator->get_status());
 		switch(my_elevator->get_status().role){
 			case MASTER:
+				// Master is out_of_order, which means it will not be given orders after the manage order matrix function call
 				sv_manage_order_matrix(my_network.get_elevators(), my_elevator->get_status().elevator_ID);  
 				my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_status().elevator_ID,"");
 				break;
@@ -119,7 +120,7 @@ void check_floor_arrival(Elevator* my_elevator, Queue &my_queue, Network &my_net
 		if(fsm_on_floor_arrival(my_elevator,my_queue,current_floor)){
 			switch(my_elevator->get_status().role){
 				case MASTER:
-					sv_manage_completed_order(my_elevator);
+					sv_manage_incompleted_and_completed_orders(my_elevator);
 					sv_manage_order_matrix(my_network.get_elevators(),my_elevator->get_status().elevator_ID);
 					my_network.send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, my_elevator->get_status().elevator_ID,"");
 					break;

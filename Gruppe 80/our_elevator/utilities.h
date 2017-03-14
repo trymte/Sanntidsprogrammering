@@ -9,9 +9,9 @@
 #include <stdlib.h>
 
 
-//-------------------------------------------------------------------------------
-//      Definition of structs and constants used in multiple files
-//-------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
+//	Definition of structs and constants used in multiple files gathered in one place
+//------------------------------------------------------------------------------------
 
 
 const unsigned int N_FLOORS = 4;
@@ -24,8 +24,8 @@ const unsigned int TIME_CONDITION_S = 10;       // Duration allowed for an order
 const unsigned int TIMER_DOOR_ID = 1;           // Id for the timer used for open door
 const unsigned int TIMER_CONDITION_ID = 2;      // Id for the timer used to check out_of_order
  
-const unsigned int MIN_MESSAGE_LENGTH = 69;     // Minimum allowed message length
-const unsigned int NUMBER_OF_PINGS = 5;        // Number of pings used to determine connection
+const unsigned int MIN_MESSAGE_LENGTH = 69;     // Minimum allowed message length in network messages
+const unsigned int NUMBER_OF_PINGS = 5;         // Number of pings used to determine connection
 
 
 typedef enum { 
@@ -45,7 +45,10 @@ typedef enum {
     MASTER = 1
 } Role;
 
-typedef enum{
+
+// Messages used in network communication on the format <Sender>_<Message>
+// F.ex MASTER_IP_INIT: Master sends its IP address to slaves
+typedef enum{       
     MASTER_IP_INIT = 0,
     SLAVE_IP_INIT = 1,
     HANDSHAKE = 2,
@@ -88,12 +91,12 @@ struct Status{
 };
 
 //-------------------------------------------------------------------------------------------------------
-//  Extra functions used in multiple cpp files
+//  Functions used in multiple cpp files not belonging anywhere special
 //-------------------------------------------------------------------------------------------------------
 
-Status init_elev_status();
+Status init_elev_status();										//Used to initialize elevator objects
 
-std::vector<std::vector<Queue_element> > init_twoD_vector(); 
+std::vector<std::vector<Queue_element> > init_twoD_vector(); 	// Used to initialize order matrix vector
 
 std::vector<std::vector <Queue_element> > string_to_order_matrix(std::string &order_matrix_string);
 

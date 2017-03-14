@@ -75,7 +75,7 @@ unsigned int Queue::get_lowest_cost_elevator(Order order, std::vector<Status>& s
 	Status status_it;
 	for(unsigned int i = 0; i<N_ELEVATORS; i++){
 		status_it = status_vector[i];
-		if (elevators[i]->get_condition()){
+		if (elevators[i]->get_condition()){		//Check if elevator is online and not out of order
 			temp_cost = calculate_cost(order,status_it);
 			if (temp_cost < lowest_cost){
 				lowest_cost = temp_cost;
@@ -93,7 +93,6 @@ unsigned int Queue::get_lowest_cost_elevator(Order order, std::vector<Status>& s
 
 
 std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::vector<Elevator*> elevators, int elevator_ID){
-
 	//Create a status_vector based on the input.
 	std::vector<Status> status_vector;
 	Status iteration_status;
@@ -117,7 +116,7 @@ std::vector<std::vector<Queue_element> > Queue::assign_elevators_to_orders(std::
 				if ((curr_order_matrix[i][j].active_button == 1) && (curr_order_matrix[i][j].elevator_ID == -1)){
 					order_to_be_assigned.floor = i;
 					order_to_be_assigned.btn = (Button)j;
-					assigned_elevator_ID = Queue::get_lowest_cost_elevator(order_to_be_assigned,status_vector, elevators);
+					assigned_elevator_ID = Queue::get_lowest_cost_elevator(order_to_be_assigned,status_vector, elevators); //Returns -1 if condition == false
 					Queue::add_order(assigned_order_matrix, order_to_be_assigned, assigned_elevator_ID);
 				}
 			}

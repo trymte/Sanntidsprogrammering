@@ -23,7 +23,7 @@ public:
 	Network(Status elevator_status, std::vector<std::vector<Queue_element> > *order_matrix_ptr, int elevator_ID);
 
 //----------------------------------------------------------------------------------------------------------------------
-//		Network get functions
+//		Network get and set functions
 //----------------------------------------------------------------------------------------------------------------------
 
 	std::vector<Elevator*> get_elevators(){return elevators;}
@@ -32,11 +32,11 @@ public:
 
 	std::string get_master_ip(){return master_ip;}
 
-//----------------------------------------------------------------------------------------------------------------------
-//		Network set functions
-//----------------------------------------------------------------------------------------------------------------------
-
 	void set_master_ip(std::string master_ip){this->master_ip = master_ip;}
+
+//----------------------------------------------------------------------------------------------------------------------
+//		Network communication functions
+//----------------------------------------------------------------------------------------------------------------------
 
 	void handle_message(Message message_ID, int this_elevator_ID, int foreign_elevator_ID);
 
