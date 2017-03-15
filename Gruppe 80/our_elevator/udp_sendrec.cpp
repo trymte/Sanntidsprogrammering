@@ -55,7 +55,7 @@ std::string get_my_ipaddress(){
 }
 
 
-void udp_init(){
+void udp_init(int localPort){
     struct sockaddr_in laddr, baddr, paddr;
     
     //_------------------------------------------------------------------------
@@ -115,7 +115,7 @@ void udp_init(){
 
     memset((char *) &laddr, 0, sizeof(laddr));
     laddr.sin_family = AF_INET;
-    laddr.sin_port = htons(MASTERPORT);
+    laddr.sin_port = htons(localPort);
     laddr.sin_addr.s_addr = INADDR_ANY;
     if( bind(lsocket, (struct sockaddr*)&laddr, sizeof(laddr) ) == -1)
     {
@@ -169,7 +169,7 @@ void udp_broadcaster(std::string message){
 }
 
 
-void udp_sender(std::string message, char * reciever_ip)  // Master IP = Reciever IP
+void udp_sender(std::string message, int localPort, char * reciever_ip)  // Master IP = Reciever IP
 {
     struct sockaddr_in addr;
     char sbuff[BUFLEN];
@@ -179,13 +179,13 @@ void udp_sender(std::string message, char * reciever_ip)  // Master IP = Recieve
     memset((char *) &addr, 0, sizeof(addr));
 
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(MASTERPORT);
+    addr.sin_port = htons(localPort);
     addr.sin_addr.s_addr = inet_addr(reciever_ip);
     sendto(lsocket, sbuff, BUFLEN, 0, (struct sockaddr*) &addr, sizeof(addr));
 }
 
 
-void udp_handshake_sender(std::string message, char * reciever_ip)
+void udp_handshake_sender(std::string message, int localPort, char * reciever_ip)
 {
     struct sockaddr_in addr;
     char sbuff[BUFLEN];
@@ -265,6 +265,7 @@ struct code_message udp_recieve_broadcast(){
     socklen_t slen = sizeof(addr);
     char rbuff [BUFLEN];
     std::string data;
+
 
     memset((char *) &addr, 0, sizeof(addr));
     memset(&rbuff[0], 0, sizeof(rbuff));

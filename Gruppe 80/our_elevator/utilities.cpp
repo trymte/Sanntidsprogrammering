@@ -1,7 +1,7 @@
 #include "utilities.h"
 
 std::vector<std::vector<Queue_element> > init_twoD_vector(){
-    std::vector<std::vector<Queue_element> > temp_order_matrix_vector;
+    std::vector<std::vector<Queue_element> > temp;
     Queue_element init_element;
     init_element.active_button = 0;
     init_element.elevator_ID = -1;
@@ -10,9 +10,9 @@ std::vector<std::vector<Queue_element> > init_twoD_vector(){
         for(unsigned int j=0;j<N_BUTTONS;j++){
             rowvector.push_back(init_element);
         }
-        temp_order_matrix_vector.push_back(rowvector);
+        temp.push_back(rowvector);
     }   
-    return temp_order_matrix_vector;
+    return temp;
 }
 
 
@@ -72,6 +72,7 @@ void print_order_matrix(std::vector<std::vector <Queue_element> > *order_matrix_
 		}
 	std::cout << std::endl;
 	}
+
 }
 
 Status init_elev_status(){

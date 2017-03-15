@@ -16,7 +16,7 @@
 #include <string>
 
 #define BUFLEN 512  					//  Max length of buffer
-#define BROADCASTPORT 29999  		    //  The port used for broadcasting order matrix and master_ip from master to slaves
+#define BROADCASTPORT 29999  		    //  The broadcastport used for broadcasting order matrix from master to slaves
 #define MASTERPORT 22356 				//  The port used for sending direct messages from slave to master
 #define PINGPORT 25000					//  The port used for handshakes between every elevator (master and slaves)
 #define BROADCASTIP "129.241.187.255"
@@ -32,13 +32,13 @@ void get_my_ipaddress(std::string &ip);
 
 std::string get_my_ipaddress();
 
-void udp_init();
+void udp_init(int localport);
 
 void udp_broadcaster(std::string message);
 
-void udp_sender(std::string message, char* reciever_ip);
+void udp_sender(std::string message, int localport, char* reciever_ip);
 
-void udp_handshake_sender(std::string message, char * reciever_ip);
+void udp_handshake_sender(std::string message, int localPort, char * reciever_ip);
 
 struct code_message udp_reciever();
 

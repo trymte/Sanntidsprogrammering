@@ -1,8 +1,6 @@
 #include "network.h"
 
-//--------------------------------------------------------------------------------------------------
-// 	Constructors and destructor
-//--------------------------------------------------------------------------------------------------
+
 Network::Network(){
 	
 	Elevator* elev_temp = new Elevator;
@@ -51,7 +49,7 @@ Network::~Network(){
 }
 
 //--------------------------------------------------------------------------------------------------
-//	Private functions
+//Private functions
 //----------------------------------------------------------------------------------------------------
 
 Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
@@ -76,6 +74,7 @@ Elevator Network::messagestring_to_elevator_object(std::string &messagestring){
 	std::vector<std::vector <Queue_element> > order_matrix_temp = string_to_order_matrix(order_matrix_string);
 	temp_elevator.set_order_matrix(&order_matrix_temp);
 
+
 	return temp_elevator;
 }
 
@@ -88,11 +87,9 @@ std::string Network::elevator_object_to_messagestring(Elevator &elevator){
 	return ss.str();
 }
 
-
 //----------------------------------------------------------------------------------------------------
 //Public functions
 //----------------------------------------------------------------------------------------------------
-
 
 void Network::handle_message(Message message, int this_elevator_ID, int foreign_elevator_ID){
 	switch(message){
@@ -105,16 +102,17 @@ void Network::handle_message(Message message, int this_elevator_ID, int foreign_
 			break;
 
 		case HANDSHAKE:
-			// Returns a handshake back to handshaking foreign elevator
 			send_message_packet(HANDSHAKE, this_elevator_ID, elevators[foreign_elevator_ID]->get_status().ip);
 			break;
 
 		case SLAVE_ORDER_COMPLETE:
-			//Handled in the next case
+			sv_manage_completed_order(elevators[foreign_elevator_ID]);
+			sv_manage_order_matrix(elevators, foreign_elevator_ID);
+			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
+			break;
 
 		case SLAVE_ORDER_INCOMPLETE:
-			//Slave is either offline or reports that it hasnt completed one of its given orders
-			sv_manage_incompleted_and_completed_orders(elevators[foreign_elevator_ID]);
+			sv_manage_completed_order(elevators[foreign_elevator_ID]);
 			sv_manage_order_matrix(elevators, foreign_elevator_ID);
 			send_message_packet(MASTER_DISTRIBUTE_ORDER_MATRIX, this_elevator_ID, "");
 			break;
@@ -132,7 +130,6 @@ void Network::handle_message(Message message, int this_elevator_ID, int foreign_
 	}
 }
 
-
 void Network::recieve_message_packet(int this_elevator_ID){
 	std::string datastring;
 	std::string messagestring;
@@ -146,26 +143,21 @@ void Network::recieve_message_packet(int this_elevator_ID){
 			break;
 	}
 	datastring.assign(packet.data);
-	if((datastring.length() > MIN_MESSAGE_LENGTH) && (datastring[1] == ':')){  //Check if message has the right format and proper length
+	if((datastring.length() > MIN_MESSAGE_LENGTH) && (datastring[1] == ':')){
 		Message message = (Message)atoi(datastring.substr(0,1).c_str());
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
-		Elevator foreign_elevator = messagestring_to_elevator_object(messagestring);
+		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
 
-		if(foreign_elevator.get_status().ip != elevators[this_elevator_ID]->get_status().ip){	//Check if IP of sender is not its own
-			Status foreign_elevator_status = foreign_elevator.get_status();
-
-			// Every elevator is separatly keeeping track of the role (MASTER/SLAVE) and online bool of other elevators, 
-			// so no overwriting of these variables are allowed here
-			foreign_elevator_status.role = elevators[foreign_elevator_status.elevator_ID]->get_status().role;
-			foreign_elevator_status.online = elevators[foreign_elevator_status.elevator_ID]->get_status().online;
-
-			elevators[foreign_elevator_status.elevator_ID]->set_status(foreign_elevator_status);
-			elevators[foreign_elevator_status.elevator_ID]->set_order_matrix(foreign_elevator.get_order_matrix_ptr());
-			handle_message(message, this_elevator_ID, foreign_elevator_status.elevator_ID);
+		if(temp_elevator.get_status().ip != elevators[this_elevator_ID]->get_status().ip){
+			Status temp_status = temp_elevator.get_status();
+			temp_status.role = elevators[temp_status.elevator_ID]->get_status().role;
+			temp_status.online = elevators[temp_status.elevator_ID]->get_status().online;
+			elevators[temp_status.elevator_ID]->set_status(temp_status);
+			elevators[temp_status.elevator_ID]->set_order_matrix(temp_elevator.get_order_matrix_ptr());
+			handle_message(message, this_elevator_ID, temp_status.elevator_ID);
 		}
 	}
 }
-
 
 void Network::recieve_handshake_message(int this_elevator_ID){
 	std::string datastring;
@@ -176,14 +168,11 @@ void Network::recieve_handshake_message(int this_elevator_ID){
 	if((datastring.length() !=0) && (datastring[1] == ':')){
 		Message message = (Message)atoi(datastring.substr(0,1).c_str());
 		messagestring = datastring.substr(datastring.find_first_of(":")+1,datastring.npos);
-		Elevator foreign_elevator = messagestring_to_elevator_object(messagestring);
-		handle_message(message, this_elevator_ID, foreign_elevator.get_status().elevator_ID);
+		Elevator temp_elevator = messagestring_to_elevator_object(messagestring);
+		Status temp_status = temp_elevator.get_status();
+		handle_message(message, this_elevator_ID, temp_status.elevator_ID);
 	}	
 }
-
-// The protocoll of our message sending/recieving is based on elevators sending a message ID and its own 
-// elevator object containing its status and order matrix. The message ID determines 
-// the action taken next
 
 void Network::send_message_packet(Message message, int this_elevator_ID, std::string reciever_ip){
 	std::string message_string;
@@ -198,27 +187,27 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 
 		case SLAVE_IP_INIT:
 			message_string = "1:";
-			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), ip);
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), MASTERPORT, ip);
 			break;
 
 		case HANDSHAKE:
 			message_string = "2:";
-			udp_handshake_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), ip);
+			udp_handshake_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), PINGPORT, ip);
 			break;
 
 		case SLAVE_ORDER_COMPLETE:
 			message_string = "3:";
-			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), ip);
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), MASTERPORT, ip);
 			break;
 
 		case SLAVE_ORDER_INCOMPLETE:
 			message_string = "4:",
-			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), ip);
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]),MASTERPORT, ip);
 			break;
 
 		case SLAVE_SEND_ELEVATOR_INFORMATION:
 			message_string = "5:";
-			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), ip);
+			udp_sender(message_string + elevator_object_to_messagestring(*elevators[this_elevator_ID]), MASTERPORT, ip);
 			break;
 
 		case MASTER_DISTRIBUTE_ORDER_MATRIX:
@@ -228,7 +217,6 @@ void Network::send_message_packet(Message message, int this_elevator_ID, std::st
 	}		
 	delete[] ip;
 }
-
 
 bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	if ((elevators[foreign_elevator_ID]->get_status().ip == "0") || (elevators[this_elevator_ID]->get_status().ip == elevators[foreign_elevator_ID]->get_status().ip)){
@@ -240,13 +228,11 @@ bool Network::is_node_responding(int this_elevator_ID, int foreign_elevator_ID){
 	return code.responding;
 }
 
-
 void Network::check_responding_elevators(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
-		//Check if a SLAVE has become offline. Then the MASTER cannot know if the slaves given orders are executed
 		if ((elevators[this_elevator_ID]->get_status().role == MASTER) && (elevators[i]->get_status().online == false)){
 			
-			handle_message(SLAVE_ORDER_INCOMPLETE,this_elevator_ID,i); 
+			handle_message(SLAVE_ORDER_INCOMPLETE,this_elevator_ID,i);
 		}
 
 		std::cout << "elev " << i << "\tonline: " << this->elevators[i]->get_status().online << "\tip: " << this->elevators[i]->get_status().ip << std::endl;
@@ -265,7 +251,6 @@ void Network::check_responding_elevators(int this_elevator_ID){
 		}	
 	}
 }
-
 
 void Network::check_my_role(int this_elevator_ID){
 	for(unsigned int i = 0; i < N_ELEVATORS; i++){
@@ -293,7 +278,6 @@ void Network::check_my_role(int this_elevator_ID){
 //         Network threads for send, ping and recieving messages
 // ------------------------------------------------------------------------------------------------
 
-// Thread to recieve master IP and slave IPs, such that messages can be sent
 void network_send(Elevator* my_elevator, Network &my_network){
 	while(1){
 		usleep(100000);
@@ -308,7 +292,6 @@ void network_send(Elevator* my_elevator, Network &my_network){
 	}
 }
 
-
 void network_recieve(Elevator* my_elevator, Network &my_network){
 	std::mutex my_mutex1;
 	while(1){
@@ -321,8 +304,6 @@ void network_recieve(Elevator* my_elevator, Network &my_network){
 	}
 }
 
-
-//Thread used to ping/handshake with other elevators to check online elevators, and check role of this elevator (MASTER/SLAVE)
 void network_ping(Elevator* my_elevator, Network &my_network){
 	std::mutex my_mutex2;
 	while(1){

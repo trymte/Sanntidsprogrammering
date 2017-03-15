@@ -17,9 +17,9 @@ Elevator::Elevator(): order_matrix_ptr(NULL), order_matrix_ptr_count(0)
 
 Elevator::Elevator(Status elevator_status): elevator_status(elevator_status), order_matrix_ptr_count(0)
 {
-	std::vector<std::vector <Queue_element> > temp_order_matrix = init_twoD_vector();
+	std::vector<std::vector <Queue_element> > temp = init_twoD_vector();
 	this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
-	*this->order_matrix_ptr = temp_order_matrix;
+	*this->order_matrix_ptr = temp;
 }
 
 
@@ -87,17 +87,17 @@ void Elevator::set_order_matrix(std::vector<std::vector <Queue_element> > *order
 		this->order_matrix_ptr = new std::vector<std::vector<Queue_element> >;
 		*this->order_matrix_ptr = *order_matrix_ptr;
 	} else{
-		std::vector<std::vector <Queue_element> > temp_order_matrix = init_twoD_vector();
+		std::vector<std::vector <Queue_element> > temp = init_twoD_vector();
 		for(unsigned int i = 0; i < N_FLOORS;i++){
 			for(unsigned int j = 0; j < N_BUTTONS; j++){
 
 				if(j == 2){
-					temp_order_matrix[i][j] = (*this->order_matrix_ptr)[i][j]; //Cab orders are not overwritten
+					temp[i][j] = (*this->order_matrix_ptr)[i][j];
 				} else{
-					temp_order_matrix[i][j] = (*order_matrix_ptr)[i][j];
+					temp[i][j] = (*order_matrix_ptr)[i][j];
 				}
 			}
 		}
-		*this->order_matrix_ptr = temp_order_matrix;
+		*this->order_matrix_ptr = temp;
 	}
 }
